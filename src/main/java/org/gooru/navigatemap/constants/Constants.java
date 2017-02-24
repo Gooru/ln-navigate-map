@@ -1,0 +1,61 @@
+package org.gooru.navigatemap.constants;
+
+/**
+ * @author ashish on 24/2/17.
+ */
+public final class Constants {
+
+    public static final class EventBus {
+
+        public static final String MBEP_AUTH = "org.gooru.navigate-map.eventbus.auth";
+        public static final String MBEP_NAVIGATE = "org.gooru.navigate-map.eventbus.navigate";
+        public static final String MBUS_TIMEOUT = "message.bus.send.timeout.seconds";
+
+        private EventBus() {
+            throw new AssertionError();
+        }
+    }
+
+    public static final class Message {
+
+        public static final String MSG_OP = "mb.operation";
+        public static final String MSG_API_VERSION = "api.version";
+        public static final String MSG_SESSION_TOKEN = "session.token";
+        public static final String MSG_OP_AUTH = "auth";
+        public static final String MSG_KEY_SESSION = "session";
+
+        public static final String MSG_USER_ANONYMOUS = "anonymous";
+        public static final String MSG_USER_ID = "user_id";
+        public static final String MSG_HTTP_STATUS = "http.status";
+        public static final String MSG_HTTP_BODY = "http.body";
+        public static final String MSG_HTTP_HEADERS = "http.headers";
+
+        public static final String MSG_OP_NEXT = "navigate.next";
+        public static final String MSG_MESSAGE = "message";
+        public static final String MSG_OP_STATUS = "mb.op.status";
+        public static final String MSG_OP_STATUS_SUCCESS = "mb.op.status.success";
+        public static final String PROCESSING_AUTH_TIME = "auth.processing.time";
+        public static final String PROCESSING_HANDLER_START_TIME = "handler.start.time";
+
+        private Message() {
+            throw new AssertionError();
+        }
+    }
+
+    public static final class Route {
+
+        public static final String API_AUTH_ROUTE = "/api/navigate-map/*";
+        private static final String API_BASE_ROUTE = "/api/navigate-map/:version/";
+        public static final String API_NAVIGATE_NEXT = API_BASE_ROUTE + "next";
+        public static final String API_INTERNAL_BANNER = "/api/internal/banner";
+        public static final String API_INTERNAL_METRICS = "/api/internal/metrics";
+
+        private Route() {
+            throw new AssertionError();
+        }
+    }
+
+    private Constants() {
+        throw new AssertionError();
+    }
+}
