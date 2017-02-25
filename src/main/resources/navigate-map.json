@@ -14,7 +14,29 @@
     "org.gooru.navigatemap.bootstrap.verticles.AuthVerticle": {
       "instances": 1,
       "worker": false,
-      "config": {}
+      "config": {
+        "redisConfig" : {
+          "host" : "localhost",
+          "port" : 6379,
+          "encoding" : "UTF-8",
+          "tcpKeepAlive" : true,
+          "tcpNoDelay" : true
+        },
+        "sessionTimeoutInSeconds": 3600
+      }
+    },
+    "org.gooru.navigatemap.bootstrap.verticles.UserContextVerticle": {
+      "instances": 1,
+      "worker": false,
+      "config": {
+        "redisConfig" : {
+          "host" : "localhost",
+          "port" : 6379,
+          "encoding" : "UTF-8",
+          "tcpKeepAlive" : true,
+          "tcpNoDelay" : true
+        }
+      }
     },
     "org.gooru.navigatemap.bootstrap.verticles.HttpVerticle": {
       "instances": 1,

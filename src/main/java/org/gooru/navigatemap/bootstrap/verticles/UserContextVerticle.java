@@ -14,9 +14,9 @@ import io.vertx.redis.RedisClient;
 import io.vertx.redis.RedisOptions;
 
 /**
- * @author ashish on 24/2/17.
+ * @author ashish on 25/2/17.
  */
-public class AuthVerticle extends AbstractVerticle {
+public class UserContextVerticle extends AbstractVerticle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthVerticle.class);
     private RedisClient redisClient;
@@ -31,35 +31,40 @@ public class AuthVerticle extends AbstractVerticle {
             Runtime.getRuntime().halt(2);
         }
 
-        eb.<JsonObject>consumer(Constants.EventBus.MBEP_AUTH, message -> {
-            String sessionToken = message.headers().get(Constants.Message.MSG_SESSION_TOKEN);
-            Future<JsonObject> fetchSessionFuture = fetchSessionFromRedis(sessionToken);
+        eb.<JsonObject>consumer(Constants.EventBus.MBEP_USER_CONTEXT, message -> {
+            String op = message.headers().get(Constants.Message.MSG_OP);
+            String key = message.headers().get(Constants.Message.MSG_HDR_KEY_CONTEXT);
+            if (op.equalsIgnoreCase(Constants.Message.MSG_OP_CONTEXT_GET)) {
+                Future<JsonObject> contextFetch = fetchContextFromRedis(key);
+                contextFetch.setHandler(sessionAsyncResult -> {
+                    if (sessionAsyncResult.succeeded()) {
+                        ResponseUtil.processSuccess(message, sessionAsyncResult.result());
+                    } else {
+                        ResponseUtil.processFailure(message);
+                    }
+                });
 
-            fetchSessionFuture.setHandler(sessionAsyncResult -> {
-                if (sessionAsyncResult.succeeded()) {
-                    ResponseUtil.processSuccess(message, sessionAsyncResult.result());
-                    updateSessionExpiryInRedis(sessionToken);
-                } else {
-                    ResponseUtil.processFailure(message);
-                }
-            });
-
+            } else if (op.equalsIgnoreCase(Constants.Message.MSG_OP_CONTEXT_SET)) {
+                storeContextInRedis(key, message.body());
+            } else {
+                LOGGER.warn("Invalid op: {}", op);
+            }
         }).completionHandler(result -> {
             if (result.succeeded()) {
-                LOGGER.info("Auth end point ready to listen");
+                LOGGER.info("Context end point ready to listen");
                 startFuture.complete();
             } else {
-                LOGGER.error("Error registering the auth handler. Halting the auth machinery");
-                startFuture.fail("Error registering the auth handler. Halting the auth machinery");
+                LOGGER.error("Error registering the context handler. Halting the machinery");
+                startFuture.fail("Error registering the context handler. Halting the context machinery");
                 Runtime.getRuntime().halt(1);
             }
         });
     }
 
-    private Future<JsonObject> fetchSessionFromRedis(String sessionToken) {
+    private Future<JsonObject> fetchContextFromRedis(String contextKey) {
         Future<JsonObject> future = Future.future();
 
-        redisClient.get(sessionToken, redisAsyncResult -> {
+        redisClient.get(contextKey, redisAsyncResult -> {
             if (redisAsyncResult.succeeded()) {
                 final String redisResult = redisAsyncResult.result();
                 LOGGER.debug("Redis responded with '{}'", redisResult);
@@ -68,7 +73,7 @@ public class AuthVerticle extends AbstractVerticle {
                         JsonObject jsonResult = new JsonObject(redisResult);
                         future.complete(jsonResult);
                     } catch (DecodeException de) {
-                        LOGGER.error("exception while decoding json for token '{}'", sessionToken, de);
+                        LOGGER.error("exception while decoding json for token '{}'", contextKey, de);
                         future.fail(de);
                     }
                 } else {
@@ -83,18 +88,14 @@ public class AuthVerticle extends AbstractVerticle {
         return future;
     }
 
-    private Future<Void> updateSessionExpiryInRedis(String sessionToken) {
-        Future<Void> future = Future.future();
-        int sessionTimeout = config().getInteger("sessionTimeoutInSeconds");
-        redisClient.expire(sessionToken, sessionTimeout, updateHandler -> {
+    private void storeContextInRedis(String contextKey, JsonObject contextValue) {
+        redisClient.set(contextKey, contextValue.toString(), updateHandler -> {
             if (updateHandler.succeeded()) {
-                LOGGER.debug("expiry time of session {} is updated", sessionToken);
+                LOGGER.debug("Context for context key '{}' is updated", contextKey);
             } else {
-                LOGGER.warn("Not able to update expiry for key {}", sessionToken, updateHandler.cause());
+                LOGGER.warn("Not able to update context for context key '{}'", contextKey, updateHandler.cause());
             }
-            future.complete();
         });
-        return future;
     }
 
     @Override

@@ -9,6 +9,8 @@ public final class Constants {
 
         public static final String MBEP_AUTH = "org.gooru.navigate-map.eventbus.auth";
         public static final String MBEP_NAVIGATE = "org.gooru.navigate-map.eventbus.navigate";
+        public static final String MBEP_USER_CONTEXT = "org.gooru.navigate-map.eventbus.user.context";
+
         public static final String MBUS_TIMEOUT = "message.bus.send.timeout.seconds";
 
         private EventBus() {
@@ -23,7 +25,10 @@ public final class Constants {
         public static final String MSG_SESSION_TOKEN = "session.token";
         public static final String MSG_OP_AUTH = "auth";
         public static final String MSG_KEY_SESSION = "session";
-
+        public static final String MSG_OP_STATUS = "mb.op.status";
+        public static final String MSG_OP_STATUS_SUCCESS = "mb.op.status.success";
+        public static final String MSG_OP_STATUS_FAIL = "mb.op.status.fail";
+        public static final String MSG_HDR_KEY_CONTEXT = "user.context";
         public static final String MSG_USER_ANONYMOUS = "anonymous";
         public static final String MSG_USER_ID = "user_id";
         public static final String MSG_HTTP_STATUS = "http.status";
@@ -31,9 +36,10 @@ public final class Constants {
         public static final String MSG_HTTP_HEADERS = "http.headers";
 
         public static final String MSG_OP_NEXT = "navigate.next";
+        public static final String MSG_OP_CONTEXT_GET = "context.get";
+        public static final String MSG_OP_CONTEXT_SET = "context.set";
+
         public static final String MSG_MESSAGE = "message";
-        public static final String MSG_OP_STATUS = "mb.op.status";
-        public static final String MSG_OP_STATUS_SUCCESS = "mb.op.status.success";
         public static final String PROCESSING_AUTH_TIME = "auth.processing.time";
         public static final String PROCESSING_HANDLER_START_TIME = "handler.start.time";
 
