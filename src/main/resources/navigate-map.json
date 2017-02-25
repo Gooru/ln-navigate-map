@@ -8,6 +8,14 @@
       "autoCommit": false,
       "jdbcUrl": "jdbc:postgresql://localhost:5432/nucleus",
       "maximumPoolSize": 5
+    },
+    "analyticsDataSource": {
+      "nucleus.ds.type": "hikari",
+      "username": "nucleus",
+      "password": "nucleus",
+      "autoCommit": false,
+      "jdbcUrl": "jdbc:postgresql://localhost:5432/nucleus",
+      "maximumPoolSize": 5
     }
   },
   "verticles": {
@@ -23,6 +31,12 @@
           "tcpNoDelay" : true
         },
         "sessionTimeoutInSeconds": 3600
+      }
+    },
+    "org.gooru.navigatemap.bootstrap.verticles.NavigateVerticle": {
+      "instances": 1,
+      "worker": false,
+      "config": {
       }
     },
     "org.gooru.navigatemap.bootstrap.verticles.UserContextVerticle": {
