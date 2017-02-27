@@ -1,0 +1,60 @@
+package org.gooru.navigatemap.app.components;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
+
+/**
+ * @author ashish on 26/2/17.
+ */
+public final class AppConfiguration implements Initializer {
+    private static final String APP_CONFIG_KEY = "app.configuration";
+    private static final String KEY = "__KEY__";
+    private static JsonObject configuration;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfiguration.class);
+
+    public static AppConfiguration getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    private volatile boolean initialized = false;
+
+    private AppConfiguration() {
+    }
+
+    @Override
+    public void initializeComponent(Vertx vertx, JsonObject config) {
+        if (!initialized) {
+            synchronized (Holder.INSTANCE) {
+                if (!initialized) {
+                    JsonObject appConfiguration = config.getJsonObject(APP_CONFIG_KEY);
+                    if (appConfiguration == null || appConfiguration.isEmpty()) {
+                        LOGGER.warn("App configuration is not available");
+                    } else {
+                        configuration = appConfiguration.copy();
+                        initialized = true;
+                    }
+                }
+            }
+        }
+    }
+
+    public int getConfigAsInt(String key) {
+        return configuration.getInteger(key);
+    }
+
+    public String getConfigAsString(String key) {
+        return configuration.getString(key);
+    }
+
+    public Object getConfigAsRawObject(String key) {
+        return configuration.getValue(key);
+    }
+
+    private static final class Holder {
+        private static final AppConfiguration INSTANCE = new AppConfiguration();
+    }
+
+}

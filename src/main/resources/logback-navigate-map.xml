@@ -8,9 +8,9 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>nucleus-navigatemap.log</file>
+        <file>navigate-map.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>nucleus-navigatemap.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>navigate-map.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- keep 30 days' worth of history -->
             <maxHistory>30</maxHistory>
         </rollingPolicy>
@@ -20,7 +20,9 @@
         </encoder>
     </appender>
 
-    <logger name="org.gooru.navigatemap" level="debug"></logger>
+    <logger name="org.gooru.navigatemap" level="debug" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
 
 
     <root level="info">

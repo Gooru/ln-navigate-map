@@ -23,7 +23,7 @@ import io.vertx.core.json.JsonObject;
  */
 public class NavigateMapRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(NavigateMapRunner.class);
-    private JsonObject conf;
+    private static JsonObject conf;
     private Vertx vertx;
 
     public static void main(String[] args) {
@@ -141,5 +141,9 @@ public class NavigateMapRunner {
             LOGGER.error("Null file path");
             throw new IllegalArgumentException("Null configuration file");
         }
+    }
+
+    public static JsonObject getGlobalConfiguration() {
+        return conf.copy();
     }
 }

@@ -18,4 +18,10 @@ public final class DeliveryOptionsBuilder {
         VersionValidatorUtility.validateVersion(apiVersion);
         return new DeliveryOptions().addHeader(Constants.Message.MSG_API_VERSION, apiVersion);
     }
+
+    public static DeliveryOptions createDeliveryOptionsForFetchUserContext(long timeout, String contextKey) {
+        return new DeliveryOptions().setSendTimeout(timeout)
+            .addHeader(Constants.Message.MSG_OP, Constants.Message.MSG_OP_CONTEXT_GET)
+            .addHeader(Constants.Message.MSG_HDR_KEY_CONTEXT, contextKey);
+    }
 }

@@ -23,17 +23,17 @@
       "instances": 1,
       "worker": false,
       "config": {
-        "redisConfig" : {
-          "host" : "localhost",
-          "port" : 6379,
-          "encoding" : "UTF-8",
-          "tcpKeepAlive" : true,
-          "tcpNoDelay" : true
+        "redisConfig": {
+          "host": "localhost",
+          "port": 6379,
+          "encoding": "UTF-8",
+          "tcpKeepAlive": true,
+          "tcpNoDelay": true
         },
         "sessionTimeoutInSeconds": 3600
       }
     },
-    "org.gooru.navigatemap.bootstrap.verticles.NavigateVerticle": {
+    "org.gooru.navigatemap.bootstrap.verticles.NavigationVerticle": {
       "instances": 1,
       "worker": false,
       "config": {
@@ -43,12 +43,12 @@
       "instances": 1,
       "worker": false,
       "config": {
-        "redisConfig" : {
-          "host" : "localhost",
-          "port" : 6379,
-          "encoding" : "UTF-8",
-          "tcpKeepAlive" : true,
-          "tcpNoDelay" : true
+        "redisConfig": {
+          "host": "localhost",
+          "port": 6379,
+          "encoding": "UTF-8",
+          "tcpKeepAlive": true,
+          "tcpNoDelay": true
         }
       }
     },
@@ -64,6 +64,7 @@
     }
   },
   "app.configuration": {
+    "context.mbus.timeout.seconds": 30
   },
   "vertxOptions": {
     "workerPoolSize": 40,

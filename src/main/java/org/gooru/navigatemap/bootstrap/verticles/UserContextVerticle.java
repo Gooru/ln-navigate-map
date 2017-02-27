@@ -18,7 +18,7 @@ import io.vertx.redis.RedisOptions;
  */
 public class UserContextVerticle extends AbstractVerticle {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthVerticle.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserContextVerticle.class);
     private RedisClient redisClient;
 
     @Override
@@ -26,10 +26,6 @@ public class UserContextVerticle extends AbstractVerticle {
         EventBus eb = vertx.eventBus();
 
         initializeVerticle(startFuture);
-
-        if (startFuture.failed()) {
-            Runtime.getRuntime().halt(2);
-        }
 
         eb.<JsonObject>consumer(Constants.EventBus.MBEP_USER_CONTEXT, message -> {
             String op = message.headers().get(Constants.Message.MSG_OP);
@@ -52,10 +48,8 @@ public class UserContextVerticle extends AbstractVerticle {
         }).completionHandler(result -> {
             if (result.succeeded()) {
                 LOGGER.info("Context end point ready to listen");
-                startFuture.complete();
             } else {
                 LOGGER.error("Error registering the context handler. Halting the machinery");
-                startFuture.fail("Error registering the context handler. Halting the context machinery");
                 Runtime.getRuntime().halt(1);
             }
         });
@@ -78,7 +72,7 @@ public class UserContextVerticle extends AbstractVerticle {
                     }
                 } else {
                     LOGGER.info("Session not found. Invalid session");
-                    future.fail("Session not found. Invalid session");
+                    future.complete();
                 }
             } else {
                 LOGGER.error("Redis operation failed", redisAsyncResult.cause());
@@ -111,6 +105,7 @@ public class UserContextVerticle extends AbstractVerticle {
             redisClient.get("NonExistingKey", initHandler -> {
                 if (initHandler.succeeded()) {
                     LOGGER.info("Initial connection check with Redis done");
+                    startFuture.complete();
                 } else {
                     startFuture.fail(initHandler.cause());
                 }

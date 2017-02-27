@@ -27,10 +27,6 @@ public class AuthVerticle extends AbstractVerticle {
 
         initializeVerticle(startFuture);
 
-        if (startFuture.failed()) {
-            Runtime.getRuntime().halt(2);
-        }
-
         eb.<JsonObject>consumer(Constants.EventBus.MBEP_AUTH, message -> {
             String sessionToken = message.headers().get(Constants.Message.MSG_SESSION_TOKEN);
             Future<JsonObject> fetchSessionFuture = fetchSessionFromRedis(sessionToken);
@@ -47,11 +43,9 @@ public class AuthVerticle extends AbstractVerticle {
         }).completionHandler(result -> {
             if (result.succeeded()) {
                 LOGGER.info("Auth end point ready to listen");
-                startFuture.complete();
             } else {
                 LOGGER.error("Error registering the auth handler. Halting the auth machinery");
-                startFuture.fail("Error registering the auth handler. Halting the auth machinery");
-                Runtime.getRuntime().halt(1);
+                Runtime.getRuntime().halt(2);
             }
         });
     }
@@ -110,6 +104,7 @@ public class AuthVerticle extends AbstractVerticle {
             redisClient.get("NonExistingKey", initHandler -> {
                 if (initHandler.succeeded()) {
                     LOGGER.info("Initial connection check with Redis done");
+                    startFuture.complete();
                 } else {
                     startFuture.fail(initHandler.cause());
                 }
