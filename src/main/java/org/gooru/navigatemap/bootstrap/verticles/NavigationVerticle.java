@@ -24,7 +24,7 @@ public class NavigationVerticle extends AbstractVerticle {
     public void start(Future<Void> startFuture) throws Exception {
 
         EventBus eb = vertx.eventBus();
-        eb.<JsonObject>consumer(Constants.EventBus.MBEP_NAVIGATE, this::processMessage);
+        eb.consumer(Constants.EventBus.MBEP_NAVIGATE, this::processMessage);
     }
 
     private void processMessage(Message<JsonObject> message) {
@@ -41,12 +41,12 @@ public class NavigationVerticle extends AbstractVerticle {
 
     private void processNextCommand(Message<JsonObject> message) {
         Future<JsonObject> future = Future.future();
-        new ContextProcessor(vertx).fetchContext(message).compose(navigateProcessorContext -> {
-            return new PathMapper(vertx).mapPath(navigateProcessorContext);
-        }).compose(ar -> {
-            JsonObject response = new ContentServer(vertx).serveContent();
-            future.complete(response);
-        }, future);
+        new ContextProcessor(vertx).fetchContext(message)
+            .compose(navigateProcessorContext -> new PathMapper(vertx).mapPath(navigateProcessorContext))
+            .compose(ar -> {
+                JsonObject response = new ContentServer(vertx).serveContent();
+                future.complete(response);
+            }, future);
         future.setHandler(event -> {
             if (event.succeeded()) {
                 message.reply(event.result());

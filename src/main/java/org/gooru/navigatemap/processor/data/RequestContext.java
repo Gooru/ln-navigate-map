@@ -15,7 +15,12 @@ public final class RequestContext {
     private UUID collectionId;
     private CollectionType collectionType;
     private CollectionSubtype collectionSubType;
-    private ActionType actionType;
+
+    private UUID currentItemId;
+    private CollectionType currentItemType;
+    private CollectionSubtype currentItemSubtype;
+
+    private State state;
     private Long pathId;
     private Double scorePercent;
 
@@ -47,8 +52,8 @@ public final class RequestContext {
         return collectionSubType;
     }
 
-    public ActionType getActionType() {
-        return actionType;
+    public State getState() {
+        return state;
     }
 
     public Long getPathId() {
@@ -57,6 +62,18 @@ public final class RequestContext {
 
     public Double getScorePercent() {
         return scorePercent;
+    }
+
+    public UUID getCurrentItemId() {
+        return currentItemId;
+    }
+
+    public CollectionType getCurrentItemType() {
+        return currentItemType;
+    }
+
+    public CollectionSubtype getCurrentItemSubtype() {
+        return currentItemSubtype;
     }
 
     public boolean needsLastState() {
@@ -78,19 +95,24 @@ public final class RequestContext {
     private static RequestContext buildFromJsonObject(JsonObject input) {
         RequestContext context = new RequestContext();
 
-        context.classId = toUuid(input, "classId");
-        context.courseId = toUuid(input, "courseId");
-        context.unitId = toUuid(input, "unitId");
-        context.lessonId = toUuid(input, "lessonId");
-        context.collectionId = toUuid(input, "collectionId");
-        context.pathId = input.getLong("pathId");
-        context.scorePercent = input.getDouble("scorePercent");
-        String value = input.getString("collectionType");
+        context.classId = toUuid(input, "class_id");
+        context.courseId = toUuid(input, "course_id");
+        context.unitId = toUuid(input, "unit_id");
+        context.lessonId = toUuid(input, "lesson_id");
+        context.collectionId = toUuid(input, "collection_id");
+        context.currentItemId = toUuid(input, "current_item_id");
+        context.pathId = input.getLong("path_id");
+        context.scorePercent = input.getDouble("score_percent");
+        String value = input.getString("collection_type");
         context.collectionType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
-        value = input.getString("collectionSubType");
+        value = input.getString("current_item_type");
+        context.currentItemType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
+        value = input.getString("collection_subtype");
         context.collectionSubType = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
-        value = input.getString("actionType");
-        context.actionType = ActionType.builder(value);
+        value = input.getString("current_item_subtype");
+        context.currentItemSubtype = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
+        value = input.getString("state");
+        context.state = State.builder(value);
 
         return context;
     }

@@ -1,5 +1,7 @@
 package org.gooru.navigatemap.processor.coursepath;
 
+import org.gooru.navigatemap.processor.coursepath.state.StateStimulusMapper;
+import org.gooru.navigatemap.processor.coursepath.state.Stimulus;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,15 +21,25 @@ public class PathMapper {
         this.vertx = vertx;
     }
 
-    public <U> Future<U> mapPath(NavigateProcessorContext npc) {
-        Future<U> future = Future.future();
+    public Future<NavigateProcessorContext> mapPath(NavigateProcessorContext npc) {
+        Future<NavigateProcessorContext> future = Future.future();
         try {
             this.navigateProcessorContext = npc;
-            future.complete();
+            vertx.executeBlocking(pathMapperFuture -> {
+                Future<NavigateProcessorContext> resultFuture = startPathMapping(navigateProcessorContext);
+                resultFuture.setHandler(result -> pathMapperFuture.complete(result.result()));
+            }, pathMapResult -> future.complete());
         } catch (Throwable throwable) {
             LOGGER.warn("Error while mapping path", throwable);
             future.fail(throwable);
         }
         return future;
+    }
+
+    private Future<NavigateProcessorContext> startPathMapping(NavigateProcessorContext npc) {
+        Future<NavigateProcessorContext> resultFuture = Future.future();
+        Stimulus<NavigateProcessorContext> result = StateStimulusMapper.stimulate(new Stimulus<>(npc));
+        resultFuture.complete(result.getStimulusContent());
+        return resultFuture;
     }
 }

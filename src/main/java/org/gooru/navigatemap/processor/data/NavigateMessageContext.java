@@ -40,4 +40,8 @@ public final class NavigateMessageContext {
     public JsonObject getSession() {
         return session;
     }
+
+    public boolean isUserAnonymous() {
+        return this.userId.equalsIgnoreCase(Constants.Message.MSG_USER_ANONYMOUS);
+    }
 }
