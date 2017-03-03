@@ -8,7 +8,8 @@ import java.util.Map;
  */
 public enum State {
 
-    Started("started"),
+    Start("start"),
+    Continue("continue"),
     LessonStartSuggested("lesson-start-suggested"),
     ContentStartSuggested("content-start-suggested"),
     ContentServed("content-served"),

@@ -77,11 +77,12 @@ public final class RequestContext {
     }
 
     public boolean needsLastState() {
-        return (unitId == null || lessonId == null);
+        return (state == State.Continue);
     }
 
     private void validate() {
-        if (courseId == null) {
+        if ((courseId == null) || ((unitId == null || lessonId == null || currentItemId == null)
+            && state == State.Start)) {
             throw new IllegalArgumentException("Invalid context");
         }
     }

@@ -37,7 +37,7 @@ public class ContextProcessor {
             messageContext = new NavigateMessageContext(message);
             context = RequestContext.builder(messageContext.getRequest());
 
-            if (context.needsLastState()) {
+            if (context.needsLastState() && !messageContext.isUserAnonymous()) {
                 vertx.eventBus().<JsonObject>send(Constants.EventBus.MBEP_USER_CONTEXT, new JsonObject(),
                     DeliveryOptionsBuilder.createDeliveryOptionsForFetchUserContext(timeout, getUserContextKey()),
                     asyncResult -> {
