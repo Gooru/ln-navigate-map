@@ -57,6 +57,15 @@ public final class ResponseContext {
         return context;
     }
 
+    public void setContentAddress(ContentAddress contentAddress) {
+        this.unitId = UUID.fromString(contentAddress.getUnit());
+        this.lessonId = UUID.fromString(contentAddress.getLesson());
+        this.collectionId = UUID.fromString(contentAddress.getCollection());
+        this.currentItemId = UUID.fromString(contentAddress.getCollection());
+        this.currentItemType = contentAddress.getCollectionType();
+        this.currentItemSubtype = contentAddress.getCollectionSubtype();
+    }
+
     public UUID getClassId() {
         return classId;
     }

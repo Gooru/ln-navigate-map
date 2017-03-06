@@ -10,11 +10,15 @@ public final class NavigateProcessorContext implements Stateful {
     private final NavigateMessageContext nmc;
     private final RequestContext ctxIn;
     private final ResponseContext ctxOut;
+    private final SuggestionContext ctxSuggestions;
+    private final ContentAddress nextContentAddress;
 
     public NavigateProcessorContext(RequestContext requestContext, NavigateMessageContext navigateMessageContext) {
         this.ctxIn = requestContext;
         this.nmc = navigateMessageContext;
         this.ctxOut = new ResponseContext(requestContext);
+        ctxSuggestions = new SuggestionContext();
+        nextContentAddress = new ContentAddress();
     }
 
     public NavigateMessageContext navigateMessageContext() {
@@ -27,6 +31,10 @@ public final class NavigateProcessorContext implements Stateful {
 
     public ResponseContext responseContext() {
         return ctxOut;
+    }
+
+    public SuggestionContext getCtxSuggestions() {
+        return ctxSuggestions;
     }
 
     @Override

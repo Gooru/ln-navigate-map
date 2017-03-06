@@ -13,8 +13,8 @@ import io.vertx.ext.web.RoutingContext;
  */
 public class RouteResponseUtility {
 
-    public void responseHandler(final RoutingContext routingContext, final AsyncResult<Message<JsonObject>> reply,
-        final Logger LOG) {
+    public static void responseHandler(final RoutingContext routingContext,
+        final AsyncResult<Message<JsonObject>> reply, final Logger LOG) {
         if (reply.succeeded()) {
             ResponseWriterBuilder.build(routingContext, reply).writeResponse();
         } else {

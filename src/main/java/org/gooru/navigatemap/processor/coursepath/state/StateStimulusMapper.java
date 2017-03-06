@@ -30,7 +30,6 @@ public final class StateStimulusMapper {
 
     static {
         LOOKUP.put(State.Start, StartStateStimulusMapper::new);
-        LOOKUP.put(State.ContentStartSuggested, ContentStartStateStimulusMapper::new);
         LOOKUP.put(State.LessonStartSuggested, LessonStartStateStimulusMapper::new);
         LOOKUP.put(State.LessonEndSuggested, LessonEndStateStimulusMapper::new);
         LOOKUP.put(State.ContentEndSuggested, ContentEndStateStimulusMapper::new);

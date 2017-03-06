@@ -23,7 +23,7 @@ public class RouteRequestUtility {
      * object, but don't send null
      */
 
-    public JsonObject getBodyForMessage(RoutingContext routingContext) {
+    public static JsonObject getBodyForMessage(RoutingContext routingContext) {
         JsonObject httpBody, result = new JsonObject();
         if (routingContext.request().method().name().equals(HttpMethod.POST.name()) || routingContext.request().method()
             .name().equals(HttpMethod.PUT.name())) {

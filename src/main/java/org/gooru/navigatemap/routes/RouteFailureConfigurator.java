@@ -21,13 +21,13 @@ class RouteFailureConfigurator implements RouteConfigurator {
     @Override
     public void configureRoutes(Vertx vertx, Router router, JsonObject config) {
 
-        router.put().failureHandler(this::handleFailures);
-        router.post().failureHandler(this::handleFailures);
-        router.get().failureHandler(this::handleFailures);
-        router.delete().failureHandler(this::handleFailures);
+        router.put().failureHandler(RouteFailureConfigurator::handleFailures);
+        router.post().failureHandler(RouteFailureConfigurator::handleFailures);
+        router.get().failureHandler(RouteFailureConfigurator::handleFailures);
+        router.delete().failureHandler(RouteFailureConfigurator::handleFailures);
     }
 
-    private void handleFailures(RoutingContext frc) {
+    private static void handleFailures(RoutingContext frc) {
         Throwable currentThrowable = frc.failure();
         if (currentThrowable instanceof io.vertx.core.json.DecodeException) {
             LOGGER.error("Caught registered exception", currentThrowable);

@@ -77,7 +77,7 @@ class RouteAuthConfigurator implements RouteConfigurator {
 
     }
 
-    private String extractSessionToken(String authHeader) {
+    private static String extractSessionToken(String authHeader) {
         if (authHeader == null || authHeader.isEmpty()) {
             LOG.debug("Session token is null or empty");
             return null;

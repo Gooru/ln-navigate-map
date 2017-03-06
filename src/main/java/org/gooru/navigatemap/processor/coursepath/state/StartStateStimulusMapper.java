@@ -1,15 +1,57 @@
 package org.gooru.navigatemap.processor.coursepath.state;
 
-import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
-import org.gooru.navigatemap.processor.data.State;
+import org.gooru.navigatemap.processor.coursepath.flows.Workflow;
+import org.gooru.navigatemap.processor.coursepath.services.ContentServiceBuilder;
+import org.gooru.navigatemap.processor.data.*;
 
 /**
  * @author ashish on 3/3/17.
  */
 final class StartStateStimulusMapper implements StimulusMapper<NavigateProcessorContext, NavigateProcessorContext> {
 
+    private NavigateProcessorContext stimulusContent;
+
     @Override
     public Stimulus<NavigateProcessorContext> applyStimulus(State state, Stimulus<NavigateProcessorContext> stimulus) {
-        return null;
+        stimulusContent = stimulus.getStimulusContent();
+
+        // User has explicitly asked to start, so they better have provided the currentItem and type.
+        // Also if they are asking to be started from alternate path, they need to provide it in context
+        if (stimulusContent.requestContext().getState() == State.Start) {
+            stimulusContent.responseContext().setState(State.ContentServed);
+        } else if (stimulusContent.requestContext().getState() == State.Continue) {
+            // User asked to continue but we did not have any context from past
+            courseStart();
+        } else {
+
+        }
+        return stimulus;
+    }
+
+    private void courseStart() {
+        RequestContext requestContext = stimulusContent.requestContext();
+        boolean userIsAnonymous = stimulusContent.navigateMessageContext().isUserAnonymous();
+        ResponseContext responseContext = stimulusContent.responseContext();
+        ContentAddress contentAddress = ContentServiceBuilder.buildContentFinderService()
+            .findFirstContentInCourse(requestContext.getCourseId(), requestContext.getUnitId(),
+                requestContext.getLessonId());
+        if (contentAddress != null) {
+            if (contentAddress.getCollection() != null) {
+                if (userIsAnonymous) {
+                    responseContext.setContentAddress(contentAddress);
+                } else {
+                    courseStartForSignedInUser();
+                }
+            } else {
+                responseContext.setState(State.Done);
+            }
+        } else {
+            throw new IllegalStateException("Not able to locate first valid content in course");
+        }
+
+    }
+
+    private void courseStartForSignedInUser() {
+        Workflow.submit(stimulusContent);
     }
 }

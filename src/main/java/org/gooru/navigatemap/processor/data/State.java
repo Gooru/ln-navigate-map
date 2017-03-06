@@ -11,7 +11,6 @@ public enum State {
     Start("start"),
     Continue("continue"),
     LessonStartSuggested("lesson-start-suggested"),
-    ContentStartSuggested("content-start-suggested"),
     ContentServed("content-served"),
     ContentEndSuggested("content-end-suggested"),
     LessonEndSuggested("lesson-end-suggested"),

@@ -26,7 +26,7 @@ public class PathMapper {
         try {
             this.navigateProcessorContext = npc;
             vertx.executeBlocking(pathMapperFuture -> {
-                Future<NavigateProcessorContext> resultFuture = startPathMapping(navigateProcessorContext);
+                Future<NavigateProcessorContext> resultFuture = startPathMapping();
                 resultFuture.setHandler(result -> pathMapperFuture.complete(result.result()));
             }, pathMapResult -> future.complete());
         } catch (Throwable throwable) {
@@ -36,9 +36,10 @@ public class PathMapper {
         return future;
     }
 
-    private Future<NavigateProcessorContext> startPathMapping(NavigateProcessorContext npc) {
+    private Future<NavigateProcessorContext> startPathMapping() {
         Future<NavigateProcessorContext> resultFuture = Future.future();
-        Stimulus<NavigateProcessorContext> result = StateStimulusMapper.stimulate(new Stimulus<>(npc));
+        Stimulus<NavigateProcessorContext> result =
+            StateStimulusMapper.stimulate(new Stimulus<>(navigateProcessorContext));
         resultFuture.complete(result.getStimulusContent());
         return resultFuture;
     }

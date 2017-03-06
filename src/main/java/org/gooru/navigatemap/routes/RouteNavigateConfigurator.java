@@ -34,7 +34,7 @@ public class RouteNavigateConfigurator implements RouteConfigurator {
         DeliveryOptions options = DeliveryOptionsBuilder.buildWithApiVersion(routingContext).setSendTimeout(mbusTimeout)
             .addHeader(Constants.Message.MSG_OP, Constants.Message.MSG_OP_NEXT);
         eb.<JsonObject>send(Constants.EventBus.MBEP_NAVIGATE,
-            new RouteRequestUtility().getBodyForMessage(routingContext), options,
-            reply -> new RouteResponseUtility().responseHandler(routingContext, reply, LOGGER));
+            RouteRequestUtility.getBodyForMessage(routingContext), options,
+            reply -> RouteResponseUtility.responseHandler(routingContext, reply, LOGGER));
     }
 }
