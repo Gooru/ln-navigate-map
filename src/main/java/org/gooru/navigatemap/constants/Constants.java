@@ -48,6 +48,12 @@ public final class Constants {
         }
     }
 
+    public static final class Response {
+        public static final String RESP_CONTENT = "content";
+        public static final String RESP_SUGGESTIONS = "suggestions";
+        public static final String RESP_CONTEXT = "context";
+    }
+
     public static final class Route {
 
         public static final String API_AUTH_ROUTE = "/api/navigate-map/*";

@@ -1,7 +1,10 @@
 package org.gooru.navigatemap.bootstrap.verticles;
 
+import java.util.Objects;
+
 import org.gooru.navigatemap.constants.Constants;
 import org.gooru.navigatemap.processor.contentserver.ContentServer;
+import org.gooru.navigatemap.processor.contentserver.RemoteAssessmentCollectionFetcher;
 import org.gooru.navigatemap.processor.context.ContextProcessor;
 import org.gooru.navigatemap.processor.coursepath.PathMapper;
 import org.gooru.navigatemap.responses.ResponseUtil;
@@ -12,6 +15,8 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonObject;
 
 /**
@@ -19,12 +24,31 @@ import io.vertx.core.json.JsonObject;
  */
 public class NavigationVerticle extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(NavigationVerticle.class);
+    private HttpClient client;
+    private String assessmentUri;
+    private String collectionUri;
 
     @Override
     public void start(Future<Void> startFuture) throws Exception {
 
         EventBus eb = vertx.eventBus();
         eb.consumer(Constants.EventBus.MBEP_NAVIGATE, this::processMessage);
+
+        initializeHttpClient();
+    }
+
+    private void initializeHttpClient() {
+
+        final Integer timeout = config().getInteger("http.timeOut");
+        final Integer poolSize = config().getInteger("http.poolSize");
+        Objects.requireNonNull(timeout);
+        Objects.requireNonNull(poolSize);
+        assessmentUri = config().getString("assessment.fetch.uri");
+        Objects.requireNonNull(assessmentUri);
+        collectionUri = config().getString("collection.fetch.uri");
+        Objects.requireNonNull(collectionUri);
+
+        client = vertx.createHttpClient(new HttpClientOptions().setConnectTimeout(timeout).setMaxPoolSize(poolSize));
     }
 
     private void processMessage(Message<JsonObject> message) {
@@ -44,9 +68,10 @@ public class NavigationVerticle extends AbstractVerticle {
         new ContextProcessor(vertx).fetchContext(message)
             .compose(navigateProcessorContext -> new PathMapper(vertx).mapPath(navigateProcessorContext))
             .compose(ar -> {
-                JsonObject response = new ContentServer(vertx).serveContent();
-                future.complete(response);
+                new ContentServer(vertx, future,
+                    new RemoteAssessmentCollectionFetcher(client, assessmentUri, collectionUri)).serveContent(ar);
             }, future);
+
         future.setHandler(event -> {
             if (event.succeeded()) {
                 message.reply(event.result());

@@ -37,6 +37,10 @@
       "instances": 1,
       "worker": false,
       "config": {
+        "collection.fetch.uri": "http://nile-qa.gooru.org/api/nucleus/v2/collections/",
+        "assessment.fetch.uri": "http://nile-qa.gooru.org/api/nucleus/v2/assessments/",
+        "http.timeout": 60000,
+        "http.poolSize": 20
       }
     },
     "org.gooru.navigatemap.bootstrap.verticles.UserContextVerticle": {

@@ -33,8 +33,7 @@ public class RouteNavigateConfigurator implements RouteConfigurator {
     private void navigateNext(RoutingContext routingContext) {
         DeliveryOptions options = DeliveryOptionsBuilder.buildWithApiVersion(routingContext).setSendTimeout(mbusTimeout)
             .addHeader(Constants.Message.MSG_OP, Constants.Message.MSG_OP_NEXT);
-        eb.<JsonObject>send(Constants.EventBus.MBEP_NAVIGATE,
-            RouteRequestUtility.getBodyForMessage(routingContext), options,
-            reply -> RouteResponseUtility.responseHandler(routingContext, reply, LOGGER));
+        eb.<JsonObject>send(Constants.EventBus.MBEP_NAVIGATE, RouteRequestUtility.getBodyForMessage(routingContext),
+            options, reply -> RouteResponseUtility.responseHandler(routingContext, reply, LOGGER));
     }
 }

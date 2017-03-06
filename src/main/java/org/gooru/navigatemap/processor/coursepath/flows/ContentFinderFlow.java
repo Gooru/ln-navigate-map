@@ -9,6 +9,11 @@ final class ContentFinderFlow implements Flow {
     @Override
     public <NavigateProcessorContext> ExecutionResult<NavigateProcessorContext> apply(
         ExecutionResult<NavigateProcessorContext> input) {
+
+        if (input.isCompleted()) {
+            return input;
+        }
+
         throw new AssertionError();
     }
 }

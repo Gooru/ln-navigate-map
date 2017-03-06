@@ -34,7 +34,8 @@ public final class HttpConstants {
         TOO_LARGE(413, "Request Entity Too Large"),
         TOO_MANY_REQUESTS(429, "Too Many Requests"),
         ERROR(500, "Internal Server Error"),
-        NOT_IMPLEMENTED(501, "Not Implemented");
+        NOT_IMPLEMENTED(501, "Not Implemented"),
+        UPSTREAM_ERROR(502, "Error from upstream server");
 
         private final int code;
         private final String message;

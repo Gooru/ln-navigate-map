@@ -9,5 +9,4 @@ public final class UsageServiceBuilder {
         throw new AssertionError();
     }
 
-
 }

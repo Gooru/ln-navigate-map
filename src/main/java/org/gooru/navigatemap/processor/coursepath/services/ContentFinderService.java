@@ -10,6 +10,8 @@ import org.gooru.navigatemap.processor.data.ContentAddress;
 public interface ContentFinderService {
 
     ContentAddress findFirstContentInCourse(UUID course);
+
     ContentAddress findFirstContentInCourse(UUID course, UUID unit);
+
     ContentAddress findFirstContentInCourse(UUID course, UUID unit, UUID lesson);
 }
