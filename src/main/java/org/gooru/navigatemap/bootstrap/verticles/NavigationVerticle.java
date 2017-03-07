@@ -39,7 +39,7 @@ public class NavigationVerticle extends AbstractVerticle {
 
     private void initializeHttpClient() {
 
-        final Integer timeout = config().getInteger("http.timeOut");
+        final Integer timeout = config().getInteger("http.timeout");
         final Integer poolSize = config().getInteger("http.poolSize");
         Objects.requireNonNull(timeout);
         Objects.requireNonNull(poolSize);

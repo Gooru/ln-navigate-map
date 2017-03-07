@@ -72,9 +72,9 @@ public class ContentServer {
         return new JsonObject();
     }
 
-    private JsonObject serveDummyResponse() {
-        return new JsonObject().put(Constants.Message.MSG_HTTP_STATUS, 200)
+    private void serveDummyResponse() {
+        completionFuture.complete(new JsonObject().put(Constants.Message.MSG_HTTP_STATUS, 200)
             .put(Constants.Message.MSG_HTTP_BODY, new JsonObject().put("status", "successful"))
-            .put(Constants.Message.MSG_HTTP_HEADERS, new JsonObject());
+            .put(Constants.Message.MSG_HTTP_HEADERS, new JsonObject()));
     }
 }

@@ -1,7 +1,7 @@
 package org.gooru.navigatemap.processor.coursepath.state;
 
 import org.gooru.navigatemap.processor.coursepath.flows.Workflow;
-import org.gooru.navigatemap.processor.coursepath.services.ContentServiceBuilder;
+import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.*;
 
 /**
@@ -32,9 +32,8 @@ final class StartStateStimulusMapper implements StimulusMapper<NavigateProcessor
         RequestContext requestContext = stimulusContent.requestContext();
         boolean userIsAnonymous = stimulusContent.navigateMessageContext().isUserAnonymous();
         ResponseContext responseContext = stimulusContent.responseContext();
-        ContentAddress contentAddress = ContentServiceBuilder.buildContentFinderService()
-            .findFirstContentInCourse(requestContext.getCourseId(), requestContext.getUnitId(),
-                requestContext.getLessonId());
+        ContentAddress contentAddress =
+            ContentRepositoryBuilder.buildContentFinderService().findFirstContentInCourse(requestContext.getCourseId());
         if (contentAddress != null) {
             if (contentAddress.getCollection() != null) {
                 if (userIsAnonymous) {

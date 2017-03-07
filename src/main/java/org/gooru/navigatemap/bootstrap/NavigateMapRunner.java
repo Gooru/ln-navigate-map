@@ -97,17 +97,17 @@ public class NavigateMapRunner {
 
     private void deployVerticles(Future<Void> startFuture) {
         JsonObject verticles = conf.getJsonObject("verticles");
-        List<Future> futures = new ArrayList<>();
+        List<Future<String>> futures = new ArrayList<>();
 
         for (Map.Entry<String, Object> verticle : verticles) {
-            Future future = Future.future();
+            Future<String> future = Future.future();
             futures.add(future);
 
             vertx.deployVerticle(verticle.getKey(), new DeploymentOptions(verticles.getJsonObject(verticle.getKey())),
                 future.completer());
         }
 
-        CompositeFuture.all(futures).setHandler(result -> {
+        CompositeFuture.all(eraseTypeList(futures)).setHandler(result -> {
             if (result.succeeded()) {
                 LOGGER.info("All verticles deployed successfully");
                 startFuture.complete();
@@ -117,6 +117,14 @@ public class NavigateMapRunner {
             }
         });
 
+    }
+
+    private List<Future> eraseTypeList(List<Future<String>> list) {
+        List<Future> result = new ArrayList<>();
+        for (Future<String> future : list) {
+            result.add(future);
+        }
+        return result;
     }
 
     private void initializeConfig(String configFile) {
