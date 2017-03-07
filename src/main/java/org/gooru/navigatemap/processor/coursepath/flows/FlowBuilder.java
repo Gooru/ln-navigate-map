@@ -1,5 +1,7 @@
 package org.gooru.navigatemap.processor.coursepath.flows;
 
+import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
+
 /**
  * @author ashish on 6/3/17.
  */
@@ -9,23 +11,23 @@ final class FlowBuilder {
         throw new AssertionError();
     }
 
-    static Flow buildContentFinderFlow() {
+    static Flow<NavigateProcessorContext> buildContentFinderFlow() {
         return new ContentFinderFlow();
     }
 
-    static Flow buildContentServeFlow() {
+    static Flow<NavigateProcessorContext> buildContentServeFlow() {
         return new ContentServeFlow();
     }
 
-    static Flow buildPostContentSuggestionsFlow() {
+    static Flow<NavigateProcessorContext> buildPostContentSuggestionsFlow() {
         return new PostContentSuggestionsFlow();
     }
 
-    static Flow buildPostLessonSuggestionsFlow() {
+    static Flow<NavigateProcessorContext> buildPostLessonSuggestionsFlow() {
         return new PostLessonSuggestionsFlow();
     }
 
-    static Flow buildPreLessonSuggestionsFlow() {
+    static Flow<NavigateProcessorContext> buildPreLessonSuggestionsFlow() {
         return new PreLessonSuggestionsFlow();
     }
 

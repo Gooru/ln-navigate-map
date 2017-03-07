@@ -45,12 +45,20 @@ public final class AppConfiguration implements Initializer {
         return configuration.getInteger(key);
     }
 
+    public boolean getConfigAsBoolean(String key) {
+        return configuration.getBoolean(key);
+    }
+
     public String getConfigAsString(String key) {
         return configuration.getString(key);
     }
 
     public Object getConfigAsRawObject(String key) {
         return configuration.getValue(key);
+    }
+
+    public boolean suggestionsTurnedOn() {
+        return configuration.getBoolean("suggestions.advise");
     }
 
     private static final class Holder {

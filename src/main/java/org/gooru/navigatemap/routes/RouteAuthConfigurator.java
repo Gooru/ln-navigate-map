@@ -68,7 +68,7 @@ class RouteAuthConfigurator implements RouteConfigurator {
                                 .setStatusMessage(HttpConstants.HttpStatus.UNAUTHORIZED.getMessage()).end();
                         }
                     } else {
-                        LOG.error("Not able to send message", reply.cause());
+                        LOG.error("Not able to send message to Auth endpoint", reply.cause());
                         routingContext.response().setStatusCode(HttpConstants.HttpStatus.ERROR.getCode()).end();
                     }
                 });

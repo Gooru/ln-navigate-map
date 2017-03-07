@@ -6,7 +6,7 @@
       "username": "nucleus",
       "password": "nucleus",
       "autoCommit": false,
-      "jdbcUrl": "jdbc:postgresql://localhost:5432/nucleus",
+      "jdbcUrl": "jdbc:postgresql://projectnile-30-dev-postgres-db.cqlbqx0elkud.us-west-1.rds.amazonaws.com:5432/nucleus",
       "maximumPoolSize": 5
     },
     "analyticsDataSource": {
@@ -37,8 +37,8 @@
       "instances": 1,
       "worker": false,
       "config": {
-        "collection.fetch.uri": "http://nile-qa.gooru.org/api/nucleus/v2/collections/",
-        "assessment.fetch.uri": "http://nile-qa.gooru.org/api/nucleus/v2/assessments/",
+        "collection.fetch.uri": "http://nile-dev.gooru.org/api/nucleus/v2/collections/",
+        "assessment.fetch.uri": "http://nile-dev.gooru.org/api/nucleus/v2/assessments/",
         "http.timeout": 60000,
         "http.poolSize": 20
       }
@@ -62,13 +62,14 @@
       "config": {
         "http.port": 8080,
         "metrics.periodicity.seconds": 300,
-        "event.bus.send.timeout.seconds": 10,
+        "event.bus.send.timeout.seconds": 60,
         "request.body.size.max.mb": 5
       }
     }
   },
   "app.configuration": {
-    "context.mbus.timeout.seconds": 30
+    "context.mbus.timeout.seconds": 60,
+    "suggestions.advise": false
   },
   "vertxOptions": {
     "workerPoolSize": 40,

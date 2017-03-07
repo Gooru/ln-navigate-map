@@ -5,7 +5,7 @@ import org.gooru.navigatemap.responses.ExecutionResult;
 /**
  * @author ashish on 6/3/17.
  */
-public interface Flow {
+public interface Flow<T> {
 
-    <T> ExecutionResult<T> apply(ExecutionResult<T> input);
+    ExecutionResult<T> apply(ExecutionResult<T> input);
 }

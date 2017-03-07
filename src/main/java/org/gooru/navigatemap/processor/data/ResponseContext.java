@@ -41,19 +41,19 @@ public final class ResponseContext {
     public JsonObject toJson() {
         JsonObject context = new JsonObject();
 
-        context.put("class_id", classId);
-        context.put("course_id", courseId);
-        context.put("unit_id", unitId);
-        context.put("lesson_id", lessonId);
-        context.put("collection_id", collectionId);
-        context.put("collection_type", collectionType.getName());
-        context.put("collection_subtype", collectionSubType.getName());
+        context.put("class_id", classId != null ? classId.toString() : null);
+        context.put("course_id", courseId.toString());
+        context.put("unit_id", unitId.toString());
+        context.put("lesson_id", lessonId.toString());
+        context.put("collection_id", collectionId != null ? collectionId.toString() : null);
+        context.put("collection_type", collectionType != null ? collectionType.getName() : null);
+        context.put("collection_subtype", collectionSubType != null ? collectionSubType.getName() : null);
         context.put("state", state.getName());
         context.put("path_id", pathId);
         context.put("score_percent", scorePercent);
-        context.put("current_item_id", currentItemId);
-        context.put("current_item_type", currentItemType);
-        context.put("current_item_subtype", currentItemSubtype);
+        context.put("current_item_id", currentItemId != null ? currentItemId.toString() : null);
+        context.put("current_item_type", currentItemType != null ? currentItemType.getName() : null);
+        context.put("current_item_subtype", currentItemSubtype != null ? currentItemSubtype.getName() : null);
         return context;
     }
 
@@ -63,7 +63,9 @@ public final class ResponseContext {
         this.collectionId = UUID.fromString(contentAddress.getCollection());
         this.currentItemId = UUID.fromString(contentAddress.getCollection());
         this.currentItemType = contentAddress.getCollectionType();
+        this.collectionType = contentAddress.getCollectionType();
         this.currentItemSubtype = contentAddress.getCollectionSubtype();
+        this.collectionSubType = contentAddress.getCollectionSubtype();
     }
 
     public UUID getClassId() {

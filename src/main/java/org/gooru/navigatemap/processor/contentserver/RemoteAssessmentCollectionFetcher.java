@@ -46,6 +46,7 @@ public final class RemoteAssessmentCollectionFetcher {
     }
 
     private void fetchFromRemote(ResponseContext context, String uri, String auth) {
+        LOGGER.debug("Need to fetch data from remote server");
         HttpClientRequest request = client.getAbs(uri, response -> {
             response.bodyHandler(buffer -> {
                 JsonObject result;
@@ -57,8 +58,10 @@ public final class RemoteAssessmentCollectionFetcher {
                     result =
                         ResponseBuilder.createExceptionResponseBuilder(response.statusCode(), body).buildResponse();
                 } else {
+                    LOGGER.debug("Communication with remote successful");
                     result = ResponseBuilder.createSuccessResponseBuilder(context, body).buildResponse();
                 }
+                LOGGER.debug("Response from remote <{}>", result);
                 completionFuture.complete(result);
             });
         }).exceptionHandler(ex -> {

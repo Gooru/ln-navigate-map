@@ -72,7 +72,7 @@ public class UserContextVerticle extends AbstractVerticle {
                     }
                 } else {
                     LOGGER.info("Session not found. Invalid session");
-                    future.complete();
+                    future.complete(new JsonObject());
                 }
             } else {
                 LOGGER.error("Redis operation failed", redisAsyncResult.cause());

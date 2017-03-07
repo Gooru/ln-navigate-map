@@ -25,10 +25,12 @@ public class PathMapper {
         Future<NavigateProcessorContext> future = Future.future();
         try {
             this.navigateProcessorContext = npc;
-            vertx.executeBlocking(pathMapperFuture -> {
+            vertx.<NavigateProcessorContext>executeBlocking(pathMapperFuture -> {
+
                 Future<NavigateProcessorContext> resultFuture = startPathMapping();
+
                 resultFuture.setHandler(result -> pathMapperFuture.complete(result.result()));
-            }, pathMapResult -> future.complete());
+            }, pathMapResult -> future.complete(pathMapResult.result()));
         } catch (Throwable throwable) {
             LOGGER.warn("Error while mapping path", throwable);
             future.fail(throwable);

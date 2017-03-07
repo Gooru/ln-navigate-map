@@ -37,6 +37,19 @@ public final class NavigateProcessorContext implements Stateful {
         return ctxSuggestions;
     }
 
+    public ContentAddress getNextContentAddress() {
+        return nextContentAddress;
+    }
+
+    public void setNextContextAddress(ContentAddress address) {
+        nextContentAddress.setCourse(address.getCourse());
+        nextContentAddress.setUnit(address.getUnit());
+        nextContentAddress.setLesson(address.getLesson());
+        nextContentAddress.setCollection(address.getCollection());
+        nextContentAddress.setCollectionType(address.getCollectionType());
+        nextContentAddress.setCollectionSubtype(address.getCollectionSubtype());
+    }
+
     @Override
     public State getCurrentState() {
         return ctxIn.getState();

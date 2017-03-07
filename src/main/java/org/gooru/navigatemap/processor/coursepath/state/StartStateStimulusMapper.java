@@ -36,8 +36,10 @@ final class StartStateStimulusMapper implements StimulusMapper<NavigateProcessor
             ContentRepositoryBuilder.buildContentFinderService().findFirstContentInCourse(requestContext.getCourseId());
         if (contentAddress != null) {
             if (contentAddress.getCollection() != null) {
+                stimulusContent.setNextContextAddress(contentAddress);
                 if (userIsAnonymous) {
                     responseContext.setContentAddress(contentAddress);
+                    stimulusContent.responseContext().setState(State.ContentServed);
                 } else {
                     courseStartForSignedInUser();
                 }

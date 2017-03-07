@@ -6,7 +6,7 @@ package org.gooru.navigatemap.responses;
 public class ExecutionResult<T> {
 
     private final T result;
-    private final ExecutionStatus status;
+    private ExecutionStatus status;
 
     public ExecutionResult(T result, ExecutionStatus status) {
         this.result = result;
@@ -31,6 +31,10 @@ public class ExecutionResult<T> {
 
     public boolean continueProcessing() {
         return (this.status == ExecutionStatus.CONTINUE_PROCESSING);
+    }
+
+    public void setStatus(ExecutionStatus status) {
+        this.status = status;
     }
 
     public enum ExecutionStatus {

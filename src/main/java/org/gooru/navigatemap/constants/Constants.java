@@ -11,7 +11,7 @@ public final class Constants {
         public static final String MBEP_NAVIGATE = "org.gooru.navigate-map.eventbus.navigate";
         public static final String MBEP_USER_CONTEXT = "org.gooru.navigate-map.eventbus.user.context";
 
-        public static final String MBUS_TIMEOUT = "message.bus.send.timeout.seconds";
+        public static final String MBUS_TIMEOUT = "event.bus.send.timeout.seconds";
 
         private EventBus() {
             throw new AssertionError();
