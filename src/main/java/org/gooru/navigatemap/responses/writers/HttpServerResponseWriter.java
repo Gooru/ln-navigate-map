@@ -6,9 +6,6 @@ import java.util.Map;
 import org.gooru.navigatemap.constants.HttpConstants;
 import org.gooru.navigatemap.responses.transformers.ResponseTransformer;
 import org.gooru.navigatemap.responses.transformers.ResponseTransformerBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.vertx.core.AsyncResult;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpServerResponse;
@@ -19,8 +16,6 @@ import io.vertx.ext.web.RoutingContext;
  * @author ashish on 3/1/2017.
  */
 class HttpServerResponseWriter implements ResponseWriter {
-
-    private static final Logger LOG = LoggerFactory.getLogger(HttpServerResponseWriter.class);
 
     private final RoutingContext routingContext;
     private final ResponseTransformer transformer;

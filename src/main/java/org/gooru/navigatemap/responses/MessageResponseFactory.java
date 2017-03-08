@@ -1,6 +1,7 @@
 package org.gooru.navigatemap.responses;
 
 import org.gooru.navigatemap.constants.Constants;
+import org.gooru.navigatemap.constants.HttpConstants;
 
 import io.vertx.core.json.JsonObject;
 
@@ -10,8 +11,6 @@ import io.vertx.core.json.JsonObject;
 public final class MessageResponseFactory {
 
     private static final String API_VERSION_DEPRECATED = "API version is deprecated";
-    private static final String API_VERSION_NOT_SUPPORTED = "API version is not supported";
-
     private MessageResponseFactory() {
         throw new AssertionError();
     }
@@ -55,4 +54,9 @@ public final class MessageResponseFactory {
         return new MessageResponse.Builder().setStatusOkay().setResponseBody(body).build();
     }
 
+    public static MessageResponse createVersionDeprecatedResponse() {
+        return new MessageResponse.Builder().setStatusHttpCode(HttpConstants.HttpStatus.GONE)
+            .setContentTypeJson()
+            .setResponseBody(new JsonObject().put(Constants.Message.MSG_MESSAGE, API_VERSION_DEPRECATED)).build();
+    }
 }

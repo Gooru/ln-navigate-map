@@ -11,7 +11,6 @@ import io.vertx.core.json.JsonObject;
  */
 public final class AppConfiguration implements Initializer {
     private static final String APP_CONFIG_KEY = "app.configuration";
-    private static final String KEY = "__KEY__";
     private static JsonObject configuration;
     private static final Logger LOGGER = LoggerFactory.getLogger(AppConfiguration.class);
 
