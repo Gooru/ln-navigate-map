@@ -11,7 +11,11 @@ import io.vertx.ext.web.RoutingContext;
 /**
  * Created by ashish on 24/2/17.
  */
-public class RouteResponseUtility {
+public final class RouteResponseUtility {
+
+    private RouteResponseUtility() {
+        throw new AssertionError();
+    }
 
     public static void responseHandler(final RoutingContext routingContext,
         final AsyncResult<Message<JsonObject>> reply, final Logger LOG) {

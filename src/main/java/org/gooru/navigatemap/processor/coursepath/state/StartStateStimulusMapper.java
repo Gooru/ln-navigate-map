@@ -23,7 +23,7 @@ final class StartStateStimulusMapper implements StimulusMapper<NavigateProcessor
             // User asked to continue but we did not have any context from past
             courseStart();
         } else {
-
+            // TODO : Exception handling
         }
         return stimulus;
     }

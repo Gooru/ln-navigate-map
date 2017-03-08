@@ -2,6 +2,7 @@ package org.gooru.navigatemap.routes.utils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.gooru.navigatemap.constants.Constants;
 
@@ -13,7 +14,10 @@ import io.vertx.ext.web.RoutingContext;
 /**
  * Created by ashish on 24/2/2017.
  */
-public class RouteRequestUtility {
+public final class RouteRequestUtility {
+    private RouteRequestUtility() {
+        throw new AssertionError();
+    }
 
     /*
      * If the incoming request is POST or PUT, it is expected to have a payload
@@ -28,7 +32,7 @@ public class RouteRequestUtility {
         if (routingContext.request().method().name().equals(HttpMethod.POST.name()) || routingContext.request().method()
             .name().equals(HttpMethod.PUT.name())) {
             httpBody = routingContext.getBodyAsJson();
-        } else if (routingContext.request().method().name().equals(HttpMethod.GET.name())) {
+        } else if (Objects.equals(routingContext.request().method().name(), HttpMethod.GET.name())) {
             httpBody = new JsonObject();
             String uri = routingContext.request().query();
             if (uri != null) {

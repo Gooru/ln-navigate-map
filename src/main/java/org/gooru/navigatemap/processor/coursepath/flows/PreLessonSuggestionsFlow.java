@@ -9,10 +9,14 @@ import org.gooru.navigatemap.responses.ExecutionResult;
  */
 final class PreLessonSuggestionsFlow implements Flow<NavigateProcessorContext> {
 
+    private NavigateProcessorContext npc;
+
     @Override
     public ExecutionResult<NavigateProcessorContext> apply(ExecutionResult<NavigateProcessorContext> input) {
 
-        if (input.isCompleted() || !AppConfiguration.getInstance().suggestionsTurnedOn()) {
+        npc = input.result();
+        if (input.isCompleted() || !AppConfiguration.getInstance().suggestionsTurnedOn() || npc.navigateMessageContext()
+            .isUserAnonymous()) {
             return input;
         }
 

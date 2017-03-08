@@ -52,6 +52,10 @@ public final class Constants {
         public static final String RESP_CONTENT = "content";
         public static final String RESP_SUGGESTIONS = "suggestions";
         public static final String RESP_CONTEXT = "context";
+
+        private Response() {
+            throw new AssertionError();
+        }
     }
 
     public static final class Route {
