@@ -5,7 +5,9 @@ import java.util.Objects;
 import org.gooru.navigatemap.constants.Constants;
 import org.gooru.navigatemap.processor.contentserver.ContentServer;
 import org.gooru.navigatemap.processor.contentserver.RemoteAssessmentCollectionFetcher;
+import org.gooru.navigatemap.processor.context.ContextAttributes;
 import org.gooru.navigatemap.processor.context.ContextProcessor;
+import org.gooru.navigatemap.processor.context.ContextUtil;
 import org.gooru.navigatemap.processor.coursepath.PathMapper;
 import org.gooru.navigatemap.responses.ResponseUtil;
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpClient;
@@ -75,6 +78,8 @@ public class NavigationVerticle extends AbstractVerticle {
         future.setHandler(event -> {
             if (event.succeeded()) {
                 message.reply(event.result());
+                String user = message.body().getString(Constants.Message.MSG_USER_ID);
+                persistNewContext(event.result(), user);
             } else {
                 // TODO: Implement this
                 LOGGER.warn("Failed to process next command", event.cause());
@@ -83,6 +88,19 @@ public class NavigationVerticle extends AbstractVerticle {
                     .put(Constants.Message.MSG_HTTP_HEADERS, new JsonObject()));
             }
         });
+    }
+
+    private void persistNewContext(JsonObject result, String user) {
+        JsonObject newContext =
+            result.getJsonObject(Constants.Message.MSG_HTTP_BODY).getJsonObject(Constants.Response.RESP_CONTEXT);
+        if (newContext != null) {
+            String contextKey = ContextUtil
+                .createUserContextKey(user, newContext.getString(ContextAttributes.COURSE_ID),
+                    newContext.getString(ContextAttributes.CLASS_ID));
+            vertx.eventBus().send(Constants.EventBus.MBEP_USER_CONTEXT, newContext,
+                new DeliveryOptions().addHeader(Constants.Message.MSG_OP, Constants.Message.MSG_OP_CONTEXT_SET)
+                    .addHeader(Constants.Message.MSG_HDR_KEY_CONTEXT, contextKey));
+        }
     }
 
     @Override

@@ -3,6 +3,8 @@ package org.gooru.navigatemap.processor.data;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.gooru.navigatemap.processor.context.ContextAttributes;
+
 import io.vertx.core.json.JsonObject;
 
 /**
@@ -42,19 +44,21 @@ public final class ResponseContext {
     public JsonObject toJson() {
         JsonObject context = new JsonObject();
 
-        context.put("class_id", Objects.toString(classId, null));
-        context.put("course_id", courseId.toString());
-        context.put("unit_id", unitId.toString());
-        context.put("lesson_id", lessonId.toString());
-        context.put("collection_id", Objects.toString(collectionId, null));
-        context.put("collection_type", collectionType != null ? collectionType.getName() : null);
-        context.put("collection_subtype", collectionSubType != null ? collectionSubType.getName() : null);
-        context.put("state", state.getName());
-        context.put("path_id", pathId);
-        context.put("score_percent", scorePercent);
-        context.put("current_item_id", Objects.toString(currentItemId, null));
-        context.put("current_item_type", currentItemType != null ? currentItemType.getName() : null);
-        context.put("current_item_subtype", currentItemSubtype != null ? currentItemSubtype.getName() : null);
+        context.put(ContextAttributes.CLASS_ID, Objects.toString(classId, null));
+        context.put(ContextAttributes.COURSE_ID, courseId.toString());
+        context.put(ContextAttributes.UNIT_ID, unitId.toString());
+        context.put(ContextAttributes.LESSON_ID, lessonId.toString());
+        context.put(ContextAttributes.COLLECTION_ID, Objects.toString(collectionId, null));
+        context.put(ContextAttributes.COLLECTION_TYPE, collectionType != null ? collectionType.getName() : null);
+        context
+            .put(ContextAttributes.COLLECTION_SUBTYPE, collectionSubType != null ? collectionSubType.getName() : null);
+        context.put(ContextAttributes.STATE, state.getName());
+        context.put(ContextAttributes.PATH_ID, pathId);
+        context.put(ContextAttributes.SCORE_PERCENT, scorePercent);
+        context.put(ContextAttributes.CURRENT_ITEM_ID, Objects.toString(currentItemId, null));
+        context.put(ContextAttributes.CURRENT_ITEM_TYPE, currentItemType != null ? currentItemType.getName() : null);
+        context.put(ContextAttributes.CURRENT_ITEM_SUBTYPE,
+            currentItemSubtype != null ? currentItemSubtype.getName() : null);
         return context;
     }
 

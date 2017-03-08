@@ -2,6 +2,8 @@ package org.gooru.navigatemap.processor.data;
 
 import java.util.UUID;
 
+import org.gooru.navigatemap.processor.context.ContextAttributes;
+
 import io.vertx.core.json.JsonObject;
 
 /**
@@ -96,23 +98,23 @@ public final class RequestContext {
     private static RequestContext buildFromJsonObject(JsonObject input) {
         RequestContext context = new RequestContext();
 
-        context.classId = toUuid(input, "class_id");
-        context.courseId = toUuid(input, "course_id");
-        context.unitId = toUuid(input, "unit_id");
-        context.lessonId = toUuid(input, "lesson_id");
-        context.collectionId = toUuid(input, "collection_id");
-        context.currentItemId = toUuid(input, "current_item_id");
-        context.pathId = input.getLong("path_id");
-        context.scorePercent = input.getDouble("score_percent");
-        String value = input.getString("collection_type");
+        context.classId = toUuid(input, ContextAttributes.CLASS_ID);
+        context.courseId = toUuid(input, ContextAttributes.COURSE_ID);
+        context.unitId = toUuid(input, ContextAttributes.UNIT_ID);
+        context.lessonId = toUuid(input, ContextAttributes.LESSON_ID);
+        context.collectionId = toUuid(input, ContextAttributes.COLLECTION_ID);
+        context.currentItemId = toUuid(input, ContextAttributes.CURRENT_ITEM_ID);
+        context.pathId = input.getLong(ContextAttributes.PATH_ID);
+        context.scorePercent = input.getDouble(ContextAttributes.SCORE_PERCENT);
+        String value = input.getString(ContextAttributes.COLLECTION_TYPE);
         context.collectionType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
-        value = input.getString("current_item_type");
+        value = input.getString(ContextAttributes.CURRENT_ITEM_TYPE);
         context.currentItemType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
-        value = input.getString("collection_subtype");
+        value = input.getString(ContextAttributes.COLLECTION_SUBTYPE);
         context.collectionSubType = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
-        value = input.getString("current_item_subtype");
+        value = input.getString(ContextAttributes.CURRENT_ITEM_SUBTYPE);
         context.currentItemSubtype = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
-        value = input.getString("state");
+        value = input.getString(ContextAttributes.STATE);
         context.state = State.builder(value);
 
         return context;

@@ -11,6 +11,7 @@ import io.vertx.core.json.JsonObject;
 public final class MessageResponseFactory {
 
     private static final String API_VERSION_DEPRECATED = "API version is deprecated";
+
     private MessageResponseFactory() {
         throw new AssertionError();
     }
@@ -55,8 +56,7 @@ public final class MessageResponseFactory {
     }
 
     public static MessageResponse createVersionDeprecatedResponse() {
-        return new MessageResponse.Builder().setStatusHttpCode(HttpConstants.HttpStatus.GONE)
-            .setContentTypeJson()
+        return new MessageResponse.Builder().setStatusHttpCode(HttpConstants.HttpStatus.GONE).setContentTypeJson()
             .setResponseBody(new JsonObject().put(Constants.Message.MSG_MESSAGE, API_VERSION_DEPRECATED)).build();
     }
 }

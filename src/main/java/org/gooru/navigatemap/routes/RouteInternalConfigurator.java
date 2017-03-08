@@ -30,7 +30,7 @@ class RouteInternalConfigurator implements RouteConfigurator {
         router.route(Constants.Route.API_INTERNAL_METRICS).handler(routingContext -> {
             JsonObject ebMetrics = metricsService.getMetricsSnapshot(vertx);
             routingContext.response().end(ebMetrics.toString());
-		});
+        });
 
-	}
+    }
 }
