@@ -1,9 +1,11 @@
 package org.gooru.navigatemap.processor.coursepath.repositories.dao;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.mappers.ContentAddressMapper;
 import org.gooru.navigatemap.processor.data.ContentAddress;
+import org.gooru.navigatemap.processor.utilities.jdbi.PGArray;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
@@ -56,4 +58,18 @@ public interface ContentFinderDao {
     @Mapper(ContentAddressMapper.class)
     List<ContentAddress> findNextCollectionsInCUL(@Bind("courseId") String courseId, @Bind("unitId") String unitId,
         @Bind("lessonId") String lessonId, @Bind("collectionId") String collectionId);
+
+    @SqlQuery("select competency_id from competency_assessment_map where assessment_id = :assessmentId::uuid and "
+                  + "assessment_type = 'post-test'")
+    List<String> findCompetenciesForPostTest(@Bind("assessmentId") String assessmentId);
+
+    @SqlQuery("select assessment_id from competency_assessment_map where competency_id = any " + "(:competencyList) "
+                  + "and assessment_type = 'benchmark'")
+    List<String> findBenchmarksForCompetencyList(@Bind("competencyList") PGArray<String> competencyList);
+
+    @SqlQuery("select target_collection_id from user_navigation_paths where target_content_subtype = 'benchmark' and "
+                  + "ctx_user_id = :userId::uuid and target_collection_id = any(:assessmentList)")
+    List<String> findBenchmarksAddedByUserFromList(@Bind("userId") String userId,
+        @Bind("assessmentList") PGArray<UUID> assessmentList);
+
 }

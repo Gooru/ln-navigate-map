@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
 import org.gooru.navigatemap.processor.data.ContentAddress;
+import org.gooru.navigatemap.processor.utilities.CollectionUtils;
 
 /**
  * @author ashish on 7/3/17.
@@ -36,6 +37,18 @@ class ContentFinderRepositoryImpl extends AbstractContentRepository implements C
             return result.get(0);
         }
         return findNextValidContent(address);
+    }
+
+    @Override
+    public List<String> findBenchmarkAssessments(List<String> competencies) {
+        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        return dao.findBenchmarksForCompetencyList(CollectionUtils.convertToSqlArrayOfString(competencies));
+    }
+
+    @Override
+    public List<String> findCompetenciesForPostTest(UUID postTestId) {
+        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        return dao.findCompetenciesForPostTest(postTestId.toString());
     }
 
     private ContentAddress findNextValidContent(ContentAddress address) {
