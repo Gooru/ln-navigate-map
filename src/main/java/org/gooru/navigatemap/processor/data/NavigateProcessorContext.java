@@ -1,5 +1,8 @@
 package org.gooru.navigatemap.processor.data;
 
+import java.util.Objects;
+
+import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.gooru.navigatemap.processor.coursepath.state.Stateful;
 
 /**
@@ -19,6 +22,10 @@ public final class NavigateProcessorContext implements Stateful {
         this.ctxOut = new ResponseContext(requestContext);
         ctxSuggestions = new SuggestionContext();
         nextContentAddress = new ContentAddress();
+    }
+
+    public boolean suggestionsTurnedOff() {
+        return nmc.isUserAnonymous() || !AppConfiguration.getInstance().suggestionsTurnedOn();
     }
 
     public NavigateMessageContext navigateMessageContext() {
@@ -48,6 +55,17 @@ public final class NavigateProcessorContext implements Stateful {
         nextContentAddress.setCollection(address.getCollection());
         nextContentAddress.setCollectionType(address.getCollectionType());
         nextContentAddress.setCollectionSubtype(address.getCollectionSubtype());
+    }
+
+    public ContentAddress getCurrentContentAddress() {
+        ContentAddress result = new ContentAddress();
+        result.setCollectionSubtype(requestContext().getCurrentItemSubtype());
+        result.setCollectionType(requestContext().getCurrentItemType());
+        result.setCollection(Objects.toString(requestContext().getCurrentItemId(), null));
+        result.setCourse(requestContext().getCourseId().toString());
+        result.setUnit(Objects.toString(requestContext().getUnitId(), null));
+        result.setLesson(Objects.toString(requestContext().getLessonId(), null));
+        return result;
     }
 
     @Override

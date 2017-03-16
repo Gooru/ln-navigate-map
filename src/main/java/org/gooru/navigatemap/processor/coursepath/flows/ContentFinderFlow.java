@@ -1,14 +1,13 @@
 package org.gooru.navigatemap.processor.coursepath.flows;
 
-import java.util.Objects;
-
-import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.ContentAddress;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.ResponseContext;
 import org.gooru.navigatemap.processor.data.State;
 import org.gooru.navigatemap.responses.ExecutionResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ashish on 6/3/17.
@@ -17,6 +16,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
 
     private NavigateProcessorContext npc;
     private ExecutionResult<NavigateProcessorContext> executionResult;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContentFinderFlow.class);
 
     @Override
     public ExecutionResult<NavigateProcessorContext> apply(ExecutionResult<NavigateProcessorContext> input) {
@@ -28,58 +28,44 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
         }
         npc = input.result();
 
-        if (npc.requestContext().getState() == State.Continue) {
+        if (userExplicitlyAskedToStartHere()) {
             // We should have the content here already as this may be start of course
             npc.responseContext().setContentAddress(npc.getNextContentAddress());
-            input.setStatus(ExecutionResult.ExecutionStatus.SUCCESSFUL);
-            npc.responseContext().setState(State.ContentServed);
+            markAsDone(State.ContentServed);
         }
 
-        if (npc.requestContext().getState() == State.ContentServed && npc.requestContext().getPathId() == null
-            && !AppConfiguration.getInstance().suggestionsTurnedOn()) {
-            fetchNextItemFromCUL();
+        if (npc.suggestionsTurnedOff()) {
+            fetchNextItemFromCULWithoutSuggestions();
         }
         return executionResult;
     }
 
-    private void fetchNextItemFromCUL() {
+    private boolean userExplicitlyAskedToStartHere() {
+        return npc.requestContext().getState() == State.Continue;
+    }
+
+    private void fetchNextItemFromCULWithoutSuggestions() {
         ResponseContext responseContext = npc.responseContext();
         ContentAddress contentAddress =
-            ContentRepositoryBuilder.buildContentFinderService().findNextContentFromCUL(getCurrentContentAddress());
+            ContentRepositoryBuilder.buildContentFinderService().findNextContentFromCUL(npc.getCurrentContentAddress());
         if (contentAddress != null) {
             if (contentAddress.getCollection() != null) {
                 npc.setNextContextAddress(contentAddress);
-                if (shouldModifyMainResponseContext()) {
-                    responseContext.setContentAddress(contentAddress);
-                    markAsDone();
-                }
+                responseContext.setContentAddress(contentAddress);
+                markAsDone(State.ContentServed);
             } else {
-                responseContext.setState(State.Done);
+                markAsDone(State.Done);
             }
         } else {
-            throw new IllegalStateException("Not able to locate valid content in course");
+            LOGGER.warn("Not able to locate valid content in course");
+            markAsDone(State.Done);
         }
 
     }
 
-    private void markAsDone() {
+    private void markAsDone(State contentServed) {
         executionResult.setStatus(ExecutionResult.ExecutionStatus.SUCCESSFUL);
-        npc.responseContext().setState(State.ContentServed);
-    }
-
-    private boolean shouldModifyMainResponseContext() {
-        return npc.navigateMessageContext().isUserAnonymous() || !AppConfiguration.getInstance().suggestionsTurnedOn();
-    }
-
-    private ContentAddress getCurrentContentAddress() {
-        ContentAddress result = new ContentAddress();
-        result.setCollectionSubtype(npc.requestContext().getCurrentItemSubtype());
-        result.setCollectionType(npc.requestContext().getCurrentItemType());
-        result.setCollection(Objects.toString(npc.requestContext().getCurrentItemId(), null));
-        result.setCourse(npc.requestContext().getCourseId().toString());
-        result.setUnit(Objects.toString(npc.requestContext().getUnitId(), null));
-        result.setLesson(Objects.toString(npc.requestContext().getLessonId(), null));
-        return result;
+        npc.responseContext().setState(contentServed);
     }
 
 }

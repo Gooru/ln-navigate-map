@@ -1,6 +1,5 @@
 package org.gooru.navigatemap.processor.coursepath.flows;
 
-import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.responses.ExecutionResult;
 
@@ -15,8 +14,7 @@ final class PreLessonSuggestionsFlow implements Flow<NavigateProcessorContext> {
     public ExecutionResult<NavigateProcessorContext> apply(ExecutionResult<NavigateProcessorContext> input) {
 
         npc = input.result();
-        if (input.isCompleted() || !AppConfiguration.getInstance().suggestionsTurnedOn() || npc.navigateMessageContext()
-            .isUserAnonymous()) {
+        if (input.isCompleted() || npc.suggestionsTurnedOff()) {
             return input;
         }
 

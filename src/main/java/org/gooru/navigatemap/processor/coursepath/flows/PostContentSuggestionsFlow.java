@@ -2,7 +2,6 @@ package org.gooru.navigatemap.processor.coursepath.flows;
 
 import java.util.List;
 
-import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.gooru.navigatemap.app.components.utilities.DbLookupUtility;
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentFinderRepository;
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
@@ -24,18 +23,20 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
     public ExecutionResult<NavigateProcessorContext> apply(ExecutionResult<NavigateProcessorContext> input) {
         result = input;
         npc = result.result();
-        if (input.isCompleted() || !AppConfiguration.getInstance().suggestionsTurnedOn() || npc.navigateMessageContext()
-            .isUserAnonymous()) {
-            return input;
+        if (input.isCompleted() || npc.suggestionsTurnedOff()) {
+            return result;
         }
         // Right now we only serve benchmark if user did a post test successfully
-        if (npc.requestContext().getCurrentItemType() != CollectionType.Assessment
-            || npc.requestContext().getCurrentItemSubtype() != CollectionSubtype.PostTest) {
-            return input;
+        if (userDidAPostTest()) {
+            applyBASuggestions();
         }
-
-        applyBASuggestions();
         return result;
+    }
+
+    private boolean userDidAPostTest() {
+        return npc.requestContext().getCurrentItemType() == CollectionType.Assessment
+            && npc.requestContext().getCurrentItemSubtype() == CollectionSubtype.PostTest
+            && npc.requestContext().getState() == State.ContentServed;
     }
 
     private void applyBASuggestions() {
