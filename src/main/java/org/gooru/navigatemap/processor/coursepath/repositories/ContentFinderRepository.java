@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.gooru.navigatemap.processor.data.ContentAddress;
+import org.gooru.navigatemap.processor.data.RequestContext;
 
 /**
  * @author ashish on 3/3/17.
@@ -17,4 +18,6 @@ public interface ContentFinderRepository {
     List<String> findBenchmarkAssessments(List<String> competencies);
 
     List<String> findCompetenciesForPostTest(UUID postTestId);
+
+    ContentAddress findNextContent(ContentAddress contentAddress, RequestContext requestContext);
 }

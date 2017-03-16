@@ -29,14 +29,31 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
         npc = input.result();
 
         if (userExplicitlyAskedToStartHere()) {
-            // We should have the content here already as this may be start of course
-            npc.responseContext().setContentAddress(npc.getNextContentAddress());
-            markAsDone(State.ContentServed);
+            return explicitlyStartAtSpecifiedAddress();
         }
 
         if (npc.suggestionsTurnedOff()) {
-            fetchNextItemFromCULWithoutSuggestions();
+            return fetchNextItemFromCULWithoutSuggestions();
         }
+
+        return fetchNextItem();
+    }
+
+    private ExecutionResult<NavigateProcessorContext> fetchNextItem() {
+        ContentAddress contentAddress = ContentRepositoryBuilder.buildContentFinderService()
+            .findNextContent(npc.getCurrentContentAddress(), npc.requestContext());
+        if (contentAddress != null) {
+            npc.setNextContextAddress(contentAddress);
+        } else {
+            LOGGER.warn("Not able to locate valid content in course");
+            markAsDone(State.Done);
+        }
+        return executionResult;
+    }
+
+    private ExecutionResult<NavigateProcessorContext> explicitlyStartAtSpecifiedAddress() {
+        npc.responseContext().setContentAddress(npc.getNextContentAddress());
+        markAsDone(State.ContentServed);
         return executionResult;
     }
 
@@ -44,7 +61,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
         return npc.requestContext().getState() == State.Continue;
     }
 
-    private void fetchNextItemFromCULWithoutSuggestions() {
+    private ExecutionResult<NavigateProcessorContext> fetchNextItemFromCULWithoutSuggestions() {
         ResponseContext responseContext = npc.responseContext();
         ContentAddress contentAddress =
             ContentRepositoryBuilder.buildContentFinderService().findNextContentFromCUL(npc.getCurrentContentAddress());
@@ -60,7 +77,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
             LOGGER.warn("Not able to locate valid content in course");
             markAsDone(State.Done);
         }
-
+        return executionResult;
     }
 
     private void markAsDone(State contentServed) {

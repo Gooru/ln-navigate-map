@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
 import org.gooru.navigatemap.processor.data.ContentAddress;
+import org.gooru.navigatemap.processor.data.RequestContext;
 import org.gooru.navigatemap.processor.utilities.CollectionUtils;
 
 /**
@@ -30,13 +31,7 @@ class ContentFinderRepositoryImpl extends AbstractContentRepository implements C
     public ContentAddress findNextContentFromCUL(ContentAddress address) {
         finderDao = dbi.onDemand(ContentFinderDao.class);
 
-        List<ContentAddress> result = finderDao
-            .findNextCollectionsInCUL(address.getCourse(), address.getUnit(), address.getLesson(),
-                address.getCollection());
-        if (result != null && !result.isEmpty()) {
-            return result.get(0);
-        }
-        return findNextValidContent(address);
+        return findNextContentFromCULWithoutAlternatePaths(address);
     }
 
     @Override
@@ -49,6 +44,22 @@ class ContentFinderRepositoryImpl extends AbstractContentRepository implements C
     public List<String> findCompetenciesForPostTest(UUID postTestId) {
         ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
         return dao.findCompetenciesForPostTest(postTestId.toString());
+    }
+
+    @Override
+    public ContentAddress findNextContent(ContentAddress contentAddress, RequestContext requestContext) {
+        // TODO : Implement this
+        return null;
+    }
+
+    private ContentAddress findNextContentFromCULWithoutAlternatePaths(ContentAddress address) {
+        List<ContentAddress> result = finderDao
+            .findNextCollectionsInCUL(address.getCourse(), address.getUnit(), address.getLesson(),
+                address.getCollection());
+        if (result != null && !result.isEmpty()) {
+            return result.get(0);
+        }
+        return findNextValidContent(address);
     }
 
     private ContentAddress findNextValidContent(ContentAddress address) {
