@@ -15,10 +15,6 @@ final class FlowBuilder {
         return new ContentFinderFlow();
     }
 
-    static Flow<NavigateProcessorContext> buildContentServeFlow() {
-        return new ContentServeFlow();
-    }
-
     static Flow<NavigateProcessorContext> buildPostContentSuggestionsFlow() {
         return new PostContentSuggestionsFlow();
     }

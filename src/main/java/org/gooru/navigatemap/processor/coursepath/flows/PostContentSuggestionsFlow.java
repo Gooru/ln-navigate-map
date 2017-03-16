@@ -9,6 +9,7 @@ import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepository
 import org.gooru.navigatemap.processor.data.CollectionSubtype;
 import org.gooru.navigatemap.processor.data.CollectionType;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
+import org.gooru.navigatemap.processor.data.State;
 import org.gooru.navigatemap.responses.ExecutionResult;
 
 /**
@@ -57,8 +58,13 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
             benchmarksNotAddedByUser.forEach(benchmark -> {
                 npc.getCtxSuggestions().addAssessment(benchmark);
             });
-            result.setStatus(ExecutionResult.ExecutionStatus.SUCCESSFUL);
+            markAsDone();
         }
+    }
+
+    private void markAsDone() {
+        result.setStatus(ExecutionResult.ExecutionStatus.SUCCESSFUL);
+        npc.responseContext().setState(State.ContentEndSuggested);
     }
 
     private boolean isEligibleForBA() {

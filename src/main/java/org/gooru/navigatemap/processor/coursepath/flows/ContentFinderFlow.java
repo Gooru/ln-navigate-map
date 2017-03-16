@@ -50,8 +50,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
                 npc.setNextContextAddress(contentAddress);
                 if (shouldModifyMainResponseContext()) {
                     responseContext.setContentAddress(contentAddress);
-                    executionResult.setStatus(ExecutionResult.ExecutionStatus.SUCCESSFUL);
-                    npc.responseContext().setState(State.ContentServed);
+                    markAsDone();
                 }
             } else {
                 responseContext.setState(State.Done);
@@ -60,6 +59,11 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
             throw new IllegalStateException("Not able to locate valid content in course");
         }
 
+    }
+
+    private void markAsDone() {
+        executionResult.setStatus(ExecutionResult.ExecutionStatus.SUCCESSFUL);
+        npc.responseContext().setState(State.ContentServed);
     }
 
     private boolean shouldModifyMainResponseContext() {

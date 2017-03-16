@@ -24,7 +24,6 @@ public final class Workflow {
         result = FlowBuilder.buildContentFinderFlow().apply(result);
         result = FlowBuilder.buildPostLessonSuggestionsFlow().apply(result);
         result = FlowBuilder.buildPreLessonSuggestionsFlow().apply(result);
-        result = FlowBuilder.buildContentServeFlow().apply(result);
 
         if (!result.isCompleted()) {
             LOGGER.warn("Workflow not completed, putting in done");
