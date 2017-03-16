@@ -27,7 +27,7 @@ class ContentFinderRepositoryImpl extends AbstractContentRepository implements C
     }
 
     @Override
-    public ContentAddress findNextContent(ContentAddress address) {
+    public ContentAddress findNextContentFromCUL(ContentAddress address) {
         finderDao = dbi.onDemand(ContentFinderDao.class);
 
         List<ContentAddress> result = finderDao

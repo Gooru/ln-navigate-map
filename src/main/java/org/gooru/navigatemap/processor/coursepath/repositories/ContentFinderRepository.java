@@ -12,7 +12,7 @@ public interface ContentFinderRepository {
 
     ContentAddress findFirstContentInCourse(UUID course);
 
-    ContentAddress findNextContent(ContentAddress address);
+    ContentAddress findNextContentFromCUL(ContentAddress address);
 
     List<String> findBenchmarkAssessments(List<String> competencies);
 

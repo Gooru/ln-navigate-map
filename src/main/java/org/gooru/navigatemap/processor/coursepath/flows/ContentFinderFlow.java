@@ -35,7 +35,8 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
             npc.responseContext().setState(State.ContentServed);
         }
 
-        if (npc.requestContext().getState() == State.ContentServed && npc.requestContext().getPathId() == null) {
+        if (npc.requestContext().getState() == State.ContentServed && npc.requestContext().getPathId() == null
+            && !AppConfiguration.getInstance().suggestionsTurnedOn()) {
             fetchNextItemFromCUL();
         }
         return executionResult;
@@ -44,7 +45,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
     private void fetchNextItemFromCUL() {
         ResponseContext responseContext = npc.responseContext();
         ContentAddress contentAddress =
-            ContentRepositoryBuilder.buildContentFinderService().findNextContent(getCurrentContentAddress());
+            ContentRepositoryBuilder.buildContentFinderService().findNextContentFromCUL(getCurrentContentAddress());
         if (contentAddress != null) {
             if (contentAddress.getCollection() != null) {
                 npc.setNextContextAddress(contentAddress);
