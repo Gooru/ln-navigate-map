@@ -1,6 +1,7 @@
 package org.gooru.navigatemap.processor.coursepath.repositories;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.gooru.navigatemap.processor.data.ContentAddress;
@@ -17,7 +18,13 @@ public interface ContentFinderRepository {
 
     List<String> findBenchmarkAssessments(List<String> competencies);
 
+    Set<String> findPreTestsAssessments(Set<String> competencies);
+
+    Set<String> findPostTestsAssessments(Set<String> competencies);
+
     List<String> findCompetenciesForPostTest(UUID postTestId);
 
     ContentAddress findNextContent(ContentAddress contentAddress, RequestContext requestContext);
+
+    Set<String> findCompetenciesForLesson(ContentAddress contentAddress);
 }

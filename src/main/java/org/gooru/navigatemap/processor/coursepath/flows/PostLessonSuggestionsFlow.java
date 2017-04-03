@@ -1,6 +1,11 @@
 package org.gooru.navigatemap.processor.coursepath.flows;
 
+import java.util.Objects;
+
+import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
+import org.gooru.navigatemap.processor.data.State;
+import org.gooru.navigatemap.processor.data.SuggestionContext;
 import org.gooru.navigatemap.responses.ExecutionResult;
 
 /**
@@ -9,14 +14,55 @@ import org.gooru.navigatemap.responses.ExecutionResult;
 final class PostLessonSuggestionsFlow implements Flow<NavigateProcessorContext> {
 
     private NavigateProcessorContext npc;
+    private ExecutionResult<NavigateProcessorContext> output;
 
     @Override
     public ExecutionResult<NavigateProcessorContext> apply(ExecutionResult<NavigateProcessorContext> input) {
+        /*
+         * Keep the older context if there is suggestion for content address. Don't copy the new one.
+         */
         npc = input.result();
+        output = input;
         if (input.isCompleted() || npc.suggestionsTurnedOff()) {
             return input;
         }
+        /*
+         * If there are any post test suggestions, we should mark the processing done as pre test need not be calculated
+         * If there are no, then we need to mark it done as this is the last step.
+         */
+
+        if (postLessonSuggestionsApplicable()) {
+            setupPostLessonSuggestions();
+        }
 
         throw new AssertionError();
+    }
+
+    private void setupPostLessonSuggestions() {
+        SuggestionContext suggestions = ContentRepositoryBuilder.buildContentSuggestionsService()
+            .findPostLessonSuggestions(npc.getCurrentContentAddress(), npc.navigateMessageContext().getUserId());
+        if (suggestions.hasSuggestions()) {
+            terminateFlowWithPostLessonSuggestions(suggestions);
+        }
+    }
+
+    private void terminateFlowWithPostLessonSuggestions(SuggestionContext suggestions) {
+        npc.getCtxSuggestions().addAssessments(suggestions.getAssessments());
+        npc.getCtxSuggestions().addCollections(suggestions.getCollections());
+        npc.responseContext().setContentAddress(npc.getCurrentContentAddress());
+        markAsDone(State.LessonEndSuggested);
+    }
+
+    private void markAsDone(State contentServed) {
+        output.setStatus(ExecutionResult.ExecutionStatus.SUCCESSFUL);
+        npc.responseContext().setState(contentServed);
+    }
+
+    private boolean postLessonSuggestionsApplicable() {
+        // Do not care about next lesson to be null or not. We just check if current content's lesson is
+        // different from current one.
+        // NOTE: When we bring in the lesson as back fill, this may be changed
+        return npc.getCurrentContentAddress().getLesson() != null && Objects
+            .equals(npc.getNextContentAddress().getLesson(), npc.getCurrentContentAddress().getLesson());
     }
 }

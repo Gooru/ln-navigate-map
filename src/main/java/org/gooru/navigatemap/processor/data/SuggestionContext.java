@@ -1,6 +1,8 @@
 package org.gooru.navigatemap.processor.data;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,6 +20,20 @@ public final class SuggestionContext {
         assessments.remove(id);
     }
 
+    public void addCollections(Set<String> collectionsToSuggest) {
+        if (collectionsToSuggest.isEmpty()) {
+            return;
+        }
+        collections.addAll(collectionsToSuggest);
+    }
+
+    public void addAssessments(Set<String> assessmentsToSuggest) {
+        if (assessmentsToSuggest.isEmpty()) {
+            return;
+        }
+        assessments.addAll(collections);
+    }
+
     public void addCollection(String id) {
         collections.add(id);
     }
@@ -29,4 +45,35 @@ public final class SuggestionContext {
     public boolean hasSuggestions() {
         return (assessments.size() > 0 || collections.size() > 0);
     }
+
+    public Set<String> getAssessments() {
+        return Collections.unmodifiableSet(assessments);
+    }
+
+    public Set<String> getCollections() {
+        return Collections.unmodifiableSet(collections);
+    }
+
+    public static SuggestionContext buildSuggestionContextWithAssessments(List<String> suggestedAssessments) {
+        SuggestionContext suggestions = new SuggestionContext();
+        if (suggestedAssessments != null && !suggestedAssessments.isEmpty()) {
+            Set<String> suggestedSet = new HashSet<>(suggestedAssessments);
+            suggestions.addAssessments(suggestedSet);
+        }
+        return suggestions;
+    }
+
+    public static SuggestionContext buildSuggestionContextWithCollections(List<String> suggestedCollections) {
+        SuggestionContext suggestions = new SuggestionContext();
+        if (suggestedCollections != null && !suggestedCollections.isEmpty()) {
+            Set<String> suggestedSet = new HashSet<>(suggestedCollections);
+            suggestions.addCollections(suggestedSet);
+        }
+        return suggestions;
+    }
+
+    public static SuggestionContext buildSuggestionContextWithoutSuggestions() {
+        return new SuggestionContext();
+    }
+
 }

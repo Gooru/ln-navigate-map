@@ -15,6 +15,9 @@ public final class NavigateProcessorContext implements Stateful {
     private final ResponseContext ctxOut;
     private final SuggestionContext ctxSuggestions;
     private final ContentAddress nextContentAddress;
+    private final ContentAddress currentContentAddress;
+    private boolean nextAddressSet = false;
+    private boolean currentAddressSet = false;
 
     public NavigateProcessorContext(RequestContext requestContext, NavigateMessageContext navigateMessageContext) {
         this.ctxIn = requestContext;
@@ -22,6 +25,7 @@ public final class NavigateProcessorContext implements Stateful {
         this.ctxOut = new ResponseContext(requestContext);
         ctxSuggestions = new SuggestionContext();
         nextContentAddress = new ContentAddress();
+        currentContentAddress = new ContentAddress();
     }
 
     public boolean suggestionsTurnedOff() {
@@ -45,6 +49,9 @@ public final class NavigateProcessorContext implements Stateful {
     }
 
     public ContentAddress getNextContentAddress() {
+        if (!nextAddressSet) {
+            throw new IllegalStateException("Next content address not set");
+        }
         return nextContentAddress;
     }
 
@@ -55,17 +62,21 @@ public final class NavigateProcessorContext implements Stateful {
         nextContentAddress.setCollection(address.getCollection());
         nextContentAddress.setCollectionType(address.getCollectionType());
         nextContentAddress.setCollectionSubtype(address.getCollectionSubtype());
+        nextAddressSet = true;
     }
 
     public ContentAddress getCurrentContentAddress() {
-        ContentAddress result = new ContentAddress();
-        result.setCollectionSubtype(requestContext().getCurrentItemSubtype());
-        result.setCollectionType(requestContext().getCurrentItemType());
-        result.setCollection(Objects.toString(requestContext().getCurrentItemId(), null));
-        result.setCourse(requestContext().getCourseId().toString());
-        result.setUnit(Objects.toString(requestContext().getUnitId(), null));
-        result.setLesson(Objects.toString(requestContext().getLessonId(), null));
-        return result;
+        if (!currentAddressSet) {
+            currentContentAddress.setCollectionSubtype(requestContext().getCurrentItemSubtype());
+            currentContentAddress.setCollectionType(requestContext().getCurrentItemType());
+            currentContentAddress.setCollection(Objects.toString(requestContext().getCurrentItemId(), null));
+            currentContentAddress.setCourse(requestContext().getCourseId().toString());
+            currentContentAddress.setUnit(Objects.toString(requestContext().getUnitId(), null));
+            currentContentAddress.setLesson(Objects.toString(requestContext().getLessonId(), null));
+            currentAddressSet = true;
+            return currentContentAddress;
+        }
+        return currentContentAddress;
     }
 
     @Override

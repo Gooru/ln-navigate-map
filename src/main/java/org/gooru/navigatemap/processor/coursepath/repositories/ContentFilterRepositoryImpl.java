@@ -19,4 +19,24 @@ final class ContentFilterRepositoryImpl extends AbstractContentRepository implem
         List<String> baNotAddedByUser = CollectionUtils.intersect(inputBAList, baAddedByUser);
         return CollectionUtils.unique(baNotAddedByUser);
     }
+
+    @Override
+    public List<String> filterPreTestForNotAddedByUser(List<String> inputPreTestList, String userId) {
+        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        List<String> preTestAddedByUser =
+            dao.findPreTestsAddedByUserFromList(userId, CollectionUtils.convertToSqlArrayOfUUID(inputPreTestList));
+
+        List<String> preTestsNotAddedByUser = CollectionUtils.intersect(inputPreTestList, preTestAddedByUser);
+        return CollectionUtils.unique(preTestsNotAddedByUser);
+    }
+
+    @Override
+    public List<String> filterPostTestForNotAddedByUser(List<String> inputPostTestList, String userId) {
+        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        List<String> postTestsAddedByUser =
+            dao.findPostTestsAddedByUserFromList(userId, CollectionUtils.convertToSqlArrayOfUUID(inputPostTestList));
+
+        List<String> postTestsNotAddedByUser = CollectionUtils.intersect(inputPostTestList, postTestsAddedByUser);
+        return CollectionUtils.unique(postTestsNotAddedByUser);
+    }
 }

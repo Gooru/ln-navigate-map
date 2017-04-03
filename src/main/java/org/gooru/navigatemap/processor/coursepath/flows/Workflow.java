@@ -30,4 +30,17 @@ public final class Workflow {
             npc.responseContext().setState(State.Done);
         }
     }
+
+    public static void terminateFlowWithContent(NavigateProcessorContext npc) {
+        npc.responseContext().setContentAddress(npc.getNextContentAddress());
+        npc.responseContext().setState(State.ContentServed);
+    }
+
+    public static void terminateFlowWithContent(ExecutionResult<NavigateProcessorContext> result,
+        NavigateProcessorContext npc) {
+        npc.responseContext().setContentAddress(npc.getNextContentAddress());
+        npc.responseContext().setState(State.ContentServed);
+        result.setStatus(ExecutionResult.ExecutionStatus.SUCCESSFUL);
+    }
+
 }

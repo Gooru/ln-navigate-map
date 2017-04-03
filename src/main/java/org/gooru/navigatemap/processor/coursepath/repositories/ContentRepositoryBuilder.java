@@ -16,4 +16,8 @@ public final class ContentRepositoryBuilder {
     public static ContentFilterRepository buildContentFilterService() {
         return new ContentFilterRepositoryImpl();
     }
+
+    public static ContentSuggestionsRepository buildContentSuggestionsService() {
+        return new ContentSuggestionsRepositoryImpl(buildContentFilterService(), buildContentFinderService());
+    }
 }
