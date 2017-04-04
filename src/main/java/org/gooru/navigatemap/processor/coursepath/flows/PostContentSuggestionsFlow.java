@@ -56,9 +56,7 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
 
         // If any suggestions remains, we present it
         if (benchmarksNotAddedByUser != null && !benchmarksNotAddedByUser.isEmpty()) {
-            benchmarksNotAddedByUser.forEach(benchmark -> {
-                npc.getCtxSuggestions().addAssessment(benchmark);
-            });
+            benchmarksNotAddedByUser.forEach(benchmark -> npc.getCtxSuggestions().addAssessment(benchmark));
             markAsDone();
         }
     }

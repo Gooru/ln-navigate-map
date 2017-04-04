@@ -49,7 +49,7 @@ public final class CollectionUtils {
     }
 
     public static PGArray<UUID> convertToSqlArrayOfUUID(List<String> input) {
-        List<UUID> uuids = convertList(input, s -> UUID.fromString(s));
+        List<UUID> uuids = convertList(input, UUID::fromString);
         return PGArray.arrayOf(UUID.class, uuids);
     }
 }

@@ -3,6 +3,8 @@ package org.gooru.navigatemap.processor.coursepath.state;
 import org.gooru.navigatemap.processor.coursepath.flows.Workflow;
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ashish on 3/3/17.
@@ -10,6 +12,7 @@ import org.gooru.navigatemap.processor.data.*;
 final class StartStateStimulusMapper implements StimulusMapper<NavigateProcessorContext, NavigateProcessorContext> {
 
     private NavigateProcessorContext stimulusContent;
+    private static final Logger LOGGER = LoggerFactory.getLogger(StartStateStimulusMapper.class);
 
     @Override
     public Stimulus<NavigateProcessorContext> applyStimulus(State state, Stimulus<NavigateProcessorContext> stimulus) {
@@ -23,7 +26,7 @@ final class StartStateStimulusMapper implements StimulusMapper<NavigateProcessor
             // User asked to continue but we did not have any context from past
             courseStart();
         } else {
-            // TODO : Exception handling
+            LOGGER.warn("Invalid state for course start: '{}'", stimulusContent.requestContext().getState().getName());
         }
         return stimulus;
     }

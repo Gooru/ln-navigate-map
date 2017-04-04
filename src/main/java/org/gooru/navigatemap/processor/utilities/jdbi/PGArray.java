@@ -19,7 +19,7 @@ public class PGArray<T> {
     }
 
     public static <T> PGArray<T> arrayOf(Class<T> type, Collection<T> elements) {
-        return new PGArray<T>(type, elements);
+        return new PGArray<>(type, elements);
     }
 
     public Object[] getElements() {
