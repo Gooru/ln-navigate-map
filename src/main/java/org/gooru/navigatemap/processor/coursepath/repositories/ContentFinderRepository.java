@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.gooru.navigatemap.processor.data.ContentAddress;
 import org.gooru.navigatemap.processor.data.RequestContext;
+import org.gooru.navigatemap.processor.data.SuggestionCard4Collection;
 
 /**
  * @author ashish on 3/3/17.
@@ -27,4 +28,6 @@ public interface ContentFinderRepository {
     ContentAddress findNextContent(ContentAddress contentAddress, RequestContext requestContext);
 
     Set<String> findCompetenciesForLesson(ContentAddress contentAddress);
+
+    List<SuggestionCard4Collection> createSuggestionsCardForCollections(Set<String> collections);
 }

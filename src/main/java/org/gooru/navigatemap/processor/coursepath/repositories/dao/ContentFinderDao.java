@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.mappers.ContentAddressMapper;
+import org.gooru.navigatemap.processor.coursepath.repositories.mappers.SuggestionCardMapper;
 import org.gooru.navigatemap.processor.data.ContentAddress;
+import org.gooru.navigatemap.processor.data.SuggestionCard4Collection;
 import org.gooru.navigatemap.processor.utilities.jdbi.PGArray;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
@@ -94,4 +96,10 @@ public interface ContentFinderDao {
                   + "lesson_id = :lessonId and is_deleted = false")
     String findCompetenciesForLesson(@Bind("courseId") String course, @Bind("unitId") String unit,
         @Bind("lessonId") String lesson);
+
+    @Mapper(SuggestionCardMapper.class)
+    @SqlQuery("select id, title, format, subformat, thumbnail, metadata, taxonomy from collection where id = any"
+                  + "(:collections)")
+    List<SuggestionCard4Collection> createSuggestionsCardForCollections(@Bind("collections") List<String> collections);
+
 }

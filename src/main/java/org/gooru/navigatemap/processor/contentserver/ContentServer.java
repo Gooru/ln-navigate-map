@@ -3,6 +3,7 @@ package org.gooru.navigatemap.processor.contentserver;
 import java.util.Objects;
 
 import org.gooru.navigatemap.constants.Constants;
+import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.CollectionType;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.State;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 /**
@@ -68,8 +70,9 @@ public class ContentServer {
     }
 
     private JsonObject serveSuggestions() {
-        // TODO: Blocking method, needs real implementation. Need to be complete response not just assessment
-        return new JsonObject();
+        JsonArray suggestions = new SuggestionsCardBuilder(navigateProcessorContext.getCtxSuggestions(),
+            ContentRepositoryBuilder.buildContentSuggestionsService()).createSuggestionCards();
+        return new SuccessResponseBuilder(navigateProcessorContext.responseContext(), suggestions).buildResponse();
     }
 
     private void serveDummyResponse() {

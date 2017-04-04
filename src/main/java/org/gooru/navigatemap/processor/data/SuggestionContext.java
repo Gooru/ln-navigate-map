@@ -43,7 +43,15 @@ public final class SuggestionContext {
     }
 
     public boolean hasSuggestions() {
-        return (assessments.size() > 0 || collections.size() > 0);
+        return (!assessments.isEmpty() || !collections.isEmpty());
+    }
+
+    public boolean hasAssessmentsSuggested() {
+        return !assessments.isEmpty();
+    }
+
+    public boolean hasCollectionsSuggested() {
+        return !collections.isEmpty();
     }
 
     public Set<String> getAssessments() {

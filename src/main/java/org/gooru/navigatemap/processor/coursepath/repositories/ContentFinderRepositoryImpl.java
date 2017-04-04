@@ -5,6 +5,7 @@ import java.util.*;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
 import org.gooru.navigatemap.processor.data.ContentAddress;
 import org.gooru.navigatemap.processor.data.RequestContext;
+import org.gooru.navigatemap.processor.data.SuggestionCard4Collection;
 import org.gooru.navigatemap.processor.utilities.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,6 +83,14 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
         return parseLessonTaxonomy(contentAddress, lessonTaxonomy);
     }
 
+    @Override
+    public List<SuggestionCard4Collection> createSuggestionsCardForCollections(Set<String> collections) {
+        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        List<String> collectionsList = new ArrayList<>(collections);
+
+        return dao.createSuggestionsCardForCollections(collectionsList);
+    }
+
     private static Set<String> parseLessonTaxonomy(ContentAddress contentAddress, String lessonTaxonomy) {
         if (lessonTaxonomy != null && !lessonTaxonomy.isEmpty()) {
             // Lesson taxonomy is supposed to be a JsonObject with keys as competencies' internal code
@@ -94,7 +103,7 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
                     contentAddress.getCourse(), contentAddress.getUnit(), contentAddress.getLesson());
             }
         }
-        return new HashSet<>();
+        return Collections.emptySet();
     }
 
     private ContentAddress findFirstValidContentInCourse(String course) {
