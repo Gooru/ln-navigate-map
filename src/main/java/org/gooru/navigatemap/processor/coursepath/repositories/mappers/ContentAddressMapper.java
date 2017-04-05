@@ -23,6 +23,7 @@ public class ContentAddressMapper implements ResultSetMapper<ContentAddress> {
         result.setCourse(r.getString(ContextAttributes.COURSE_ID));
         result.setLesson(r.getString(ContextAttributes.LESSON_ID));
         result.setUnit(r.getString(ContextAttributes.UNIT_ID));
+        result.setPathId(r.getLong(ContextAttributes.PATH_ID));
         return result;
     }
 }

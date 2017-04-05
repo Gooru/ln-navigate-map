@@ -62,6 +62,7 @@ public final class NavigateProcessorContext implements Stateful {
         nextContentAddress.setCollection(address.getCollection());
         nextContentAddress.setCollectionType(address.getCollectionType());
         nextContentAddress.setCollectionSubtype(address.getCollectionSubtype());
+        nextContentAddress.setPathId(address.getPathId());
         nextAddressSet = true;
     }
 
@@ -73,6 +74,7 @@ public final class NavigateProcessorContext implements Stateful {
             currentContentAddress.setCourse(requestContext().getCourseId().toString());
             currentContentAddress.setUnit(Objects.toString(requestContext().getUnitId(), null));
             currentContentAddress.setLesson(Objects.toString(requestContext().getLessonId(), null));
+            currentContentAddress.setPathId(requestContext().getPathId());
             currentAddressSet = true;
             return currentContentAddress;
         }

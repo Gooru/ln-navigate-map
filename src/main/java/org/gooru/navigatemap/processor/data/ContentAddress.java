@@ -8,6 +8,7 @@ public final class ContentAddress {
     private String unit;
     private String lesson;
     private String collection;
+    private Long pathId;
     private CollectionType collectionType;
     private CollectionSubtype collectionSubtype;
 
@@ -57,5 +58,13 @@ public final class ContentAddress {
 
     public void setCollectionSubtype(CollectionSubtype collectionSubtype) {
         this.collectionSubtype = collectionSubtype;
+    }
+
+    public Long getPathId() {
+        return pathId;
+    }
+
+    public void setPathId(Long pathId) {
+        this.pathId = pathId;
     }
 }

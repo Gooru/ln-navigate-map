@@ -71,6 +71,7 @@ public final class ResponseContext {
         this.collectionType = contentAddress.getCollectionType();
         this.currentItemSubtype = contentAddress.getCollectionSubtype();
         this.collectionSubType = contentAddress.getCollectionSubtype();
+        this.pathId = contentAddress.getPathId();
     }
 
     public UUID getClassId() {
