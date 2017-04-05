@@ -37,7 +37,7 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
     public ContentAddress findNextContentFromCUL(ContentAddress address) {
         finderDao = dbi.onDemand(ContentFinderDao.class);
 
-        return new ContentFinderWithoutSuggestions(finderDao).findNextContentFromCULWithoutAlternatePaths(address);
+        return new ContentFinderNoSuggestionsDelegate(finderDao).findNextContentFromCULWithoutAlternatePaths(address);
     }
 
     @Override
@@ -123,46 +123,4 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
         return new ContentAddress();
     }
 
-    private static class ContentFinderWithoutSuggestions {
-        private final ContentFinderDao finderDao;
-
-        ContentFinderWithoutSuggestions(ContentFinderDao finderDao) {
-            this.finderDao = finderDao;
-        }
-
-        private ContentAddress findNextContentFromCULWithoutAlternatePaths(ContentAddress address) {
-            List<ContentAddress> result = finderDao
-                .findNextCollectionsInCUL(address.getCourse(), address.getUnit(), address.getLesson(),
-                    address.getCollection());
-            if (result != null && !result.isEmpty()) {
-                return result.get(0);
-            }
-            return findNextValidContent(address);
-        }
-
-        private ContentAddress findNextValidContent(ContentAddress address) {
-            List<String> lessons;
-            List<ContentAddress> contentAddresses;
-            List<String> units = finderDao.findNextUnitsInCourse(address.getCourse(), address.getUnit());
-            for (String unit : units) {
-                if (unit.equalsIgnoreCase(address.getUnit())) {
-                    lessons = finderDao.findNextLessonsInCU(address.getCourse(), unit, address.getLesson());
-                } else {
-                    lessons = finderDao.findLessonsInCU(address.getCourse(), unit);
-                }
-                for (String lesson : lessons) {
-                    if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())) {
-                        contentAddresses = finderDao
-                            .findNextCollectionsInCUL(address.getCourse(), unit, lesson, address.getCollection());
-                    } else {
-                        contentAddresses = finderDao.findCollectionsInCUL(address.getCourse(), unit, lesson);
-                    }
-                    if (contentAddresses != null && !contentAddresses.isEmpty()) {
-                        return contentAddresses.get(0);
-                    }
-                }
-            }
-            return new ContentAddress();
-        }
-    }
 }
