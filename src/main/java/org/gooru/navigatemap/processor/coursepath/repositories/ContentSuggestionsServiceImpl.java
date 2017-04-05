@@ -12,12 +12,12 @@ import org.gooru.navigatemap.processor.data.SuggestionContext;
 /**
  * @author ashish on 3/4/17.
  */
-final class ContentSuggestionsRepositoryImpl implements ContentSuggestionsRepository {
+final class ContentSuggestionsServiceImpl implements ContentSuggestionsService {
 
     private final ContentFilterRepository contentFilterRepository;
     private final ContentFinderRepository contentFinderRepository;
 
-    ContentSuggestionsRepositoryImpl(ContentFilterRepository contentFilterRepository,
+    ContentSuggestionsServiceImpl(ContentFilterRepository contentFilterRepository,
         ContentFinderRepository contentFinderRepository) {
         this.contentFilterRepository = contentFilterRepository;
         this.contentFinderRepository = contentFinderRepository;

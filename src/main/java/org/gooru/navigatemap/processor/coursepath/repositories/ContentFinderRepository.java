@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.gooru.navigatemap.processor.data.ContentAddress;
-import org.gooru.navigatemap.processor.data.RequestContext;
 import org.gooru.navigatemap.processor.data.SuggestionCard4Collection;
 
 /**
@@ -24,8 +23,6 @@ public interface ContentFinderRepository {
     Set<String> findPostTestsAssessments(Set<String> competencies);
 
     List<String> findCompetenciesForPostTest(UUID postTestId);
-
-    ContentAddress findNextContent(ContentAddress contentAddress, RequestContext requestContext);
 
     Set<String> findCompetenciesForLesson(ContentAddress contentAddress);
 

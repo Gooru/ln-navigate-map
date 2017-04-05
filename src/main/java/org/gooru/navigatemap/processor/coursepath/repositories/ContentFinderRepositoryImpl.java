@@ -4,7 +4,6 @@ import java.util.*;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
 import org.gooru.navigatemap.processor.data.ContentAddress;
-import org.gooru.navigatemap.processor.data.RequestContext;
 import org.gooru.navigatemap.processor.data.SuggestionCard4Collection;
 import org.gooru.navigatemap.processor.utilities.CollectionUtils;
 import org.slf4j.Logger;
@@ -68,11 +67,6 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
     public List<String> findCompetenciesForPostTest(UUID postTestId) {
         ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
         return dao.findCompetenciesForPostTest(postTestId.toString());
-    }
-
-    @Override
-    public ContentAddress findNextContent(ContentAddress contentAddress, RequestContext requestContext) {
-        throw new AssertionError("Not implemented");
     }
 
     @Override

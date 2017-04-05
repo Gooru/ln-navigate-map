@@ -9,15 +9,19 @@ public final class ContentRepositoryBuilder {
         throw new AssertionError();
     }
 
-    public static ContentFinderRepository buildContentFinderService() {
+    public static ContentFinderRepository buildContentFinderRepository() {
         return new ContentFinderRepositoryImpl();
     }
 
-    public static ContentFilterRepository buildContentFilterService() {
+    public static ContentFilterRepository buildContentFilterRepository() {
         return new ContentFilterRepositoryImpl();
     }
 
-    public static ContentSuggestionsRepository buildContentSuggestionsService() {
-        return new ContentSuggestionsRepositoryImpl(buildContentFilterService(), buildContentFinderService());
+    public static ContentSuggestionsService buildContentSuggestionsService() {
+        return new ContentSuggestionsServiceImpl(buildContentFilterRepository(), buildContentFinderRepository());
+    }
+
+    public static NavigateService buildNavigateService() {
+        return new NavigateServiceImpl(buildContentFilterRepository(), buildContentFinderRepository());
     }
 }

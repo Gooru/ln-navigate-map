@@ -44,14 +44,14 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
             return;
         }
 
-        final ContentFinderRepository contentFinderRepository = ContentRepositoryBuilder.buildContentFinderService();
+        final ContentFinderRepository contentFinderRepository = ContentRepositoryBuilder.buildContentFinderRepository();
         // Find competencies for this post test
         List<String> competencies =
             contentFinderRepository.findCompetenciesForPostTest(npc.requestContext().getCurrentItemId());
         // Find benchmark associated with standards for post test
         List<String> benchmarks = contentFinderRepository.findBenchmarkAssessments(competencies);
         // Filter it based on if user has already taken them or user has already added them to map
-        List<String> benchmarksNotAddedByUser = ContentRepositoryBuilder.buildContentFilterService()
+        List<String> benchmarksNotAddedByUser = ContentRepositoryBuilder.buildContentFilterRepository()
             .filterBAForNotAddedByUser(benchmarks, npc.navigateMessageContext().getUserId());
 
         // If any suggestions remains, we present it

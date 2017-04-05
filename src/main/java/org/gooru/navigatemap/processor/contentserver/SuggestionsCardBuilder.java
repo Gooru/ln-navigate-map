@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.gooru.navigatemap.app.components.AppConfiguration;
-import org.gooru.navigatemap.processor.coursepath.repositories.ContentSuggestionsRepository;
+import org.gooru.navigatemap.processor.coursepath.repositories.ContentSuggestionsService;
 import org.gooru.navigatemap.processor.data.SuggestionCard4Collection;
 import org.gooru.navigatemap.processor.data.SuggestionContext;
 import org.slf4j.Logger;
@@ -22,15 +22,14 @@ import io.vertx.core.json.JsonArray;
 class SuggestionsCardBuilder {
     private static final Integer DEFAULT_LIMIT = 1;
     private final SuggestionContext suggestionContext;
-    private final ContentSuggestionsRepository suggestionRepository;
+    private final ContentSuggestionsService suggestionRepository;
     private Set<String> collections;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SuggestionsCardBuilder.class);
 
-    SuggestionsCardBuilder(SuggestionContext ctxSuggestions,
-        ContentSuggestionsRepository contentSuggestionsRepository) {
+    SuggestionsCardBuilder(SuggestionContext ctxSuggestions, ContentSuggestionsService contentSuggestionsService) {
         suggestionContext = ctxSuggestions;
-        this.suggestionRepository = contentSuggestionsRepository;
+        this.suggestionRepository = contentSuggestionsService;
     }
 
     JsonArray createSuggestionCards() {
