@@ -59,6 +59,10 @@ final class PostLessonSuggestionsFlow implements Flow<NavigateProcessorContext> 
     }
 
     private boolean postLessonSuggestionsApplicable() {
+        // If we are starting the course or user is explicitly asking to start from a particular location, then no
+        if (npc.requestContext().getState() == State.Start || npc.requestContext().getState() == State.Continue) {
+            return false;
+        }
         // Do not care about next lesson to be null or not. We just check if current content's lesson is
         // different from current one.
         // NOTE: When we bring in the lesson as back fill, this may be changed
