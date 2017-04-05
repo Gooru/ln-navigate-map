@@ -3,7 +3,6 @@ package org.gooru.navigatemap.processor.coursepath.flows;
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.ContentAddress;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
-import org.gooru.navigatemap.processor.data.ResponseContext;
 import org.gooru.navigatemap.processor.data.State;
 import org.gooru.navigatemap.responses.ExecutionResult;
 import org.slf4j.Logger;
@@ -32,11 +31,56 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
             return explicitlyStartAtSpecifiedAddress();
         }
 
+        if (needToStartCourse()) {
+            return startCourse();
+        }
+
         if (npc.suggestionsTurnedOff()) {
             return fetchNextItemFromCULWithoutSuggestions();
         }
 
         return fetchNextItem();
+    }
+
+    private boolean needToStartCourse() {
+        return npc.requestContext().getState() == State.Continue;
+    }
+
+    private ExecutionResult<NavigateProcessorContext> explicitlyStartAtSpecifiedAddress() {
+        validateStartPointProvidedByUser();
+        npc.responseContext().setContentAddress(npc.getNextContentAddress());
+        markAsDone(State.ContentServed);
+        return executionResult;
+    }
+
+    private void validateStartPointProvidedByUser() {
+        // TODO: Provide implementation
+        LOGGER.warn("This method is not implemented");
+    }
+
+    private boolean userExplicitlyAskedToStartHere() {
+        return npc.requestContext().getState() == State.Start;
+    }
+
+    private ExecutionResult<NavigateProcessorContext> startCourse() {
+        ContentAddress contentAddress = ContentRepositoryBuilder.buildContentFinderService()
+            .findFirstContentInCourse(npc.requestContext().getCourseId());
+        if (contentAddress != null) {
+            if (contentAddress.getCollection() != null) {
+                npc.setNextContextAddress(contentAddress);
+                if (npc.suggestionsTurnedOff()) {
+                    npc.responseContext().setContentAddress(contentAddress);
+                    markAsDone(State.ContentServed);
+                }
+            } else {
+                executionResult.setStatus(ExecutionResult.ExecutionStatus.SUCCESSFUL);
+                npc.responseContext().setState(State.Done);
+            }
+        } else {
+            throw new IllegalStateException("Not able to locate first valid content in course");
+        }
+        executionResult.setStatus(ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
+        return executionResult;
     }
 
     private ExecutionResult<NavigateProcessorContext> fetchNextItem() {
@@ -51,24 +95,13 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
         return executionResult;
     }
 
-    private ExecutionResult<NavigateProcessorContext> explicitlyStartAtSpecifiedAddress() {
-        npc.responseContext().setContentAddress(npc.getNextContentAddress());
-        markAsDone(State.ContentServed);
-        return executionResult;
-    }
-
-    private boolean userExplicitlyAskedToStartHere() {
-        return npc.requestContext().getState() == State.Continue;
-    }
-
     private ExecutionResult<NavigateProcessorContext> fetchNextItemFromCULWithoutSuggestions() {
-        ResponseContext responseContext = npc.responseContext();
         ContentAddress contentAddress =
             ContentRepositoryBuilder.buildContentFinderService().findNextContentFromCUL(npc.getCurrentContentAddress());
         if (contentAddress != null) {
             if (contentAddress.getCollection() != null) {
                 npc.setNextContextAddress(contentAddress);
-                responseContext.setContentAddress(contentAddress);
+                npc.responseContext().setContentAddress(contentAddress);
                 markAsDone(State.ContentServed);
             } else {
                 markAsDone(State.Done);
