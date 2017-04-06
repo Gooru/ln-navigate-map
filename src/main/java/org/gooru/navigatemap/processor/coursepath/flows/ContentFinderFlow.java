@@ -2,6 +2,7 @@ package org.gooru.navigatemap.processor.coursepath.flows;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.ContentAddress;
+import org.gooru.navigatemap.processor.data.FinderContext;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.State;
 import org.gooru.navigatemap.responses.ExecutionResult;
@@ -84,15 +85,26 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
     }
 
     private ExecutionResult<NavigateProcessorContext> fetchNextItem() {
-        ContentAddress contentAddress = ContentRepositoryBuilder.buildNavigateService()
-            .navigateNext(npc.getCurrentContentAddress(), npc.requestContext());
+        final FinderContext finderContext = createFinderContext();
+        ContentAddress contentAddress = ContentRepositoryBuilder.buildNavigateService().navigateNext(finderContext);
         if (contentAddress != null) {
             npc.setNextContextAddress(contentAddress);
+            if (finderContext.isStatusDone()) {
+                npc.responseContext().setContentAddress(contentAddress);
+                npc.responseContext()
+                    .setCurrentItemAddress(finderContext.getCurrentItemId(), finderContext.getCurrentItemType(),
+                        finderContext.getCurrentItemSubtype());
+                markAsDone(State.ContentServed);
+            }
         } else {
             LOGGER.warn("Not able to locate valid content in course");
             markAsDone(State.Done);
         }
         return executionResult;
+    }
+
+    private FinderContext createFinderContext() {
+        return new FinderContext(npc.requestContext().getState(), npc.requestContext(), npc.getCurrentContentAddress());
     }
 
     private ExecutionResult<NavigateProcessorContext> fetchNextItemFromCULWithoutSuggestions() {

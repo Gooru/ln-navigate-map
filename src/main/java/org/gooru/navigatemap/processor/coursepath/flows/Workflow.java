@@ -32,11 +32,13 @@ public final class Workflow {
     }
 
     public static void terminateFlowWithContent(NavigateProcessorContext npc) {
+        // Currently you can't set up a separate item on alternate path as address
         npc.responseContext().setContentAddress(npc.getNextContentAddress());
         npc.responseContext().setState(State.ContentServed);
     }
 
     public static void terminateFlowWithContent(ExecutionResult<NavigateProcessorContext> result,
+        // Currently you can't set up a separate item on alternate path as address
         NavigateProcessorContext npc) {
         npc.responseContext().setContentAddress(npc.getNextContentAddress());
         npc.responseContext().setState(State.ContentServed);

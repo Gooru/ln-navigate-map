@@ -74,6 +74,12 @@ public final class ResponseContext {
         this.pathId = contentAddress.getPathId();
     }
 
+    public void setCurrentItemAddress(UUID itemId, CollectionType itemType, CollectionSubtype itemSubtype) {
+        this.currentItemId = itemId;
+        this.currentItemType = itemType;
+        this.currentItemSubtype = itemSubtype;
+    }
+
     public UUID getClassId() {
         return classId;
     }
