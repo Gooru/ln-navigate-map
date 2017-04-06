@@ -33,7 +33,7 @@ final class PreLessonSuggestionsFlow implements Flow<NavigateProcessorContext> {
             setupPreLessonSuggestions();
         }
 
-        throw new AssertionError();
+        return output;
     }
 
     private void setupPreLessonSuggestions() {

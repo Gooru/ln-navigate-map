@@ -35,7 +35,7 @@ final class PostLessonSuggestionsFlow implements Flow<NavigateProcessorContext> 
             setupPostLessonSuggestions();
         }
 
-        throw new AssertionError();
+        return output;
     }
 
     private void setupPostLessonSuggestions() {
