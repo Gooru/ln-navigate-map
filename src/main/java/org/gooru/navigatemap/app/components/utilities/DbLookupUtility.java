@@ -28,7 +28,7 @@ public final class DbLookupUtility {
         return thresholdForBA;
     }
 
-    public String preTestScoreRangeNameByScore(Float score) {
+    public String preTestScoreRangeNameByScore(double score) {
         for (ScoreRange scoreRange : scoreRanges) {
             if (score >= scoreRange.min && score <= scoreRange.max) {
                 return scoreRange.rangeName;
@@ -78,8 +78,8 @@ public final class DbLookupUtility {
         private static final String MIN = "min";
         private static final String NAME = "name";
         private final String rangeName;
-        private final float min;
-        private final float max;
+        private final double min;
+        private final double max;
 
         private ScoreRange(String rangeName, float min, float max) {
             this.rangeName = rangeName;

@@ -26,11 +26,19 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
         if (input.isCompleted() || npc.suggestionsTurnedOff()) {
             return result;
         }
-        // Right now we only serve benchmark if user did a post test successfully
+        // Right now we only serve benchmark if user did a post test successfully or backfills if user did pre test
         if (userDidAPostTest()) {
             applyBASuggestions();
+        } else if (userDidAPreTest()) {
+            applyBackfillsSuggestions();
         }
         return result;
+    }
+
+    private boolean userDidAPreTest() {
+        return npc.requestContext().getCurrentItemType() == CollectionType.Assessment
+            && npc.requestContext().getCurrentItemSubtype() == CollectionSubtype.PreTest
+            && npc.requestContext().getState() == State.ContentServed;
     }
 
     private boolean userDidAPostTest() {
@@ -59,6 +67,27 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
             benchmarksNotAddedByUser.forEach(benchmark -> npc.getCtxSuggestions().addAssessment(benchmark));
             markAsDone();
         }
+    }
+
+    private void applyBackfillsSuggestions() {
+        if (npc.requestContext().getScorePercent() == null) {
+            return;
+        }
+        String rangeName =
+            DbLookupUtility.getInstance().preTestScoreRangeNameByScore(npc.requestContext().getScorePercent());
+        if (rangeName == null || rangeName.isEmpty()) {
+            return;
+        }
+
+        final ContentFinderRepository contentFinderRepository = ContentRepositoryBuilder.buildContentFinderRepository();
+        List<String> backfills = contentFinderRepository
+            .findBackfillsForPreTestAndScoreRange(npc.requestContext().getCurrentItemId(), rangeName);
+
+        if (backfills != null && !backfills.isEmpty()) {
+            backfills.forEach(backfill -> npc.getCtxSuggestions().addCollection(backfill));
+            markAsDone();
+        }
+
     }
 
     private void markAsDone() {

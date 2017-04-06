@@ -27,4 +27,6 @@ public interface ContentFinderRepository {
     Set<String> findCompetenciesForLesson(ContentAddress contentAddress);
 
     List<SuggestionCard4Collection> createSuggestionsCardForCollections(Set<String> collections);
+
+    List<String> findBackfillsForPreTestAndScoreRange(UUID preTestId, String scoreRangeName);
 }

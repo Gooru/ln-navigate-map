@@ -85,6 +85,12 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
         return dao.createSuggestionsCardForCollections(collectionsList);
     }
 
+    @Override
+    public List<String> findBackfillsForPreTestAndScoreRange(UUID preTestId, String scoreRangeName) {
+        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        return dao.findBackfillsForPreTestAndScoreRange(preTestId, scoreRangeName);
+    }
+
     private static Set<String> parseLessonTaxonomy(ContentAddress contentAddress, String lessonTaxonomy) {
         if (lessonTaxonomy != null && !lessonTaxonomy.isEmpty()) {
             // Lesson taxonomy is supposed to be a JsonObject with keys as competencies' internal code

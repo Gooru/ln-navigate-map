@@ -102,4 +102,8 @@ public interface ContentFinderDao {
                   + "(:collections)")
     List<SuggestionCard4Collection> createSuggestionsCardForCollections(@Bind("collections") List<String> collections);
 
+    @SqlQuery("select linked_content_id from assessment_extension where assessment_id = :preTestId and "
+                  + "score_range_name = :scoreRangeName")
+    List<String> findBackfillsForPreTestAndScoreRange(@Bind("preTestId") UUID preTestId,
+        @Bind("scoreRangeName") String scoreRangeName);
 }
