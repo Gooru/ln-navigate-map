@@ -10,6 +10,7 @@ public final class FinderContext {
     private final State state;
     private final RequestContext requestContext;
     private final ContentAddress currentAddress;
+    private final String user;
     private boolean statusDone;
     private UUID currentItemId;
     private CollectionType currentItemType;
@@ -43,6 +44,10 @@ public final class FinderContext {
         return currentItemSubtype;
     }
 
+    public String getUserClass() {
+        return requestContext.getClassId() == null ? null : requestContext.getClassId().toString();
+    }
+
     public void setCurrentItem(UUID itemId, CollectionType itemType, CollectionSubtype itemSubtype) {
         Objects.requireNonNull(itemId);
         Objects.requireNonNull(itemType);
@@ -54,10 +59,14 @@ public final class FinderContext {
         statusDone = true;
     }
 
-    public FinderContext(State state, RequestContext requestContext, ContentAddress currentAddress) {
+    public FinderContext(State state, RequestContext requestContext, ContentAddress currentAddress, String userId) {
         this.state = state;
         this.requestContext = requestContext;
         this.currentAddress = currentAddress;
+        this.user = userId;
+    }
 
+    public String getUser() {
+        return user;
     }
 }

@@ -9,7 +9,7 @@ public final class UsageRepositoryBuilder {
         throw new AssertionError();
     }
 
-    public static UsageFilterRepository buildUsageFiletrService() {
+    public static UsageFilterRepository buildUsageFilterService() {
         return new UsageFilterRepositoryImpl();
     }
 }

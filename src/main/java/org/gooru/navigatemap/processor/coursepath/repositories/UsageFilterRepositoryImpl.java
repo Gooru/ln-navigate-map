@@ -2,6 +2,8 @@ package org.gooru.navigatemap.processor.coursepath.repositories;
 
 import java.util.List;
 
+import org.gooru.navigatemap.processor.data.AlternatePath;
+
 /**
  * @author ashish on 3/4/17.
  */
@@ -19,5 +21,11 @@ final class UsageFilterRepositoryImpl extends AbstractUsageRepository implements
     @Override
     public List<String> filterPostTestForNotUsedByUser(List<String> inputPostTestList, String userId) {
         throw new AssertionError("Not implemented");
+    }
+
+    @Override
+    public List<AlternatePath> filterChildPathsNotPlayedByUser(List<AlternatePath> childPaths, String user) {
+        // TODO: Not implemented
+        return childPaths;
     }
 }

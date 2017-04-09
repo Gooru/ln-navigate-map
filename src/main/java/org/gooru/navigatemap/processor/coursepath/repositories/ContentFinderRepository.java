@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.gooru.navigatemap.processor.data.AlternatePath;
 import org.gooru.navigatemap.processor.data.ContentAddress;
 import org.gooru.navigatemap.processor.data.SuggestionCard4Collection;
 
@@ -29,4 +30,16 @@ public interface ContentFinderRepository {
     List<SuggestionCard4Collection> createSuggestionsCardForCollections(Set<String> collections);
 
     List<String> findBackfillsForPreTestAndScoreRange(UUID preTestId, String scoreRangeName);
+
+    AlternatePath findAlternatePathForUser(ContentAddress currentAddress, String user);
+
+    AlternatePath findAlternatePathForUserInClass(ContentAddress currentAddress, String user, String classId);
+
+    List<AlternatePath> findChildPathsOfTypeBA(AlternatePath currentPath);
+
+    List<AlternatePath> findChildPathsOfTypeBackfill(AlternatePath currentPath);
+
+    List<AlternatePath> findChildPathsOfTypePostTest(ContentAddress currentAddress, String user, String classId);
+
+    List<AlternatePath> findChildPathsOfTypePreTest(ContentAddress currentAddress, String user, String classId);
 }

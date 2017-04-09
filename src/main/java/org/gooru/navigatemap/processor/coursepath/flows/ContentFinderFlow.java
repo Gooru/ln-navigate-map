@@ -104,7 +104,8 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
     }
 
     private FinderContext createFinderContext() {
-        return new FinderContext(npc.requestContext().getState(), npc.requestContext(), npc.getCurrentContentAddress());
+        return new FinderContext(npc.requestContext().getState(), npc.requestContext(), npc.getCurrentContentAddress(),
+            npc.navigateMessageContext().getUserId());
     }
 
     private ExecutionResult<NavigateProcessorContext> fetchNextItemFromCULWithoutSuggestions() {

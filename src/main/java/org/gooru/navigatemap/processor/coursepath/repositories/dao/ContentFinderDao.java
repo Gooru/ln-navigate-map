@@ -3,8 +3,10 @@ package org.gooru.navigatemap.processor.coursepath.repositories.dao;
 import java.util.List;
 import java.util.UUID;
 
+import org.gooru.navigatemap.processor.coursepath.repositories.mappers.AlternatePathMapper;
 import org.gooru.navigatemap.processor.coursepath.repositories.mappers.ContentAddressMapper;
 import org.gooru.navigatemap.processor.coursepath.repositories.mappers.SuggestionCardMapper;
+import org.gooru.navigatemap.processor.data.AlternatePath;
 import org.gooru.navigatemap.processor.data.ContentAddress;
 import org.gooru.navigatemap.processor.data.SuggestionCard4Collection;
 import org.gooru.navigatemap.processor.utilities.jdbi.PGArray;
@@ -106,4 +108,75 @@ public interface ContentFinderDao {
                   + "score_range_name = :scoreRangeName")
     List<String> findBackfillsForPreTestAndScoreRange(@Bind("preTestId") UUID preTestId,
         @Bind("scoreRangeName") String scoreRangeName);
+
+    @Mapper(AlternatePathMapper.class)
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+                  + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
+                  + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype from "
+                  + "user_navigation_paths where id = :pathId and ctx_user_id = :user::uuid and ctx_class_id is null")
+    AlternatePath findAlternatePathByPathIdAndUser(@Bind("pathId") Long pathId, @Bind("user") String user);
+
+    @Mapper(AlternatePathMapper.class)
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+                  + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
+                  + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype from "
+                  + "user_navigation_paths where id = :pathId and ctx_user_id = :user::uuid and ctx_class_id = "
+                  + ":classId::uuid")
+    AlternatePath findAlternatePathByPathIdAndUserInClass(@Bind("pathId") Long pathId, @Bind("user") String user,
+        @Bind("classId") String classId);
+
+    @Mapper(AlternatePathMapper.class)
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+                  + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
+                  + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype from "
+                  + "user_navigation_paths where parent_path_id = :id and target_content_subtype = 'benchmark'")
+    List<AlternatePath> findBASubPathsForGivenPath(@Bind("id") Long id);
+
+    @Mapper(AlternatePathMapper.class)
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+                  + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
+                  + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype from "
+                  + "user_navigation_paths where parent_path_id = :id and target_content_type = 'collection'")
+    List<AlternatePath> findBackfillsSubPathsForGivenPath(@Bind("id") Long id);
+
+    @Mapper(AlternatePathMapper.class)
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+                  + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
+                  + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype from "
+                  + "user_navigation_paths where ctx_course_id = :courseId::uuid and ctx_unit_id = unitId::uuid and "
+                  + "ctx_lesson_id = :lessonId::uuid and ctx_user_id = :userId::uuid and ctx_class_id = "
+                  + ":classId::uuid and target_content_subtype = 'post-test'")
+    List<AlternatePath> findPostTestAlternatePathsForCULAndUserInClass(@Bind("courseId") String course,
+        @Bind("unitId") String unit, @Bind("lessonId") String lesson, @Bind("userId") String user,
+        @Bind("classId") String classId);
+
+    @Mapper(AlternatePathMapper.class)
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+                  + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
+                  + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype from "
+                  + "user_navigation_paths where ctx_course_id = :courseId::uuid and ctx_unit_id = unitId::uuid and "
+                  + "ctx_lesson_id = :lessonId::uuid and ctx_user_id = :userId::uuid and ctx_class_id is null and "
+                  + "target_content_subtype = 'post-test'")
+    List<AlternatePath> findPostTestAlternatePathsForCULAndUser(@Bind("") String course, @Bind("") String unit,
+        @Bind("") String lesson, @Bind("") String user);
+
+    @Mapper(AlternatePathMapper.class)
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+                  + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
+                  + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype from "
+                  + "user_navigation_paths where ctx_course_id = :courseId::uuid and ctx_unit_id = unitId::uuid and "
+                  + "ctx_lesson_id = :lessonId::uuid and ctx_user_id = :userId::uuid and ctx_class_id = "
+                  + ":classId::uuid and target_content_subtype = 'pre-test'")
+    List<AlternatePath> findPreTestAlternatePathsForCULAndUserInClass(@Bind("") String course, @Bind("") String unit,
+        @Bind("") String lesson, @Bind("") String user, @Bind("") String classId);
+
+    @Mapper(AlternatePathMapper.class)
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+                  + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
+                  + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype from "
+                  + "user_navigation_paths where ctx_course_id = :courseId::uuid and ctx_unit_id = unitId::uuid and "
+                  + "ctx_lesson_id = :lessonId::uuid and ctx_user_id = :userId::uuid and ctx_class_id is null and "
+                  + "target_content_subtype = 'post-test'")
+    List<AlternatePath> findPreTestAlternatePathsForCULAndUser(@Bind("") String course, @Bind("") String unit,
+        @Bind("") String lesson, @Bind("") String user);
 }

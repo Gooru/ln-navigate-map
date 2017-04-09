@@ -22,6 +22,7 @@ public final class ContentRepositoryBuilder {
     }
 
     public static NavigateService buildNavigateService() {
-        return new NavigateServiceImpl(buildContentFilterRepository(), buildContentFinderRepository());
+        return new NavigateServiceImpl(buildContentFilterRepository(), buildContentFinderRepository(),
+            UsageRepositoryBuilder.buildUsageFilterService());
     }
 }

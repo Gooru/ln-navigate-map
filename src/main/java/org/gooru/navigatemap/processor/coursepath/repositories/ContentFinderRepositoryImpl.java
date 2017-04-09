@@ -3,6 +3,7 @@ package org.gooru.navigatemap.processor.coursepath.repositories;
 import java.util.*;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
+import org.gooru.navigatemap.processor.data.AlternatePath;
 import org.gooru.navigatemap.processor.data.ContentAddress;
 import org.gooru.navigatemap.processor.data.SuggestionCard4Collection;
 import org.gooru.navigatemap.processor.utilities.CollectionUtils;
@@ -89,6 +90,57 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
     public List<String> findBackfillsForPreTestAndScoreRange(UUID preTestId, String scoreRangeName) {
         ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
         return dao.findBackfillsForPreTestAndScoreRange(preTestId, scoreRangeName);
+    }
+
+    @Override
+    public AlternatePath findAlternatePathForUser(ContentAddress currentAddress, String user) {
+        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        return dao.findAlternatePathByPathIdAndUser(currentAddress.getPathId(), user);
+    }
+
+    @Override
+    public AlternatePath findAlternatePathForUserInClass(ContentAddress currentAddress, String user, String classId) {
+        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        return dao.findAlternatePathByPathIdAndUserInClass(currentAddress.getPathId(), user, classId);
+    }
+
+    @Override
+    public List<AlternatePath> findChildPathsOfTypeBA(AlternatePath currentPath) {
+        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        return dao.findBASubPathsForGivenPath(currentPath.getId());
+    }
+
+    @Override
+    public List<AlternatePath> findChildPathsOfTypeBackfill(AlternatePath currentPath) {
+        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        return dao.findBackfillsSubPathsForGivenPath(currentPath.getId());
+    }
+
+    @Override
+    public List<AlternatePath> findChildPathsOfTypePostTest(ContentAddress currentAddress, String user,
+        String classId) {
+        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        if (classId != null) {
+            return dao
+                .findPostTestAlternatePathsForCULAndUserInClass(currentAddress.getCourse(), currentAddress.getUnit(),
+                    currentAddress.getLesson(), user, classId);
+        } else {
+            return dao.findPostTestAlternatePathsForCULAndUser(currentAddress.getCourse(), currentAddress.getUnit(),
+                currentAddress.getLesson(), user);
+        }
+    }
+
+    @Override
+    public List<AlternatePath> findChildPathsOfTypePreTest(ContentAddress currentAddress, String user, String classId) {
+        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        if (classId != null) {
+            return dao
+                .findPreTestAlternatePathsForCULAndUserInClass(currentAddress.getCourse(), currentAddress.getUnit(),
+                    currentAddress.getLesson(), user, classId);
+        } else {
+            return dao.findPreTestAlternatePathsForCULAndUser(currentAddress.getCourse(), currentAddress.getUnit(),
+                currentAddress.getLesson(), user);
+        }
     }
 
     private static Set<String> parseLessonTaxonomy(ContentAddress contentAddress, String lessonTaxonomy) {
