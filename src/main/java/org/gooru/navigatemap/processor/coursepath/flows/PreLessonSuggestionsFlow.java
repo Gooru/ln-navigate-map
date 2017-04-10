@@ -7,6 +7,8 @@ import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.State;
 import org.gooru.navigatemap.processor.data.SuggestionContext;
 import org.gooru.navigatemap.responses.ExecutionResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ashish on 6/3/17.
@@ -15,6 +17,7 @@ final class PreLessonSuggestionsFlow implements Flow<NavigateProcessorContext> {
 
     private NavigateProcessorContext npc;
     private ExecutionResult<NavigateProcessorContext> output;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PreLessonSuggestionsFlow.class);
 
     @Override
     public ExecutionResult<NavigateProcessorContext> apply(ExecutionResult<NavigateProcessorContext> input) {
@@ -25,13 +28,17 @@ final class PreLessonSuggestionsFlow implements Flow<NavigateProcessorContext> {
 
         npc = input.result();
         output = input;
+        LOGGER.debug("Applying pre lesson suggestions flow");
         if (input.isCompleted() || npc.suggestionsTurnedOff()) {
+            LOGGER.debug("Returning w/o applying pre lesson suggestions");
             return input;
         }
 
         if (preLessonSuggestionsApplicable()) {
+            LOGGER.debug("Pre lesson suggestions are applicable");
             setupPreLessonSuggestions();
         } else {
+            LOGGER.debug("Pre lesson suggestions are not applicable");
             Workflow.terminateFlowWithContent(output, npc);
         }
 
@@ -39,11 +46,14 @@ final class PreLessonSuggestionsFlow implements Flow<NavigateProcessorContext> {
     }
 
     private void setupPreLessonSuggestions() {
+        LOGGER.debug("Setting up pre lesson suggestions");
         SuggestionContext suggestions = ContentRepositoryBuilder.buildContentSuggestionsService()
             .findPreLessonSuggestions(npc.getNextContentAddress(), npc.navigateMessageContext().getUserId());
         if (suggestions.hasSuggestions()) {
+            LOGGER.debug("Found pre lesson suggestions");
             terminateFlowWithPreLessonSuggestions(suggestions);
         } else {
+            LOGGER.debug("Did not find pre lesson suggestions to apply");
             Workflow.terminateFlowWithContent(output, npc);
         }
     }

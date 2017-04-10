@@ -10,6 +10,8 @@ import org.gooru.navigatemap.processor.data.CollectionType;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.State;
 import org.gooru.navigatemap.responses.ExecutionResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ashish on 6/3/17.
@@ -18,18 +20,24 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
 
     private NavigateProcessorContext npc;
     private ExecutionResult<NavigateProcessorContext> result;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostContentSuggestionsFlow.class);
 
     @Override
     public ExecutionResult<NavigateProcessorContext> apply(ExecutionResult<NavigateProcessorContext> input) {
         result = input;
         npc = result.result();
+
+        LOGGER.debug("Will apply post content suggestions flow");
         if (input.isCompleted() || npc.suggestionsTurnedOff()) {
+            LOGGER.debug("Returning without applying suggestions");
             return result;
         }
         // Right now we only serve benchmark if user did a post test successfully or backfills if user did pre test
         if (userDidAPostTest()) {
+            LOGGER.debug("User did a post test. Trying to apply BA suggestions");
             applyBASuggestions();
         } else if (userDidAPreTest()) {
+            LOGGER.debug("User did a pre test. Trying to apply back fills suggestions");
             applyBackfillsSuggestions();
         }
         return result;
@@ -49,6 +57,7 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
 
     private void applyBASuggestions() {
         if (!isEligibleForBA()) {
+            LOGGER.debug("User is not eligible for BA suggestions");
             return;
         }
 
@@ -64,6 +73,7 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
 
         // If any suggestions remains, we present it
         if (benchmarksNotAddedByUser != null && !benchmarksNotAddedByUser.isEmpty()) {
+            LOGGER.debug("Found BA which are not added by user");
             benchmarksNotAddedByUser.forEach(benchmark -> npc.getCtxSuggestions().addAssessment(benchmark));
             markAsDone();
         }
@@ -71,11 +81,13 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
 
     private void applyBackfillsSuggestions() {
         if (npc.requestContext().getScorePercent() == null) {
+            LOGGER.debug("Null score. Won't apply backfills.");
             return;
         }
         String rangeName =
             DbLookupUtility.getInstance().preTestScoreRangeNameByScore(npc.requestContext().getScorePercent());
         if (rangeName == null || rangeName.isEmpty()) {
+            LOGGER.debug("Score range name not found. Won't apply backfills");
             return;
         }
 
@@ -84,9 +96,11 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
             .findBackfillsForPreTestAndScoreRange(npc.requestContext().getCurrentItemId(), rangeName);
 
         if (backfills != null && !backfills.isEmpty()) {
+            LOGGER.debug("Found backfills. Willl apply");
             backfills.forEach(backfill -> npc.getCtxSuggestions().addCollection(backfill));
             markAsDone();
         }
+        LOGGER.debug("No backfills found");
 
     }
 

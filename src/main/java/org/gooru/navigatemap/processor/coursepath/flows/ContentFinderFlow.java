@@ -23,23 +23,28 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
 
         this.executionResult = input;
 
+        LOGGER.debug("Applying content finder flow");
         if (this.executionResult.isCompleted()) {
             return executionResult;
         }
         npc = input.result();
 
         if (userExplicitlyAskedToStartHere()) {
+            LOGGER.debug("Starting from location where user explicitly asked about");
             return explicitlyStartAtSpecifiedAddress();
         }
 
         if (needToStartCourse()) {
+            LOGGER.debug("Need to start course. Starting it.");
             return startCourse();
         }
 
         if (npc.suggestionsTurnedOff()) {
+            LOGGER.debug("Suggestions are off, hence finding next content on main path");
             return fetchNextItemFromCULWithoutSuggestions();
         }
 
+        LOGGER.debug("Initiating the content finder flow with suggestions");
         return fetchNextItem();
     }
 
@@ -88,6 +93,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
         final FinderContext finderContext = createFinderContext();
         ContentAddress contentAddress = ContentRepositoryBuilder.buildNavigateService().navigateNext(finderContext);
         if (contentAddress != null) {
+            LOGGER.debug("Found next item");
             npc.setNextContextAddress(contentAddress);
             if (finderContext.isStatusDone()) {
                 npc.responseContext().setContentAddress(contentAddress);
@@ -95,6 +101,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
                     .setCurrentItemAddress(finderContext.getCurrentItemId(), finderContext.getCurrentItemType(),
                         finderContext.getCurrentItemSubtype());
                 markAsDone(State.ContentServed);
+                LOGGER.debug("Will serve content found right now");
             }
         } else {
             LOGGER.warn("Not able to locate valid content in course");

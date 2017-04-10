@@ -33,6 +33,7 @@ class SuggestionsCardBuilder {
     }
 
     JsonArray createSuggestionCards() {
+        LOGGER.debug("Creating suggestion cards");
         if (!suggestionContext.hasSuggestions()) {
             LOGGER.warn("Suggestions Card builder invoked without any suggestions");
             return new JsonArray();
@@ -56,6 +57,7 @@ class SuggestionsCardBuilder {
     }
 
     private void applySuggestionsLimit() {
+        LOGGER.debug("Applying suggestions limit");
         Integer limit = AppConfiguration.getInstance().suggestionsLimit();
         if (limit == null) {
             limit = DEFAULT_LIMIT;
@@ -77,9 +79,11 @@ class SuggestionsCardBuilder {
     private void initializeSuggestedCollectionsList() {
         collections = new HashSet<>();
         if (suggestionContext.hasAssessmentsSuggested()) {
+            LOGGER.debug("Will add assessments suggested to suggestions list");
             collections.addAll(suggestionContext.getAssessments());
         }
         if (suggestionContext.hasCollectionsSuggested()) {
+            LOGGER.debug("Will add collections suggested to suggestions list");
             collections.addAll(suggestionContext.getCollections());
         }
 

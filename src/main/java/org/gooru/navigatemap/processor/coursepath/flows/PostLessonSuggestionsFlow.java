@@ -7,6 +7,8 @@ import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.State;
 import org.gooru.navigatemap.processor.data.SuggestionContext;
 import org.gooru.navigatemap.responses.ExecutionResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ashish on 6/3/17.
@@ -15,6 +17,7 @@ final class PostLessonSuggestionsFlow implements Flow<NavigateProcessorContext> 
 
     private NavigateProcessorContext npc;
     private ExecutionResult<NavigateProcessorContext> output;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostLessonSuggestionsFlow.class);
 
     @Override
     public ExecutionResult<NavigateProcessorContext> apply(ExecutionResult<NavigateProcessorContext> input) {
@@ -23,6 +26,7 @@ final class PostLessonSuggestionsFlow implements Flow<NavigateProcessorContext> 
          */
         npc = input.result();
         output = input;
+        LOGGER.debug("Applying post lesson suggestions flow");
         if (input.isCompleted() || npc.suggestionsTurnedOff()) {
             return input;
         }
@@ -32,9 +36,10 @@ final class PostLessonSuggestionsFlow implements Flow<NavigateProcessorContext> 
          */
 
         if (postLessonSuggestionsApplicable()) {
+            LOGGER.debug("Post lesson suggestions flow applicable.");
             setupPostLessonSuggestions();
         }
-
+        LOGGER.debug("Post lesson suggestions flow not applicable");
         return output;
     }
 
@@ -42,6 +47,7 @@ final class PostLessonSuggestionsFlow implements Flow<NavigateProcessorContext> 
         SuggestionContext suggestions = ContentRepositoryBuilder.buildContentSuggestionsService()
             .findPostLessonSuggestions(npc.getCurrentContentAddress(), npc.navigateMessageContext().getUserId());
         if (suggestions.hasSuggestions()) {
+            LOGGER.debug("Post lesson suggestions: found suggestions");
             terminateFlowWithPostLessonSuggestions(suggestions);
         }
     }

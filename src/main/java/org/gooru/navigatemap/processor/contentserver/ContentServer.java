@@ -36,14 +36,19 @@ public class ContentServer {
     public void serveContent(NavigateProcessorContext npc) {
 
         this.navigateProcessorContext = npc;
+        LOGGER.debug("Starting ContentServer flow");
 
         if (npc.getCtxSuggestions().hasSuggestions()) {
+            LOGGER.debug("Will serve suggestions");
             completionFuture.complete(serveSuggestions());
         } else if (npc.responseContext().getState() == State.Done) {
+            LOGGER.debug("Status done. Won't serve anything");
             completionFuture.complete(new JsonObject());
         } else {
             Objects.requireNonNull(npc.responseContext().getCurrentItemId());
             Objects.requireNonNull(npc.responseContext().getCurrentItemType());
+
+            LOGGER.debug("Will serve content (assessment/collection)");
 
             if (npc.responseContext().getCurrentItemType() == CollectionType.Collection) {
                 serveCollection();
@@ -68,10 +73,13 @@ public class ContentServer {
 
     private void serveAssessmentCollection() {
         if (AppConfiguration.getInstance().serveContentDetails()) {
+            LOGGER.debug("Will fetch content details from remote servers");
+
             fetcher.fetch(navigateProcessorContext.responseContext(),
                 navigateProcessorContext.navigateMessageContext().getSessionToken())
                 .setHandler(ar -> completionFuture.complete(ar.result()));
         } else {
+            LOGGER.debug("Will serve content without details");
             JsonObject result = ResponseBuilder.createSuccessResponseBuilder(navigateProcessorContext.responseContext(),
                 new JsonObject()
                     .put("id", Objects.toString(navigateProcessorContext.responseContext().getCurrentItemId()))
