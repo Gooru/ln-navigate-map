@@ -2,6 +2,7 @@ package org.gooru.navigatemap.processor.contentserver;
 
 import java.util.Objects;
 
+import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.gooru.navigatemap.constants.Constants;
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.CollectionType;
@@ -58,15 +59,33 @@ public class ContentServer {
     }
 
     private void serveAssessment() {
-        fetcher.fetch(navigateProcessorContext.responseContext(),
-            navigateProcessorContext.navigateMessageContext().getSessionToken())
-            .setHandler(ar -> completionFuture.complete(ar.result()));
+        if (AppConfiguration.getInstance().serveContentDetails()) {
+            fetcher.fetch(navigateProcessorContext.responseContext(),
+                navigateProcessorContext.navigateMessageContext().getSessionToken())
+                .setHandler(ar -> completionFuture.complete(ar.result()));
+        } else {
+            JsonObject result = ResponseBuilder.createSuccessResponseBuilder(navigateProcessorContext.responseContext(),
+                new JsonObject().put("id", navigateProcessorContext.responseContext().getCurrentItemId())
+                    .put("type", navigateProcessorContext.responseContext().getCurrentItemType().getName())
+                    .put("subtype", navigateProcessorContext.responseContext().getCurrentItemSubtype()))
+                .buildResponse();
+            completionFuture.complete(result);
+        }
     }
 
     private void serveCollection() {
-        fetcher.fetch(navigateProcessorContext.responseContext(),
-            navigateProcessorContext.navigateMessageContext().getSessionToken())
-            .setHandler(ar -> completionFuture.complete(ar.result()));
+        if (AppConfiguration.getInstance().serveContentDetails()) {
+            fetcher.fetch(navigateProcessorContext.responseContext(),
+                navigateProcessorContext.navigateMessageContext().getSessionToken())
+                .setHandler(ar -> completionFuture.complete(ar.result()));
+        } else {
+            JsonObject result = ResponseBuilder.createSuccessResponseBuilder(navigateProcessorContext.responseContext(),
+                new JsonObject().put("id", navigateProcessorContext.responseContext().getCurrentItemId())
+                    .put("type", navigateProcessorContext.responseContext().getCurrentItemType().getName())
+                    .put("subtype", navigateProcessorContext.responseContext().getCurrentItemSubtype()))
+                .buildResponse();
+            completionFuture.complete(result);
+        }
     }
 
     private JsonObject serveSuggestions() {

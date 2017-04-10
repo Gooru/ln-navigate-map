@@ -64,6 +64,10 @@ public final class AppConfiguration implements Initializer {
         return configuration.getInteger("suggestions.limit");
     }
 
+    public boolean serveContentDetails() {
+        return configuration.getBoolean("serve.content.details");
+    }
+
     private static final class Holder {
         private static final AppConfiguration INSTANCE = new AppConfiguration();
     }
