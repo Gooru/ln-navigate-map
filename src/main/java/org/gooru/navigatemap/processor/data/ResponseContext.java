@@ -46,8 +46,8 @@ public final class ResponseContext {
 
         context.put(ContextAttributes.CLASS_ID, Objects.toString(classId, null));
         context.put(ContextAttributes.COURSE_ID, courseId.toString());
-        context.put(ContextAttributes.UNIT_ID, unitId.toString());
-        context.put(ContextAttributes.LESSON_ID, lessonId.toString());
+        context.put(ContextAttributes.UNIT_ID, Objects.toString(unitId, null));
+        context.put(ContextAttributes.LESSON_ID, Objects.toString(lessonId, null));
         context.put(ContextAttributes.COLLECTION_ID, Objects.toString(collectionId, null));
         context.put(ContextAttributes.COLLECTION_TYPE, collectionType != null ? collectionType.getName() : null);
         context

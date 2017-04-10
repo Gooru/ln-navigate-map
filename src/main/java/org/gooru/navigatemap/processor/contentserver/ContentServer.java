@@ -43,7 +43,10 @@ public class ContentServer {
             completionFuture.complete(serveSuggestions());
         } else if (npc.responseContext().getState() == State.Done) {
             LOGGER.debug("Status done. Won't serve anything");
-            completionFuture.complete(new JsonObject());
+            JsonObject result = ResponseBuilder
+                .createSuccessResponseBuilder(navigateProcessorContext.responseContext(), new JsonObject())
+                .buildResponse();
+            completionFuture.complete(result);
         } else {
             Objects.requireNonNull(npc.responseContext().getCurrentItemId());
             Objects.requireNonNull(npc.responseContext().getCurrentItemType());
@@ -82,11 +85,11 @@ public class ContentServer {
             LOGGER.debug("Will serve content without details");
             JsonObject result = ResponseBuilder.createSuccessResponseBuilder(navigateProcessorContext.responseContext(),
                 new JsonObject()
-                    .put("id", Objects.toString(navigateProcessorContext.responseContext().getCurrentItemId()))
-                    .put("type",
-                        Objects.toString(navigateProcessorContext.responseContext().getCurrentItemType().getName()))
+                    .put("id", Objects.toString(navigateProcessorContext.responseContext().getCurrentItemId(), null))
+                    .put("type", Objects
+                        .toString(navigateProcessorContext.responseContext().getCurrentItemType().getName(), null))
                     .put("subtype",
-                        Objects.toString(navigateProcessorContext.responseContext().getCurrentItemSubtype())))
+                        Objects.toString(navigateProcessorContext.responseContext().getCurrentItemSubtype(), null)))
                 .buildResponse();
             completionFuture.complete(result);
         }
