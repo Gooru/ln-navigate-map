@@ -79,7 +79,7 @@ final class PreLessonSuggestionsFlow implements Flow<NavigateProcessorContext> {
         // Do not care about previous or current lesson to be null or not. We just check if next content's lesson is
         // different from current one.
         // NOTE: When we bring in the lesson as back fill, this needs to be changed
-        return npc.getNextContentAddress().getLesson() != null && Objects
+        return npc.getNextContentAddress().getLesson() != null && !Objects
             .equals(npc.getNextContentAddress().getLesson(), npc.getCurrentContentAddress().getLesson());
     }
 

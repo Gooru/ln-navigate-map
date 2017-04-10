@@ -39,7 +39,6 @@ final class PostLessonSuggestionsFlow implements Flow<NavigateProcessorContext> 
             LOGGER.debug("Post lesson suggestions flow applicable.");
             setupPostLessonSuggestions();
         }
-        LOGGER.debug("Post lesson suggestions flow not applicable");
         return output;
     }
 
@@ -72,7 +71,7 @@ final class PostLessonSuggestionsFlow implements Flow<NavigateProcessorContext> 
         // Do not care about next lesson to be null or not. We just check if current content's lesson is
         // different from current one.
         // NOTE: When we bring in the lesson as back fill, this may be changed
-        return npc.getCurrentContentAddress().getLesson() != null && Objects
+        return npc.getCurrentContentAddress().getLesson() != null && !Objects
             .equals(npc.getNextContentAddress().getLesson(), npc.getCurrentContentAddress().getLesson());
     }
 }
