@@ -3,6 +3,8 @@ package org.gooru.navigatemap.bootstrap.verticles;
 import java.util.Objects;
 
 import org.gooru.navigatemap.constants.Constants;
+import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.exceptions.MessageResponseWrapperException;
 import org.gooru.navigatemap.processor.contentserver.ContentServer;
 import org.gooru.navigatemap.processor.contentserver.RemoteAssessmentCollectionFetcher;
 import org.gooru.navigatemap.processor.context.ContextAttributes;
@@ -79,11 +81,21 @@ public class NavigationVerticle extends AbstractVerticle {
                 String user = message.body().getString(Constants.Message.MSG_USER_ID);
                 persistNewContext(event.result(), user);
             } else {
-                // TODO: Implement this
                 LOGGER.warn("Failed to process next command", event.cause());
-                message.reply(new JsonObject().put(Constants.Message.MSG_HTTP_STATUS, 500)
-                    .put(Constants.Message.MSG_HTTP_BODY, new JsonObject())
-                    .put(Constants.Message.MSG_HTTP_HEADERS, new JsonObject()));
+                if (event.cause() instanceof HttpResponseWrapperException) {
+                    HttpResponseWrapperException exception = (HttpResponseWrapperException) event.cause();
+                    message.reply(new JsonObject().put(Constants.Message.MSG_HTTP_STATUS, exception.getStatus())
+                        .put(Constants.Message.MSG_HTTP_BODY, exception.getBody())
+                        .put(Constants.Message.MSG_HTTP_HEADERS, new JsonObject()));
+                } else if (event.cause() instanceof MessageResponseWrapperException) {
+                    MessageResponseWrapperException exception = (MessageResponseWrapperException) event.cause();
+                    message.reply(exception.getMessageResponse().reply(),
+                        exception.getMessageResponse().deliveryOptions());
+                } else {
+                    message.reply(new JsonObject().put(Constants.Message.MSG_HTTP_STATUS, 500)
+                        .put(Constants.Message.MSG_HTTP_BODY, new JsonObject())
+                        .put(Constants.Message.MSG_HTTP_HEADERS, new JsonObject()));
+                }
             }
         });
     }
