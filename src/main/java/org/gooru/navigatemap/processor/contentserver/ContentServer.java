@@ -59,30 +59,26 @@ public class ContentServer {
     }
 
     private void serveAssessment() {
-        if (AppConfiguration.getInstance().serveContentDetails()) {
-            fetcher.fetch(navigateProcessorContext.responseContext(),
-                navigateProcessorContext.navigateMessageContext().getSessionToken())
-                .setHandler(ar -> completionFuture.complete(ar.result()));
-        } else {
-            JsonObject result = ResponseBuilder.createSuccessResponseBuilder(navigateProcessorContext.responseContext(),
-                new JsonObject().put("id", navigateProcessorContext.responseContext().getCurrentItemId())
-                    .put("type", navigateProcessorContext.responseContext().getCurrentItemType().getName())
-                    .put("subtype", navigateProcessorContext.responseContext().getCurrentItemSubtype()))
-                .buildResponse();
-            completionFuture.complete(result);
-        }
+        serveAssessmentCollection();
     }
 
     private void serveCollection() {
+        serveAssessmentCollection();
+    }
+
+    private void serveAssessmentCollection() {
         if (AppConfiguration.getInstance().serveContentDetails()) {
             fetcher.fetch(navigateProcessorContext.responseContext(),
                 navigateProcessorContext.navigateMessageContext().getSessionToken())
                 .setHandler(ar -> completionFuture.complete(ar.result()));
         } else {
             JsonObject result = ResponseBuilder.createSuccessResponseBuilder(navigateProcessorContext.responseContext(),
-                new JsonObject().put("id", navigateProcessorContext.responseContext().getCurrentItemId())
-                    .put("type", navigateProcessorContext.responseContext().getCurrentItemType().getName())
-                    .put("subtype", navigateProcessorContext.responseContext().getCurrentItemSubtype()))
+                new JsonObject()
+                    .put("id", Objects.toString(navigateProcessorContext.responseContext().getCurrentItemId()))
+                    .put("type",
+                        Objects.toString(navigateProcessorContext.responseContext().getCurrentItemType().getName()))
+                    .put("subtype",
+                        Objects.toString(navigateProcessorContext.responseContext().getCurrentItemSubtype())))
                 .buildResponse();
             completionFuture.complete(result);
         }

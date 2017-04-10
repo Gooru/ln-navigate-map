@@ -31,6 +31,8 @@ final class PreLessonSuggestionsFlow implements Flow<NavigateProcessorContext> {
 
         if (preLessonSuggestionsApplicable()) {
             setupPreLessonSuggestions();
+        } else {
+            Workflow.terminateFlowWithContent(output, npc);
         }
 
         return output;

@@ -95,7 +95,7 @@ public interface ContentFinderDao {
         @Bind("postTestsList") PGArray<UUID> postTestsList);
 
     @SqlQuery("select taxonomy from lesson where course_id = :courseId::uuid and unit_id = :unitId::uuid and "
-                  + "lesson_id = :lessonId and is_deleted = false")
+                  + "lesson_id = :lessonId::uuid and is_deleted = false")
     String findCompetenciesForLesson(@Bind("courseId") String course, @Bind("unitId") String unit,
         @Bind("lessonId") String lesson);
 
