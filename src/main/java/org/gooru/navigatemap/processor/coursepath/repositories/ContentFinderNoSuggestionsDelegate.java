@@ -16,9 +16,13 @@ class ContentFinderNoSuggestionsDelegate {
     }
 
     ContentAddress findNextContentFromCULWithoutAlternatePaths(ContentAddress address) {
-        List<ContentAddress> result = finderDao
-            .findNextCollectionsInCUL(address.getCourse(), address.getUnit(), address.getLesson(),
+        List<ContentAddress> result;
+        if (address.getCollection() != null) {
+            result = finderDao.findNextCollectionsInCUL(address.getCourse(), address.getUnit(), address.getLesson(),
                 address.getCollection());
+        } else {
+            result = finderDao.findFirstCollectionInLesson(address.getCourse(), address.getUnit(), address.getLesson());
+        }
         if (result != null && !result.isEmpty()) {
             return result.get(0);
         }

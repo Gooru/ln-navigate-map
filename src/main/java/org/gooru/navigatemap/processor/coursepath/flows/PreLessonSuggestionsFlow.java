@@ -62,7 +62,7 @@ final class PreLessonSuggestionsFlow implements Flow<NavigateProcessorContext> {
         // Setup suggestions
         npc.getCtxSuggestions().addAssessments(suggestions.getAssessments());
         npc.getCtxSuggestions().addCollections(suggestions.getCollections());
-        npc.responseContext().setContentAddress(npc.getNextContentAddress());
+        npc.responseContext().setContentAddressWithoutItem(npc.getNextContentAddress());
         markAsDone(State.LessonStartSuggested);
     }
 

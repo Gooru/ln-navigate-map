@@ -69,9 +69,10 @@ final class PostLessonSuggestionsFlow implements Flow<NavigateProcessorContext> 
             return false;
         }
         // Do not care about next lesson to be null or not. We just check if current content's lesson is
-        // different from current one.
+        // different from current one and we have not suggested already.
         // NOTE: When we bring in the lesson as back fill, this may be changed
-        return npc.getCurrentContentAddress().getLesson() != null && !Objects
-            .equals(npc.getNextContentAddress().getLesson(), npc.getCurrentContentAddress().getLesson());
+        return (npc.getCurrentContentAddress().getLesson() != null && !Objects
+            .equals(npc.getNextContentAddress().getLesson(), npc.getCurrentContentAddress().getLesson())) && (
+            npc.requestContext().getState() != State.LessonEndSuggested);
     }
 }

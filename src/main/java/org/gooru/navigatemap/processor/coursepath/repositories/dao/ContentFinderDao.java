@@ -63,6 +63,13 @@ public interface ContentFinderDao {
     List<ContentAddress> findNextCollectionsInCUL(@Bind("courseId") String courseId, @Bind("unitId") String unitId,
         @Bind("lessonId") String lessonId, @Bind("collectionId") String collectionId);
 
+    @SqlQuery("select course_id, unit_id, lesson_id, id, format, subformat, null as path_id from collection c where "
+                  + "course_id = :courseId::uuid and unit_id = :unitId::uuid and  lesson_id = :lessonId::uuid and "
+                  + "is_deleted = false order by sequence_id asc limit 1")
+    @Mapper(ContentAddressMapper.class)
+    List<ContentAddress> findFirstCollectionInLesson(@Bind("courseId") String courseId, @Bind("unitId") String unitId,
+        @Bind("lessonId") String lessonId);
+
     @SqlQuery("select competency_id from competency_assessment_map where assessment_id = :assessmentId::uuid and "
                   + "assessment_type = 'post-test'")
     List<String> findCompetenciesForPostTest(@Bind("assessmentId") String assessmentId);
@@ -180,4 +187,5 @@ public interface ContentFinderDao {
                   + "target_content_subtype = 'post-test'")
     List<AlternatePath> findPreTestAlternatePathsForCULAndUser(@Bind("courseId") String course,
         @Bind("unitId") String unit, @Bind("lessonId") String lesson, @Bind("userId") String user);
+
 }

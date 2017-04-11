@@ -71,4 +71,9 @@ public final class ContentAddress {
     public boolean isOnAlternatePath() {
         return (pathId != null && pathId != 0);
     }
+
+    public boolean isValidAddress() {
+        return course != null && unit != null && lesson != null && collection != null;
+    }
+
 }

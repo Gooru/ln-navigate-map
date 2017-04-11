@@ -74,6 +74,18 @@ public final class ResponseContext {
         this.pathId = contentAddress.getPathId();
     }
 
+    public void setContentAddressWithoutItem(ContentAddress contentAddress) {
+        this.unitId = UUID.fromString(contentAddress.getUnit());
+        this.lessonId = UUID.fromString(contentAddress.getLesson());
+        this.collectionId = UUID.fromString(contentAddress.getCollection());
+        this.currentItemId = null;
+        this.currentItemType = currentItemType;
+        this.collectionType = contentAddress.getCollectionType();
+        this.currentItemSubtype = null;
+        this.collectionSubType = contentAddress.getCollectionSubtype();
+        this.pathId = contentAddress.getPathId();
+    }
+
     public void setCurrentItemAddress(UUID itemId, CollectionType itemType, CollectionSubtype itemSubtype) {
         this.currentItemId = itemId;
         this.currentItemType = itemType;
