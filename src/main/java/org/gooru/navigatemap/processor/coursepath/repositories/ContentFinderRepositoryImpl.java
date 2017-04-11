@@ -83,7 +83,7 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
         ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
         List<String> collectionsList = new ArrayList<>(collections);
 
-        return dao.createSuggestionsCardForCollections(collectionsList);
+        return dao.createSuggestionsCardForCollections(CollectionUtils.convertToSqlArrayOfUUID(collectionsList));
     }
 
     @Override

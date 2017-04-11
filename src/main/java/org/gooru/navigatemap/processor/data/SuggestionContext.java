@@ -31,7 +31,7 @@ public final class SuggestionContext {
         if (assessmentsToSuggest.isEmpty()) {
             return;
         }
-        assessments.addAll(collections);
+        assessments.addAll(assessmentsToSuggest);
     }
 
     public void addCollection(String id) {

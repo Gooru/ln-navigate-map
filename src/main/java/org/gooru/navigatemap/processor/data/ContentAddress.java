@@ -67,4 +67,8 @@ public final class ContentAddress {
     public void setPathId(Long pathId) {
         this.pathId = pathId;
     }
+
+    public boolean isOnAlternatePath() {
+        return (pathId != null && pathId != 0);
+    }
 }

@@ -120,7 +120,7 @@ final class NavigateServiceImpl implements NavigateService {
      */
     private ContentAddress handleLessonEndSuggeted() {
         // Find current path. We do not support lesson end suggestions on alternatepath
-        if (finderContext.getCurrentAddress().getPathId() != null) {
+        if (finderContext.getCurrentAddress().isOnAlternatePath()) {
             LOGGER.error("Lesson end suggestions are not supported on alternate path");
             throw new IllegalStateException("Lesson end suggestions are not supported on alternate path");
         }
@@ -149,7 +149,7 @@ final class NavigateServiceImpl implements NavigateService {
 
     private ContentAddress handleLessonStartSuggested() {
         // Find current path. We do not support lesson start suggestions on alternatepath
-        if (finderContext.getCurrentAddress().getPathId() != null) {
+        if (finderContext.getCurrentAddress().isOnAlternatePath()) {
             LOGGER.error("Lesson start suggestions are not supported on alternate path");
             throw new IllegalStateException("Lesson start suggestions are not supported on alternate path");
         }
