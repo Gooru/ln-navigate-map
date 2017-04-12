@@ -54,6 +54,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
 
     private ExecutionResult<NavigateProcessorContext> explicitlyStartAtSpecifiedAddress() {
         validateStartPointProvidedByUser();
+        npc.setNextContextAddress(npc.getCurrentContentAddress());
         npc.responseContext().setContentAddress(npc.getNextContentAddress());
         markAsDone(State.ContentServed);
         return executionResult;
