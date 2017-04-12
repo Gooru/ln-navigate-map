@@ -1,5 +1,9 @@
 package org.gooru.navigatemap.routes.utils;
 
+import java.util.Objects;
+
+import org.gooru.navigatemap.constants.HttpConstants;
+import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.responses.writers.ResponseWriterBuilder;
 import org.slf4j.Logger;
 
@@ -23,7 +27,34 @@ public final class RouteResponseUtility {
             ResponseWriterBuilder.build(routingContext, reply).writeResponse();
         } else {
             LOG.error("Not able to send message", reply.cause());
-            routingContext.response().setStatusCode(500).end();
+            routingContext.response().setStatusCode(HttpConstants.HttpStatus.ERROR.getCode()).end();
+        }
+    }
+
+    public static void responseHandler(final RoutingContext routingContext,
+        final HttpResponseWrapperException exception) {
+        String body = Objects.toString(exception.getBody(), null);
+        if (body != null) {
+            routingContext.response().setStatusCode(exception.getStatus()).end(body);
+        } else {
+            routingContext.response().setStatusCode(exception.getStatus()).end();
+        }
+    }
+
+    public static void responseHandlerForContext(final RoutingContext routingContext,
+        final AsyncResult<Message<JsonObject>> reply, final Logger logger) {
+        if (reply.succeeded()) {
+            if (reply.result() != null && reply.result().body() != null && !reply.result().body().isEmpty()) {
+                routingContext.response().setStatusCode(HttpConstants.HttpStatus.SUCCESS.getCode())
+                    .end(reply.result().body().toString());
+            } else {
+                // Communication with Redis successful but we do not have anything as context
+                routingContext.response().setStatusCode(HttpConstants.HttpStatus.SUCCESS.getCode())
+                    .end(new JsonObject().toString());
+            }
+        } else {
+            logger.error("Not able to send message", reply.cause());
+            routingContext.response().setStatusCode(HttpConstants.HttpStatus.ERROR.getCode()).end();
         }
     }
 }
