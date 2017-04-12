@@ -72,12 +72,16 @@ final class PreLessonSuggestionsFlow implements Flow<NavigateProcessorContext> {
     }
 
     private boolean preLessonSuggestionsApplicable() {
+        // If user is starting a lesson, then yes
+        if (npc.requestContext().needToStartLesson()) {
+            return true;
+        }
         // If user is explicitly asking to start from a particular location, then no
         if (npc.requestContext().getState() == State.Start) {
             return false;
         }
-        // Do not care about previous or current lesson to be null or not. We just check if next content's lesson is
-        // different from current one.
+        // Else infer. Do not care about previous or current lesson to be null or not. We just check if next content's
+        // lesson is different from current one.
         // NOTE: When we bring in the lesson as back fill, this needs to be changed
         return npc.getNextContentAddress().getLesson() != null && !Objects
             .equals(npc.getNextContentAddress().getLesson(), npc.getCurrentContentAddress().getLesson());

@@ -37,6 +37,10 @@ final class NavigateServiceImpl implements NavigateService {
     private ContentAddress process() {
         switch (finderContext.getState()) {
         case Start:
+            if (finderContext.getRequestContext().needToStartLesson()) {
+                return handleContentServed();
+            }
+            // Don't break here
         case Continue:
             LOGGER.warn("Invalid state flow in navigation service. Should not be Start/Continue");
             throw new AssertionError("Start/Continue state in navigation service");

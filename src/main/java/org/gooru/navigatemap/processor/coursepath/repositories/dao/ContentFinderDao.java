@@ -188,4 +188,13 @@ public interface ContentFinderDao {
     List<AlternatePath> findPreTestAlternatePathsForCULAndUser(@Bind("courseId") String course,
         @Bind("unitId") String unit, @Bind("lessonId") String lesson, @Bind("userId") String user);
 
+    @SqlQuery("select count(*) from collection where course_id = :courseId::uuid and unit_id = :unitId::uuid and  "
+                  + "lesson_id = :lessonId::uuid and id = :collectionId::uuid and is_deleted = false")
+    long validateCULC(@Bind("courseId") String courseId, @Bind("unitId") String unitId,
+        @Bind("lessonId") String lessonId, @Bind("collectionId") String collectionId);
+
+    @SqlQuery("select count(*) from collection where course_id = :courseId::uuid and unit_id = :unitId::uuid and  "
+                  + "lesson_id = :lessonId::uuid and is_deleted = false")
+    long validateCUL(@Bind("courseId") String courseId, @Bind("unitId") String unitId,
+        @Bind("lessonId") String lessonId);
 }

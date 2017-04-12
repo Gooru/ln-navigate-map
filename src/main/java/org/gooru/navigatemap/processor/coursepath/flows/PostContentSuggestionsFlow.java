@@ -32,6 +32,9 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
             LOGGER.debug("Returning without applying suggestions");
             return result;
         }
+        if (npc.requestContext().needToStartLesson()) {
+            LOGGER.debug("Starting lesson so skipping post content suggestions flow");
+        }
         // Right now we only serve benchmark if user did a post test successfully or backfills if user did pre test
         if (userDidAPostTest()) {
             LOGGER.debug("User did a post test. Trying to apply BA suggestions");
