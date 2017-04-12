@@ -1,5 +1,8 @@
 package org.gooru.navigatemap.processor.coursepath.flows;
 
+import org.gooru.navigatemap.constants.HttpConstants;
+import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.processor.coursepath.repositories.ContentFinderRepository;
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.ContentAddress;
 import org.gooru.navigatemap.processor.data.FinderContext;
@@ -54,15 +57,21 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
 
     private ExecutionResult<NavigateProcessorContext> explicitlyStartAtSpecifiedAddress() {
         validateStartPointProvidedByUser();
-        npc.setNextContextAddress(npc.getCurrentContentAddress());
-        npc.responseContext().setContentAddress(npc.getNextContentAddress());
-        markAsDone(State.ContentServed);
-        return executionResult;
+        if (npc.requestContext().needToStartLesson()) {
+            return fetchNextItem();
+        } else {
+            npc.setNextContextAddress(npc.getCurrentContentAddress());
+            npc.responseContext().setContentAddress(npc.getNextContentAddress());
+            markAsDone(State.ContentServed);
+            return executionResult;
+        }
     }
 
     private void validateStartPointProvidedByUser() {
-        // TODO: Provide implementation
-        LOGGER.warn("This method is not implemented");
+        ContentFinderRepository contentFinderRepository = ContentRepositoryBuilder.buildContentFinderRepository();
+        if (!contentFinderRepository.validateContentAddress(npc.getCurrentContentAddress())) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid CUL info in context");
+        }
     }
 
     private boolean userExplicitlyAskedToStartHere() {

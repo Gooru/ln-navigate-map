@@ -42,4 +42,6 @@ public interface ContentFinderRepository {
     List<AlternatePath> findChildPathsOfTypePostTest(ContentAddress currentAddress, String user, String classId);
 
     List<AlternatePath> findChildPathsOfTypePreTest(ContentAddress currentAddress, String user, String classId);
+
+    boolean validateContentAddress(ContentAddress contentAddress);
 }

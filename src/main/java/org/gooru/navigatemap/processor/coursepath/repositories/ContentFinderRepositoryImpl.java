@@ -143,6 +143,25 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
         }
     }
 
+    @Override
+    public boolean validateContentAddress(ContentAddress contentAddress) {
+        if (contentAddress.getCourse() == null || contentAddress.getUnit() == null
+            || contentAddress.getLesson() == null) {
+            return false;
+        }
+        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        long validRecordCount = 0;
+        if (contentAddress.getCollection() == null) {
+            validRecordCount =
+                dao.validateCUL(contentAddress.getCourse(), contentAddress.getUnit(), contentAddress.getLesson());
+        } else {
+            validRecordCount =
+                dao.validateCULC(contentAddress.getCourse(), contentAddress.getUnit(), contentAddress.getLesson(),
+                    contentAddress.getCollection());
+        }
+        return (validRecordCount > 0);
+    }
+
     private static Set<String> parseLessonTaxonomy(ContentAddress contentAddress, String lessonTaxonomy) {
         if (lessonTaxonomy != null && !lessonTaxonomy.isEmpty()) {
             // Lesson taxonomy is supposed to be a JsonObject with keys as competencies' internal code

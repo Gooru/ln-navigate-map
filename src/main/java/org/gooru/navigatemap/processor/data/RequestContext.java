@@ -1,7 +1,10 @@
 package org.gooru.navigatemap.processor.data;
 
+import java.util.Objects;
 import java.util.UUID;
 
+import org.gooru.navigatemap.constants.HttpConstants;
+import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.processor.context.ContextAttributes;
 
 import io.vertx.core.json.JsonObject;
@@ -82,10 +85,26 @@ public final class RequestContext {
         return (state == State.Continue);
     }
 
+    public boolean needToStartLesson() {
+        return (state == State.Start && currentItemId == null);
+    }
+
     private void validate() {
-        if ((courseId == null) || ((unitId == null || lessonId == null || currentItemId == null)
-            && state == State.Start)) {
-            throw new IllegalArgumentException("Invalid context");
+        if (courseId == null) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid course id");
+        }
+        if (((unitId == null || lessonId == null) && state == State.Start)) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
+                "Invalid context for Start flow");
+        }
+
+        if (pathId == 0 && state == State.Start) {
+            if (!Objects.equals(collectionId, currentItemId) || !Objects.equals(collectionType, currentItemType)
+                || !Objects.equals(collectionSubType, currentItemSubtype)) {
+                throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
+                    "Collection fields should be same as current item fields on main path");
+
+            }
         }
     }
 
@@ -98,24 +117,28 @@ public final class RequestContext {
     private static RequestContext buildFromJsonObject(JsonObject input) {
         RequestContext context = new RequestContext();
 
-        context.classId = toUuid(input, ContextAttributes.CLASS_ID);
-        context.courseId = toUuid(input, ContextAttributes.COURSE_ID);
-        context.unitId = toUuid(input, ContextAttributes.UNIT_ID);
-        context.lessonId = toUuid(input, ContextAttributes.LESSON_ID);
-        context.collectionId = toUuid(input, ContextAttributes.COLLECTION_ID);
-        context.currentItemId = toUuid(input, ContextAttributes.CURRENT_ITEM_ID);
-        context.pathId = input.getLong(ContextAttributes.PATH_ID);
-        context.scorePercent = input.getDouble(ContextAttributes.SCORE_PERCENT);
-        String value = input.getString(ContextAttributes.COLLECTION_TYPE);
-        context.collectionType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
-        value = input.getString(ContextAttributes.CURRENT_ITEM_TYPE);
-        context.currentItemType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
-        value = input.getString(ContextAttributes.COLLECTION_SUBTYPE);
-        context.collectionSubType = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
-        value = input.getString(ContextAttributes.CURRENT_ITEM_SUBTYPE);
-        context.currentItemSubtype = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
-        value = input.getString(ContextAttributes.STATE);
-        context.state = State.builder(value);
+        try {
+            context.classId = toUuid(input, ContextAttributes.CLASS_ID);
+            context.courseId = toUuid(input, ContextAttributes.COURSE_ID);
+            context.unitId = toUuid(input, ContextAttributes.UNIT_ID);
+            context.lessonId = toUuid(input, ContextAttributes.LESSON_ID);
+            context.collectionId = toUuid(input, ContextAttributes.COLLECTION_ID);
+            context.currentItemId = toUuid(input, ContextAttributes.CURRENT_ITEM_ID);
+            context.pathId = input.getLong(ContextAttributes.PATH_ID);
+            context.scorePercent = input.getDouble(ContextAttributes.SCORE_PERCENT);
+            String value = input.getString(ContextAttributes.COLLECTION_TYPE);
+            context.collectionType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
+            value = input.getString(ContextAttributes.CURRENT_ITEM_TYPE);
+            context.currentItemType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
+            value = input.getString(ContextAttributes.COLLECTION_SUBTYPE);
+            context.collectionSubType = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
+            value = input.getString(ContextAttributes.CURRENT_ITEM_SUBTYPE);
+            context.currentItemSubtype = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
+            value = input.getString(ContextAttributes.STATE);
+            context.state = State.builder(value);
+        } catch (IllegalArgumentException e) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid UUID in context");
+        }
 
         return context;
     }

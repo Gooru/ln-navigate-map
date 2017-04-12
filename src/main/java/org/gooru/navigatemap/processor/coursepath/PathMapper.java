@@ -23,18 +23,16 @@ public class PathMapper {
 
     public Future<NavigateProcessorContext> mapPath(NavigateProcessorContext npc) {
         Future<NavigateProcessorContext> future = Future.future();
-        try {
-            this.navigateProcessorContext = npc;
-            vertx.<NavigateProcessorContext>executeBlocking(pathMapperFuture -> {
-
+        this.navigateProcessorContext = npc;
+        vertx.<NavigateProcessorContext>executeBlocking(pathMapperFuture -> {
+            try {
                 Future<NavigateProcessorContext> resultFuture = startPathMapping();
-
                 resultFuture.setHandler(result -> pathMapperFuture.complete(result.result()));
-            }, pathMapResult -> future.complete(pathMapResult.result()));
-        } catch (Throwable throwable) {
-            LOGGER.warn("Error while mapping path", throwable);
-            future.fail(throwable);
-        }
+            } catch (Throwable throwable) {
+                LOGGER.warn("Error while mapping path", throwable);
+                future.fail(throwable);
+            }
+        }, pathMapResult -> future.complete(pathMapResult.result()));
         return future;
     }
 
