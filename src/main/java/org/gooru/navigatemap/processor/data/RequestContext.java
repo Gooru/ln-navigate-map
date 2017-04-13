@@ -141,7 +141,7 @@ public final class RequestContext {
             value = input.getString(ContextAttributes.STATE);
             context.state = State.builder(value);
         } catch (IllegalArgumentException e) {
-            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid UUID in context");
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
         return context;
