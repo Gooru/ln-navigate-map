@@ -17,7 +17,7 @@ class ContentFinderNoSuggestionsDelegate {
 
     ContentAddress findNextContentFromCULWithoutAlternatePaths(ContentAddress address) {
         List<ContentAddress> result;
-        if (address.getCollection() != null) {
+        if (address.getCollection() != null && !address.isOnAlternatePath()) {
             result = finderDao.findNextCollectionsInCUL(address.getCourse(), address.getUnit(), address.getLesson(),
                 address.getCollection());
         } else {

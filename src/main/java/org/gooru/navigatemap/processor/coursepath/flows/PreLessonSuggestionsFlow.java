@@ -80,6 +80,9 @@ final class PreLessonSuggestionsFlow implements Flow<NavigateProcessorContext> {
         if (npc.requestContext().getState() == State.Start) {
             return false;
         }
+        if (npc.getCurrentContentAddress().isOnAlternatePath()) {
+            return false;
+        }
         // Else infer. Do not care about previous or current lesson to be null or not. We just check if next content's
         // lesson is different from current one.
         // NOTE: When we bring in the lesson as back fill, this needs to be changed

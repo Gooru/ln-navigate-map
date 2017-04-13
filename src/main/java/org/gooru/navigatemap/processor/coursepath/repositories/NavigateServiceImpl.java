@@ -175,6 +175,7 @@ final class NavigateServiceImpl implements NavigateService {
                 finderContext.setCurrentItem(targetPath.getTargetCollection(),
                     CollectionType.builder(targetPath.getTargetContentType()),
                     CollectionSubtype.builder(targetPath.getTargetContentSubtype()));
+                finderContext.getCurrentAddress().setPathId(targetPath.getId());
                 return finderContext.getCurrentAddress();
             }
         }

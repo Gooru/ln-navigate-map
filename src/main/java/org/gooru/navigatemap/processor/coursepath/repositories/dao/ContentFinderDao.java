@@ -184,7 +184,7 @@ public interface ContentFinderDao {
                   + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype from "
                   + "user_navigation_paths where ctx_course_id = :courseId::uuid and ctx_unit_id = :unitId::uuid and "
                   + "ctx_lesson_id = :lessonId::uuid and ctx_user_id = :userId::uuid and ctx_class_id is null and "
-                  + "target_content_subtype = 'post-test'")
+                  + "target_content_subtype = 'pre-test'")
     List<AlternatePath> findPreTestAlternatePathsForCULAndUser(@Bind("courseId") String course,
         @Bind("unitId") String unit, @Bind("lessonId") String lesson, @Bind("userId") String user);
 

@@ -68,6 +68,9 @@ final class PostLessonSuggestionsFlow implements Flow<NavigateProcessorContext> 
         if (npc.requestContext().getState() == State.Start || npc.requestContext().getState() == State.Continue) {
             return false;
         }
+        if (npc.getCurrentContentAddress().isOnAlternatePath()) {
+            return false;
+        }
         // Do not care about next lesson to be null or not. We just check if current content's lesson is
         // different from current one and we have not suggested already.
         // NOTE: When we bring in the lesson as back fill, this may be changed
