@@ -35,9 +35,11 @@ public final class RouteResponseUtility {
         final HttpResponseWrapperException exception) {
         String body = Objects.toString(exception.getBody(), null);
         if (body != null) {
-            routingContext.response().setStatusCode(exception.getStatus()).end(body);
+            routingContext.response().setStatusCode(exception.getStatus())
+                .putHeader(HttpConstants.HEADER_CONTENT_TYPE, HttpConstants.CONTENT_TYPE_JSON).end(body);
         } else {
-            routingContext.response().setStatusCode(exception.getStatus()).end();
+            routingContext.response().setStatusCode(exception.getStatus())
+                .putHeader(HttpConstants.HEADER_CONTENT_TYPE, HttpConstants.CONTENT_TYPE_JSON).end();
         }
     }
 
@@ -46,10 +48,12 @@ public final class RouteResponseUtility {
         if (reply.succeeded()) {
             if (reply.result() != null && reply.result().body() != null && !reply.result().body().isEmpty()) {
                 routingContext.response().setStatusCode(HttpConstants.HttpStatus.SUCCESS.getCode())
+                    .putHeader(HttpConstants.HEADER_CONTENT_TYPE, HttpConstants.CONTENT_TYPE_JSON)
                     .end(reply.result().body().toString());
             } else {
                 // Communication with Redis successful but we do not have anything as context
                 routingContext.response().setStatusCode(HttpConstants.HttpStatus.SUCCESS.getCode())
+                    .putHeader(HttpConstants.HEADER_CONTENT_TYPE, HttpConstants.CONTENT_TYPE_JSON)
                     .end(new JsonObject().toString());
             }
         } else {
