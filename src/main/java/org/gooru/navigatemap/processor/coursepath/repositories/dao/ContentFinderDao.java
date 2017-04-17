@@ -197,4 +197,9 @@ public interface ContentFinderDao {
                   + "lesson_id = :lessonId::uuid and is_deleted = false")
     long validateCUL(@Bind("courseId") String courseId, @Bind("unitId") String unitId,
         @Bind("lessonId") String lessonId);
+
+    @SqlQuery("select count(*) from user_navigation_paths where id = :pathId and target_collection_id = "
+                  + ":collectionId::uuid and target_content_type = :contentType")
+    long validatePath(@Bind("pathId") Long pathId, @Bind("collectionId") String collection,
+        @Bind("contentType") String contentType);
 }

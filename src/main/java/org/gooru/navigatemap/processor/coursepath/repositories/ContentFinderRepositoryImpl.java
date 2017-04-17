@@ -154,10 +154,17 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
         if (contentAddress.getCollection() == null) {
             validRecordCount =
                 dao.validateCUL(contentAddress.getCourse(), contentAddress.getUnit(), contentAddress.getLesson());
-        } else {
+        } else if (!contentAddress.isOnAlternatePath()) {
             validRecordCount =
                 dao.validateCULC(contentAddress.getCourse(), contentAddress.getUnit(), contentAddress.getLesson(),
                     contentAddress.getCollection());
+        } else if (contentAddress.isOnAlternatePath()) {
+            validRecordCount =
+                dao.validateCUL(contentAddress.getCourse(), contentAddress.getUnit(), contentAddress.getLesson());
+            if (validRecordCount > 0) {
+                validRecordCount = dao.validatePath(contentAddress.getPathId(), contentAddress.getCollection(),
+                    contentAddress.getCollectionType().getName());
+            }
         }
         return (validRecordCount > 0);
     }
