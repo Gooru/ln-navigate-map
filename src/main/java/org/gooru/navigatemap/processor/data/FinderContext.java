@@ -51,7 +51,6 @@ public final class FinderContext {
     public void setCurrentItem(UUID itemId, CollectionType itemType, CollectionSubtype itemSubtype) {
         Objects.requireNonNull(itemId);
         Objects.requireNonNull(itemType);
-        Objects.requireNonNull(itemSubtype);
 
         currentItemId = itemId;
         currentItemType = itemType;

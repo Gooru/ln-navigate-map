@@ -35,7 +35,7 @@ public final class ResponseContext {
         this.collectionSubType = context.getCollectionSubType();
         this.state = context.getState();
         this.pathId = context.getPathId();
-        this.scorePercent = context.getScorePercent();
+        this.scorePercent = 0D;
         this.currentItemId = context.getCurrentItemId();
         this.currentItemType = context.getCurrentItemType();
         this.currentItemSubtype = context.getCurrentItemSubtype();
@@ -82,7 +82,7 @@ public final class ResponseContext {
         this.collectionId =
             contentAddress.getCollection() == null ? null : UUID.fromString(contentAddress.getCollection());
         this.currentItemId = null;
-        this.currentItemType = currentItemType;
+        this.currentItemType = null;
         this.collectionType = contentAddress.getCollectionType();
         this.currentItemSubtype = null;
         this.collectionSubType = contentAddress.getCollectionSubtype();
