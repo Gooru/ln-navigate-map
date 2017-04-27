@@ -76,4 +76,8 @@ public final class ContentAddress {
         return course != null && unit != null && lesson != null && collection != null;
     }
 
+    public boolean isOnAlternatePathAtLessonEnd() {
+        return isOnAlternatePath() && collectionSubtype != null && (CollectionSubtype.BenchMark == collectionSubtype
+            || CollectionSubtype.PostTest == collectionSubtype);
+    }
 }

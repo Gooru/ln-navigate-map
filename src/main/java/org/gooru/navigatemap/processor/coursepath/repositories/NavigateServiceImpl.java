@@ -110,7 +110,9 @@ final class NavigateServiceImpl implements NavigateService {
                 AlternatePath targetPath = findATargetAlternatePath(filteredChildPaths);
                 finderContext.setCurrentItem(targetPath.getTargetCollection(),
                     CollectionType.builder(targetPath.getTargetContentType()),
-                    CollectionSubtype.builder(targetPath.getTargetContentSubtype()));
+                    targetPath.getTargetContentSubtype() != null ?
+                        CollectionSubtype.builder(targetPath.getTargetContentSubtype()) : null);
+                finderContext.getCurrentAddress().setPathId(targetPath.getId());
                 return finderContext.getCurrentAddress();
             }
         }
@@ -144,6 +146,7 @@ final class NavigateServiceImpl implements NavigateService {
                 finderContext.setCurrentItem(targetPath.getTargetCollection(),
                     CollectionType.builder(targetPath.getTargetContentType()),
                     CollectionSubtype.builder(targetPath.getTargetContentSubtype()));
+                finderContext.getCurrentAddress().setPathId(targetPath.getId());
                 return finderContext.getCurrentAddress();
             }
         }

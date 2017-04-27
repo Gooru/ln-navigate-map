@@ -20,6 +20,9 @@ class ContentFinderNoSuggestionsDelegate {
         if (address.getCollection() != null && !address.isOnAlternatePath()) {
             result = finderDao.findNextCollectionsInCUL(address.getCourse(), address.getUnit(), address.getLesson(),
                 address.getCollection());
+        } else if (address.isOnAlternatePathAtLessonEnd()) {
+            // Trigger find next valid content flow
+            result = null;
         } else {
             result = finderDao.findFirstCollectionInLesson(address.getCourse(), address.getUnit(), address.getLesson());
         }
