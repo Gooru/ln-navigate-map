@@ -1,5 +1,6 @@
 package org.gooru.navigatemap.processor.coursepath.flows;
 
+import org.gooru.navigatemap.processor.coursepath.flows.strategy.StrategySelector;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.State;
 import org.gooru.navigatemap.responses.ExecutionResult;
@@ -20,10 +21,12 @@ public final class Workflow {
         ExecutionResult<NavigateProcessorContext> result =
             new ExecutionResult<>(npc, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
 
-        result = FlowBuilder.buildPostContentSuggestionsFlow().apply(result);
-        result = FlowBuilder.buildContentFinderFlow().apply(result);
-        result = FlowBuilder.buildPostLessonSuggestionsFlow().apply(result);
-        result = FlowBuilder.buildPreLessonSuggestionsFlow().apply(result);
+        FlowBuilder flowBuilder = new StrategySelector(npc).findFlowBuilderBasedOnStrategy();
+
+        result = flowBuilder.buildPostContentSuggestionsFlow().apply(result);
+        result = flowBuilder.buildContentFinderFlow().apply(result);
+        result = flowBuilder.buildPostLessonSuggestionsFlow().apply(result);
+        result = flowBuilder.buildPreLessonSuggestionsFlow().apply(result);
 
         if (!result.isCompleted()) {
             LOGGER.warn("Workflow not completed, putting in done");

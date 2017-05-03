@@ -1,7 +1,8 @@
-package org.gooru.navigatemap.processor.coursepath.flows;
+package org.gooru.navigatemap.processor.coursepath.flows.strategy.global;
 
 import java.util.Objects;
 
+import org.gooru.navigatemap.processor.coursepath.flows.Flow;
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.State;
