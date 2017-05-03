@@ -169,6 +169,13 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
         return (validRecordCount > 0);
     }
 
+    @Override
+    public String findCourseVersion(UUID course) {
+        finderDao = dbi.onDemand(ContentFinderDao.class);
+
+        return finderDao.findCourseVersion(course.toString());
+    }
+
     private static Set<String> parseLessonTaxonomy(ContentAddress contentAddress, String lessonTaxonomy) {
         if (lessonTaxonomy != null && !lessonTaxonomy.isEmpty()) {
             // Lesson taxonomy is supposed to be a JsonObject with keys as competencies' internal code

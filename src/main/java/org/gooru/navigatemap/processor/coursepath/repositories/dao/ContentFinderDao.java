@@ -202,4 +202,8 @@ public interface ContentFinderDao {
                   + ":collectionId::uuid and target_content_type = :contentType")
     long validatePath(@Bind("pathId") Long pathId, @Bind("collectionId") String collection,
         @Bind("contentType") String contentType);
+
+    @SqlQuery("select version from course where id = :courseId::uuid")
+    String findCourseVersion(@Bind("courseId") String courseId);
+
 }
