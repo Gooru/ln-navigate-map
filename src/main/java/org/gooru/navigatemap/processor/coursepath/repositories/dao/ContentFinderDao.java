@@ -136,14 +136,14 @@ public interface ContentFinderDao {
     @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
                   + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
                   + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype from "
-                  + "user_navigation_paths where parent_path_id = :id and target_content_subtype = 'benchmark'")
+                  + "user_navigation_paths where parent_path_id = :id and target_content_subtype = 'benchmark' order by created_at desc")
     List<AlternatePath> findBASubPathsForGivenPath(@Bind("id") Long id);
 
     @Mapper(AlternatePathMapper.class)
     @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
                   + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
                   + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype from "
-                  + "user_navigation_paths where parent_path_id = :id and target_content_type = 'collection'")
+                  + "user_navigation_paths where parent_path_id = :id and target_content_type = 'collection' order by created_at desc")
     List<AlternatePath> findBackfillsSubPathsForGivenPath(@Bind("id") Long id);
 
     @Mapper(AlternatePathMapper.class)
@@ -152,7 +152,7 @@ public interface ContentFinderDao {
                   + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype from "
                   + "user_navigation_paths where ctx_course_id = :courseId::uuid and ctx_unit_id = :unitId::uuid and "
                   + "ctx_lesson_id = :lessonId::uuid and ctx_user_id = :userId::uuid and ctx_class_id = "
-                  + ":classId::uuid and target_content_subtype = 'post-test'")
+                  + ":classId::uuid and target_content_subtype = 'post-test' order by created_at desc")
     List<AlternatePath> findPostTestAlternatePathsForCULAndUserInClass(@Bind("courseId") String course,
         @Bind("unitId") String unit, @Bind("lessonId") String lesson, @Bind("userId") String user,
         @Bind("classId") String classId);
@@ -163,7 +163,7 @@ public interface ContentFinderDao {
                   + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype from "
                   + "user_navigation_paths where ctx_course_id = :courseId::uuid and ctx_unit_id = :unitId::uuid and "
                   + "ctx_lesson_id = :lessonId::uuid and ctx_user_id = :userId::uuid and ctx_class_id is null and "
-                  + "target_content_subtype = 'post-test'")
+                  + "target_content_subtype = 'post-test' order by created_at desc")
     List<AlternatePath> findPostTestAlternatePathsForCULAndUser(@Bind("courseId") String course,
         @Bind("unitId") String unit, @Bind("lessonId") String lesson, @Bind("userId") String user);
 
@@ -173,7 +173,7 @@ public interface ContentFinderDao {
                   + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype from "
                   + "user_navigation_paths where ctx_course_id = :courseId::uuid and ctx_unit_id = :unitId::uuid and "
                   + "ctx_lesson_id = :lessonId::uuid and ctx_user_id = :userId::uuid and ctx_class_id = "
-                  + ":classId::uuid and target_content_subtype = 'pre-test'")
+                  + ":classId::uuid and target_content_subtype = 'pre-test' order by created_at desc")
     List<AlternatePath> findPreTestAlternatePathsForCULAndUserInClass(@Bind("courseId") String course,
         @Bind("unitId") String unit, @Bind("lessonId") String lesson, @Bind("userId") String user,
         @Bind("classId") String classId);
@@ -184,7 +184,7 @@ public interface ContentFinderDao {
                   + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype from "
                   + "user_navigation_paths where ctx_course_id = :courseId::uuid and ctx_unit_id = :unitId::uuid and "
                   + "ctx_lesson_id = :lessonId::uuid and ctx_user_id = :userId::uuid and ctx_class_id is null and "
-                  + "target_content_subtype = 'pre-test'")
+                  + "target_content_subtype = 'pre-test' order by created_at desc")
     List<AlternatePath> findPreTestAlternatePathsForCULAndUser(@Bind("courseId") String course,
         @Bind("unitId") String unit, @Bind("lessonId") String lesson, @Bind("userId") String user);
 
