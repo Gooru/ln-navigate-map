@@ -21,11 +21,16 @@ import io.vertx.core.json.JsonObject;
 public final class DbLookupUtility {
     private List<ScoreRange> scoreRanges;
     private Float thresholdForBA;
+    private Float thresholdForCompetencyCompletionBasedOnAssessment;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DbLookupUtility.class);
 
     public Float postTestThresholdForBA() {
         return thresholdForBA;
+    }
+
+    public Float thresholdForCompetencyCompletionBasedOnAssessment() {
+        return thresholdForCompetencyCompletionBasedOnAssessment;
     }
 
     public String preTestScoreRangeNameByScore(double score) {
@@ -53,10 +58,19 @@ public final class DbLookupUtility {
                 if (!initialized) {
                     initializeScoreRanges(defaultDataSource);
                     initializeThresholdForBA(defaultDataSource);
+                    initializeThresholdForCompetencyCompletionBasedOnAssessment(defaultDataSource);
                     initialized = true;
                 }
             }
         }
+    }
+
+    private void initializeThresholdForCompetencyCompletionBasedOnAssessment(DataSource dataSource) {
+        Handle handle = DBI.open(dataSource);
+        String threshold = Queries.getThresholdForCompetencyCompletionBasedOnAssessment(handle);
+        thresholdForCompetencyCompletionBasedOnAssessment = Float.valueOf(threshold);
+        LOGGER.debug("Competency completion threshold for assessment initialized with: {}",
+            thresholdForCompetencyCompletionBasedOnAssessment);
     }
 
     private void initializeThresholdForBA(DataSource dataSource) {
@@ -115,6 +129,8 @@ public final class DbLookupUtility {
         private static final String KEY = "key";
         private static final String PRE_TEST_SCORE_RANGES_KEY = "pre-test-score-ranges";
         private static final String POST_TEST_THRESHOLD_SCORE_FOR_BA_KEY = "post-test-threshold-score-for-BA";
+        private static final String COMPETENCY_COMPLETION_THRESHOLD_FOR_ASSESSMENT =
+            "competency-completion-threshold-for-assessment";
 
         public static String getPreTestScoreRanges(Handle handle) {
             return handle.createQuery(DEFAULT_LOOKUP_QUERY).bind(KEY, PRE_TEST_SCORE_RANGES_KEY)
@@ -123,6 +139,11 @@ public final class DbLookupUtility {
 
         public static String getPostTestThresholdScoreForBa(Handle handle) {
             return handle.createQuery(DEFAULT_LOOKUP_QUERY).bind(KEY, POST_TEST_THRESHOLD_SCORE_FOR_BA_KEY)
+                .map(StringColumnMapper.INSTANCE).first();
+        }
+
+        public static String getThresholdForCompetencyCompletionBasedOnAssessment(Handle handle) {
+            return handle.createQuery(DEFAULT_LOOKUP_QUERY).bind(KEY, COMPETENCY_COMPLETION_THRESHOLD_FOR_ASSESSMENT)
                 .map(StringColumnMapper.INSTANCE).first();
         }
     }
