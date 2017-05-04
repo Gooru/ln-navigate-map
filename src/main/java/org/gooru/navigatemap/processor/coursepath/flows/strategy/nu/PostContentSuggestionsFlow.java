@@ -6,8 +6,8 @@ import org.gooru.navigatemap.app.components.utilities.DbLookupUtility;
 import org.gooru.navigatemap.processor.coursepath.flows.Flow;
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentFinderRepository;
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
-import org.gooru.navigatemap.processor.data.CollectionSubtype;
-import org.gooru.navigatemap.processor.data.CollectionType;
+import org.gooru.navigatemap.processor.data.CurrentItemSubtype;
+import org.gooru.navigatemap.processor.data.CurrentItemType;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.State;
 import org.gooru.navigatemap.responses.ExecutionResult;
@@ -48,14 +48,14 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
     }
 
     private boolean userDidAPreTest() {
-        return npc.requestContext().getCurrentItemType() == CollectionType.Assessment
-            && npc.requestContext().getCurrentItemSubtype() == CollectionSubtype.PreTest
+        return npc.requestContext().getCurrentItemType() == CurrentItemType.Assessment
+            && npc.requestContext().getCurrentItemSubtype() == CurrentItemSubtype.PreTest
             && npc.requestContext().getState() == State.ContentServed;
     }
 
     private boolean userDidAPostTest() {
-        return npc.requestContext().getCurrentItemType() == CollectionType.Assessment
-            && npc.requestContext().getCurrentItemSubtype() == CollectionSubtype.PostTest
+        return npc.requestContext().getCurrentItemType() == CurrentItemType.Assessment
+            && npc.requestContext().getCurrentItemSubtype() == CurrentItemSubtype.PostTest
             && npc.requestContext().getState() == State.ContentServed;
     }
 

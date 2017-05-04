@@ -32,6 +32,7 @@ public class NavigationVerticle extends AbstractVerticle {
     private HttpClient client;
     private String assessmentUri;
     private String collectionUri;
+    private String resourceUri;
 
     @Override
     public void start(Future<Void> startFuture) throws Exception {
@@ -52,6 +53,8 @@ public class NavigationVerticle extends AbstractVerticle {
         Objects.requireNonNull(assessmentUri);
         collectionUri = config().getString("collection.fetch.uri");
         Objects.requireNonNull(collectionUri);
+        resourceUri = config().getString("resource.fetch.uri");
+        Objects.requireNonNull(resourceUri);
 
         client = vertx.createHttpClient(new HttpClientOptions().setConnectTimeout(timeout).setMaxPoolSize(poolSize));
     }
@@ -73,7 +76,8 @@ public class NavigationVerticle extends AbstractVerticle {
         new ContextProcessor(vertx).fetchContext(message)
             .compose(navigateProcessorContext -> new PathMapper(vertx).mapPath(navigateProcessorContext)).compose(
             ar -> new ContentServer(vertx, future,
-                new RemoteAssessmentCollectionFetcher(client, assessmentUri, collectionUri)).serveContent(ar), future);
+                new RemoteAssessmentCollectionFetcher(client, assessmentUri, collectionUri, resourceUri))
+                .serveContent(ar), future);
 
         future.setHandler(event -> {
             if (event.succeeded()) {

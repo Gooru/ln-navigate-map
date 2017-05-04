@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.gooru.navigatemap.constants.Constants;
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
-import org.gooru.navigatemap.processor.data.CollectionType;
+import org.gooru.navigatemap.processor.data.CurrentItemType;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.State;
 import org.slf4j.Logger;
@@ -53,16 +53,39 @@ public class ContentServer {
 
             LOGGER.debug("Will serve content (assessment/collection)");
 
-            if (npc.responseContext().getCurrentItemType() == CollectionType.Collection) {
+            if (npc.responseContext().getCurrentItemType() == CurrentItemType.Collection) {
                 serveCollection();
-            } else if (npc.responseContext().getCurrentItemType() == CollectionType.Assessment) {
+            } else if (npc.responseContext().getCurrentItemType() == CurrentItemType.Assessment) {
                 serveAssessment();
+            } else if (npc.responseContext().getCurrentItemType() == CurrentItemType.Resource) {
+                serveResources();
             } else {
                 // TODO: What to do??
                 LOGGER.warn("Invalid content to serve, not sure what to do");
                 LOGGER.debug(npc.responseContext().toJson().toString());
                 completionFuture.complete(new JsonObject());
             }
+        }
+    }
+
+    private void serveResources() {
+        if (AppConfiguration.getInstance().serveContentDetails()) {
+            LOGGER.debug("Will fetch content details from remote servers");
+
+            fetcher.fetch(navigateProcessorContext.responseContext(),
+                navigateProcessorContext.navigateMessageContext().getSessionToken())
+                .setHandler(ar -> completionFuture.complete(ar.result()));
+        } else {
+            LOGGER.debug("Will serve content without details");
+            JsonObject result = ResponseBuilder.createSuccessResponseBuilder(navigateProcessorContext.responseContext(),
+                new JsonObject()
+                    .put("id", Objects.toString(navigateProcessorContext.responseContext().getCurrentItemId(), null))
+                    .put("type", Objects
+                        .toString(navigateProcessorContext.responseContext().getCurrentItemType().getName(), null))
+                    .put("subtype",
+                        Objects.toString(navigateProcessorContext.responseContext().getCurrentItemSubtype(), null)))
+                .buildResponse();
+            completionFuture.complete(result);
         }
     }
 

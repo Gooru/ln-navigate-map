@@ -22,8 +22,8 @@ public final class RequestContext {
     private CollectionSubtype collectionSubType;
 
     private UUID currentItemId;
-    private CollectionType currentItemType;
-    private CollectionSubtype currentItemSubtype;
+    private CurrentItemType currentItemType;
+    private CurrentItemSubtype currentItemSubtype;
 
     private State state;
     private Long pathId;
@@ -73,11 +73,11 @@ public final class RequestContext {
         return currentItemId;
     }
 
-    public CollectionType getCurrentItemType() {
+    public CurrentItemType getCurrentItemType() {
         return currentItemType;
     }
 
-    public CollectionSubtype getCurrentItemSubtype() {
+    public CurrentItemSubtype getCurrentItemSubtype() {
         return currentItemSubtype;
     }
 
@@ -133,11 +133,11 @@ public final class RequestContext {
             String value = input.getString(ContextAttributes.COLLECTION_TYPE);
             context.collectionType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
             value = input.getString(ContextAttributes.CURRENT_ITEM_TYPE);
-            context.currentItemType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
+            context.currentItemType = (value != null && !value.isEmpty()) ? CurrentItemType.builder(value) : null;
             value = input.getString(ContextAttributes.COLLECTION_SUBTYPE);
             context.collectionSubType = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
             value = input.getString(ContextAttributes.CURRENT_ITEM_SUBTYPE);
-            context.currentItemSubtype = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
+            context.currentItemSubtype = (value != null && !value.isEmpty()) ? CurrentItemSubtype.builder(value) : null;
             value = input.getString(ContextAttributes.STATE);
             context.state = State.builder(value);
         } catch (IllegalArgumentException e) {

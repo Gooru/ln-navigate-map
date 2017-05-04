@@ -19,8 +19,8 @@ public final class ResponseContext {
     private CollectionType collectionType;
     private CollectionSubtype collectionSubType;
     private UUID currentItemId;
-    private CollectionType currentItemType;
-    private CollectionSubtype currentItemSubtype;
+    private CurrentItemType currentItemType;
+    private CurrentItemSubtype currentItemSubtype;
     private State state;
     private Long pathId;
     private final Double scorePercent;
@@ -69,9 +69,11 @@ public final class ResponseContext {
             contentAddress.getCollection() == null ? null : UUID.fromString(contentAddress.getCollection());
         this.currentItemId =
             contentAddress.getCollection() == null ? null : UUID.fromString(contentAddress.getCollection());
-        this.currentItemType = contentAddress.getCollectionType();
+        this.currentItemType = contentAddress.getCollectionType() == null ? null :
+            CurrentItemType.builder(contentAddress.getCollectionType().getName());
         this.collectionType = contentAddress.getCollectionType();
-        this.currentItemSubtype = contentAddress.getCollectionSubtype();
+        this.currentItemSubtype = contentAddress.getCollectionSubtype() == null ? null :
+            CurrentItemSubtype.builder(contentAddress.getCollectionSubtype().getName());
         this.collectionSubType = contentAddress.getCollectionSubtype();
         this.pathId = contentAddress.getPathId();
     }
@@ -90,6 +92,12 @@ public final class ResponseContext {
     }
 
     public void setCurrentItemAddress(UUID itemId, CollectionType itemType, CollectionSubtype itemSubtype) {
+        this.currentItemId = itemId;
+        this.currentItemType = itemType == null ? null : CurrentItemType.builder(itemType.getName());
+        this.currentItemSubtype = itemSubtype == null ? null : CurrentItemSubtype.builder(itemSubtype.getName());
+    }
+
+    public void setCurrentItemAddress(UUID itemId, CurrentItemType itemType, CurrentItemSubtype itemSubtype) {
         this.currentItemId = itemId;
         this.currentItemType = itemType;
         this.currentItemSubtype = itemSubtype;
@@ -171,19 +179,28 @@ public final class ResponseContext {
         this.currentItemId = currentItemId;
     }
 
-    public CollectionType getCurrentItemType() {
+    public CurrentItemType getCurrentItemType() {
         return currentItemType;
     }
 
     public void setCurrentItemType(CollectionType currentItemType) {
+        this.currentItemType = currentItemType == null ? null : CurrentItemType.builder(currentItemType.getName());
+    }
+
+    public void setCurrentItemType(CurrentItemType currentItemType) {
         this.currentItemType = currentItemType;
     }
 
-    public CollectionSubtype getCurrentItemSubtype() {
+    public CurrentItemSubtype getCurrentItemSubtype() {
         return currentItemSubtype;
     }
 
     public void setCurrentItemSubtype(CollectionSubtype currentItemSubtype) {
+        this.currentItemSubtype =
+            currentItemSubtype == null ? null : CurrentItemSubtype.builder(currentItemSubtype.getName());
+    }
+
+    public void setCurrentItemSubtype(CurrentItemSubtype currentItemSubtype) {
         this.currentItemSubtype = currentItemSubtype;
     }
 }

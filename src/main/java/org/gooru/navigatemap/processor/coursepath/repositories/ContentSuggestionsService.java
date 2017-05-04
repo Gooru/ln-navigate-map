@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.gooru.navigatemap.processor.data.ContentAddress;
-import org.gooru.navigatemap.processor.data.SuggestionCard4Collection;
+import org.gooru.navigatemap.processor.data.SuggestionCard;
 import org.gooru.navigatemap.processor.data.SuggestionContext;
 
 /**
@@ -15,5 +15,7 @@ public interface ContentSuggestionsService {
 
     SuggestionContext findPostLessonSuggestions(ContentAddress contentAddress, String userId);
 
-    List<SuggestionCard4Collection> suggestionCardForCollections(Set<String> collections);
+    List<SuggestionCard> suggestionCardForCollections(Set<String> collections);
+
+    List<SuggestionCard> suggestionCardForResources(Set<String> resources);
 }

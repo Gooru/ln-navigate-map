@@ -11,6 +11,7 @@ import java.util.Set;
 public final class SuggestionContext {
     private final Set<String> assessments = new HashSet<>();
     private final Set<String> collections = new HashSet<>();
+    private final Set<String> resources = new HashSet<>();
 
     public void addAssessment(String id) {
         assessments.add(id);
@@ -43,7 +44,7 @@ public final class SuggestionContext {
     }
 
     public boolean hasSuggestions() {
-        return (!assessments.isEmpty() || !collections.isEmpty());
+        return (!assessments.isEmpty() || !collections.isEmpty() || !resources.isEmpty());
     }
 
     public boolean hasAssessmentsSuggested() {
@@ -62,6 +63,29 @@ public final class SuggestionContext {
         return Collections.unmodifiableSet(collections);
     }
 
+    public boolean hasResourcesSuggested() {
+        return !resources.isEmpty();
+    }
+
+    public Set<String> getResources() {
+        return Collections.unmodifiableSet(resources);
+    }
+
+    public void addResources(Set<String> resourcesToSuggest) {
+        if (resourcesToSuggest.isEmpty()) {
+            return;
+        }
+        resources.addAll(resourcesToSuggest);
+    }
+
+    public void addResource(String id) {
+        resources.add(id);
+    }
+
+    public void removeResource(String id) {
+        resources.remove(id);
+    }
+
     public static SuggestionContext buildSuggestionContextWithAssessments(List<String> suggestedAssessments) {
         SuggestionContext suggestions = new SuggestionContext();
         if (suggestedAssessments != null && !suggestedAssessments.isEmpty()) {
@@ -75,6 +99,15 @@ public final class SuggestionContext {
         SuggestionContext suggestions = new SuggestionContext();
         if (suggestedCollections != null && !suggestedCollections.isEmpty()) {
             Set<String> suggestedSet = new HashSet<>(suggestedCollections);
+            suggestions.addCollections(suggestedSet);
+        }
+        return suggestions;
+    }
+
+    public static SuggestionContext buildSuggestionContextWithResources(List<String> suggestedResources) {
+        SuggestionContext suggestions = new SuggestionContext();
+        if (suggestedResources != null && !suggestedResources.isEmpty()) {
+            Set<String> suggestedSet = new HashSet<>(suggestedResources);
             suggestions.addCollections(suggestedSet);
         }
         return suggestions;
