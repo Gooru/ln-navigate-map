@@ -62,7 +62,7 @@ public final class ResponseContext {
         return context;
     }
 
-    public void setContentAddress(ContentAddress contentAddress) {
+    public void setContentAddressWithItemFromCollection(ContentAddress contentAddress) {
         this.unitId = UUID.fromString(contentAddress.getUnit());
         this.lessonId = UUID.fromString(contentAddress.getLesson());
         this.collectionId =
@@ -75,6 +75,23 @@ public final class ResponseContext {
         this.currentItemSubtype = contentAddress.getCollectionSubtype() == null ? null :
             CurrentItemSubtype.builder(contentAddress.getCollectionSubtype().getName());
         this.collectionSubType = contentAddress.getCollectionSubtype();
+        this.pathId = contentAddress.getPathId();
+    }
+
+    public void setContentAddress(ContentAddress contentAddress) {
+        this.unitId = UUID.fromString(contentAddress.getUnit());
+        this.lessonId = UUID.fromString(contentAddress.getLesson());
+
+        this.collectionId =
+            contentAddress.getCollection() == null ? null : UUID.fromString(contentAddress.getCollection());
+        this.collectionType = contentAddress.getCollectionType();
+        this.collectionSubType = contentAddress.getCollectionSubtype();
+
+        this.currentItemId =
+            contentAddress.getCurrentItem() == null ? null : UUID.fromString(contentAddress.getCurrentItem());
+        this.currentItemType = contentAddress.getCurrentItemType();
+        this.currentItemSubtype = contentAddress.getCurrentItemSubtype();
+
         this.pathId = contentAddress.getPathId();
     }
 

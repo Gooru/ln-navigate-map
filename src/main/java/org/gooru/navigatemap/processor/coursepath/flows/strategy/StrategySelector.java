@@ -7,6 +7,8 @@ import org.gooru.navigatemap.processor.coursepath.flows.strategy.global.GlobalFl
 import org.gooru.navigatemap.processor.coursepath.flows.strategy.nu.NuFlowBuilder;
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ashish on 3/5/17.
@@ -15,6 +17,7 @@ public final class StrategySelector {
 
     private final NavigateProcessorContext npc;
     private static final String NU_VERSION = "3.0-nu";
+    private static final Logger LOGGER = LoggerFactory.getLogger(StrategySelector.class);
 
     public StrategySelector(NavigateProcessorContext npc) {
         this.npc = npc;
@@ -22,8 +25,10 @@ public final class StrategySelector {
 
     public FlowBuilder findFlowBuilderBasedOnStrategy() {
         if (nuStrategyApplicable()) {
+            LOGGER.debug("Selecting NU strategy");
             return new NuFlowBuilder();
         } else {
+            LOGGER.debug("Selecting Global strategy");
             return new GlobalFlowBuilder();
         }
     }

@@ -62,7 +62,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
             return fetchNextItem();
         } else {
             npc.setNextContextAddress(npc.getCurrentContentAddress());
-            npc.responseContext().setContentAddress(npc.getNextContentAddress());
+            npc.responseContext().setContentAddressWithItemFromCollection(npc.getNextContentAddress());
             markAsDone(State.ContentServed);
             return executionResult;
         }
@@ -86,7 +86,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
             if (contentAddress.getCollection() != null) {
                 npc.setNextContextAddress(contentAddress);
                 if (npc.suggestionsTurnedOff()) {
-                    npc.responseContext().setContentAddress(contentAddress);
+                    npc.responseContext().setContentAddressWithItemFromCollection(contentAddress);
                     markAsDone(State.ContentServed);
                 }
             } else {
@@ -107,7 +107,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
             LOGGER.debug("Found next item");
             npc.setNextContextAddress(contentAddress);
             if (finderContext.isStatusDone()) {
-                npc.responseContext().setContentAddress(contentAddress);
+                npc.responseContext().setContentAddressWithItemFromCollection(contentAddress);
                 npc.responseContext()
                     .setCurrentItemAddress(finderContext.getCurrentItemId(), finderContext.getCurrentItemType(),
                         finderContext.getCurrentItemSubtype());
@@ -132,7 +132,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
         if (contentAddress != null) {
             if (contentAddress.getCollection() != null) {
                 npc.setNextContextAddress(contentAddress);
-                npc.responseContext().setContentAddress(contentAddress);
+                npc.responseContext().setContentAddressWithItemFromCollection(contentAddress);
                 markAsDone(State.ContentServed);
             } else {
                 markAsDone(State.Done);

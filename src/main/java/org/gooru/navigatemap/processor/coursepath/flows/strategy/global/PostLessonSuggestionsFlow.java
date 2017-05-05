@@ -55,7 +55,7 @@ final class PostLessonSuggestionsFlow implements Flow<NavigateProcessorContext> 
     private void terminateFlowWithPostLessonSuggestions(SuggestionContext suggestions) {
         npc.getCtxSuggestions().addAssessments(suggestions.getAssessments());
         npc.getCtxSuggestions().addCollections(suggestions.getCollections());
-        npc.responseContext().setContentAddress(npc.getCurrentContentAddress());
+        npc.responseContext().setContentAddressWithItemFromCollection(npc.getCurrentContentAddress());
         markAsDone(State.LessonEndSuggested);
     }
 

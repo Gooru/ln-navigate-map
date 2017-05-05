@@ -11,6 +11,9 @@ public final class ContentAddress {
     private Long pathId;
     private CollectionType collectionType;
     private CollectionSubtype collectionSubtype;
+    private String currentItem;
+    private CurrentItemType currentItemType;
+    private CurrentItemSubtype currentItemSubtype;
 
     public String getCourse() {
         return course;
@@ -66,6 +69,30 @@ public final class ContentAddress {
 
     public void setPathId(Long pathId) {
         this.pathId = pathId;
+    }
+
+    public String getCurrentItem() {
+        return currentItem;
+    }
+
+    public void setCurrentItem(String currentItem) {
+        this.currentItem = currentItem;
+    }
+
+    public CurrentItemType getCurrentItemType() {
+        return currentItemType;
+    }
+
+    public void setCurrentItemType(CurrentItemType currentItemType) {
+        this.currentItemType = currentItemType;
+    }
+
+    public CurrentItemSubtype getCurrentItemSubtype() {
+        return currentItemSubtype;
+    }
+
+    public void setCurrentItemSubtype(CurrentItemSubtype currentItemSubtype) {
+        this.currentItemSubtype = currentItemSubtype;
     }
 
     public boolean isOnAlternatePath() {
