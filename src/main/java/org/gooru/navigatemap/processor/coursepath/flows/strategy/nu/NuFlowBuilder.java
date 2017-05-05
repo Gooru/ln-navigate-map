@@ -2,6 +2,7 @@ package org.gooru.navigatemap.processor.coursepath.flows.strategy.nu;
 
 import org.gooru.navigatemap.processor.coursepath.flows.Flow;
 import org.gooru.navigatemap.processor.coursepath.flows.FlowBuilder;
+import org.gooru.navigatemap.processor.coursepath.flows.strategy.NoopFlow;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 
 /**
@@ -18,11 +19,11 @@ public final class NuFlowBuilder implements FlowBuilder {
     }
 
     public Flow<NavigateProcessorContext> buildPostLessonSuggestionsFlow() {
-        return new PostLessonSuggestionsFlow();
+        return new NoopFlow();
     }
 
     public Flow<NavigateProcessorContext> buildPreLessonSuggestionsFlow() {
-        return new PreLessonSuggestionsFlow();
+        return new NoopFlow();
     }
 
 }
