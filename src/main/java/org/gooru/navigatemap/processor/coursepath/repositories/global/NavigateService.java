@@ -1,4 +1,4 @@
-package org.gooru.navigatemap.processor.coursepath.repositories;
+package org.gooru.navigatemap.processor.coursepath.repositories.global;
 
 import org.gooru.navigatemap.processor.data.ContentAddress;
 import org.gooru.navigatemap.processor.data.FinderContext;

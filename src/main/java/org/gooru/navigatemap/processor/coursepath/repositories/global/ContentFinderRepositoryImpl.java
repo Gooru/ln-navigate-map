@@ -1,7 +1,8 @@
-package org.gooru.navigatemap.processor.coursepath.repositories;
+package org.gooru.navigatemap.processor.coursepath.repositories.global;
 
 import java.util.*;
 
+import org.gooru.navigatemap.processor.coursepath.repositories.AbstractContentRepository;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
 import org.gooru.navigatemap.processor.data.AlternatePath;
 import org.gooru.navigatemap.processor.data.ContentAddress;

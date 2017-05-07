@@ -3,7 +3,7 @@ package org.gooru.navigatemap.processor.coursepath.flows.strategy.global;
 import java.util.Objects;
 
 import org.gooru.navigatemap.processor.coursepath.flows.Flow;
-import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
+import org.gooru.navigatemap.processor.coursepath.repositories.global.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.State;
 import org.gooru.navigatemap.processor.data.SuggestionContext;

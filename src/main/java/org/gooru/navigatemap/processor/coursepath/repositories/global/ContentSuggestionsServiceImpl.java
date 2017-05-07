@@ -1,4 +1,4 @@
-package org.gooru.navigatemap.processor.coursepath.repositories;
+package org.gooru.navigatemap.processor.coursepath.repositories.global;
 
 import java.util.ArrayList;
 import java.util.Collections;

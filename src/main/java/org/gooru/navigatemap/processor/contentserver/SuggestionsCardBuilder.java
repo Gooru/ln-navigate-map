@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.gooru.navigatemap.app.components.AppConfiguration;
-import org.gooru.navigatemap.processor.coursepath.repositories.ContentSuggestionsService;
+import org.gooru.navigatemap.processor.coursepath.repositories.global.ContentSuggestionsService;
 import org.gooru.navigatemap.processor.data.SuggestionCard;
 import org.gooru.navigatemap.processor.data.SuggestionContext;
 import org.slf4j.Logger;

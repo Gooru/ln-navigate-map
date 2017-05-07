@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.gooru.navigatemap.processor.coursepath.flows.FlowBuilder;
 import org.gooru.navigatemap.processor.coursepath.flows.strategy.global.GlobalFlowBuilder;
 import org.gooru.navigatemap.processor.coursepath.flows.strategy.nu.NuFlowBuilder;
-import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
+import org.gooru.navigatemap.processor.coursepath.repositories.global.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

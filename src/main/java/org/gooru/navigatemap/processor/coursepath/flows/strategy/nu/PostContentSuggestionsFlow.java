@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.gooru.navigatemap.app.components.utilities.DbLookupUtility;
 import org.gooru.navigatemap.processor.coursepath.flows.Flow;
-import org.gooru.navigatemap.processor.coursepath.repositories.ContentFinderRepository;
-import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
+import org.gooru.navigatemap.processor.coursepath.repositories.global.ContentFinderRepository;
+import org.gooru.navigatemap.processor.coursepath.repositories.global.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.CurrentItemSubtype;
 import org.gooru.navigatemap.processor.data.CurrentItemType;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;

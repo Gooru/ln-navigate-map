@@ -1,4 +1,4 @@
-package org.gooru.navigatemap.processor.coursepath.repositories;
+package org.gooru.navigatemap.processor.coursepath.repositories.global;
 
 /**
  * @author ashish on 3/3/17.
