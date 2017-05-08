@@ -3,6 +3,7 @@ package org.gooru.navigatemap.processor.coursepath.repositories.global;
 import java.util.*;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.AbstractContentRepository;
+import org.gooru.navigatemap.processor.coursepath.repositories.dao.AlternatePathGlobalStrategyDao;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
 import org.gooru.navigatemap.processor.data.AlternatePath;
 import org.gooru.navigatemap.processor.data.ContentAddress;
@@ -42,14 +43,14 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
 
     @Override
     public List<String> findBenchmarkAssessments(List<String> competencies) {
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        AlternatePathGlobalStrategyDao dao = dbi.onDemand(AlternatePathGlobalStrategyDao.class);
         return dao.findBenchmarksForCompetencyList(CollectionUtils.convertToSqlArrayOfString(competencies));
     }
 
     @Override
     public Set<String> findPreTestsAssessments(Set<String> competencies) {
         List<String> competencyList = new ArrayList<>(competencies);
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        AlternatePathGlobalStrategyDao dao = dbi.onDemand(AlternatePathGlobalStrategyDao.class);
         List<String> result =
             dao.findPreTestsForCompetencyList(CollectionUtils.convertToSqlArrayOfString(competencyList));
         return new HashSet<>(result);
@@ -57,7 +58,7 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
 
     @Override
     public Set<String> findPostTestsAssessments(Set<String> competencies) {
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        AlternatePathGlobalStrategyDao dao = dbi.onDemand(AlternatePathGlobalStrategyDao.class);
         List<String> competencyList = new ArrayList<>(competencies);
         List<String> result =
             dao.findPostTestsForCompetencyList(CollectionUtils.convertToSqlArrayOfString(competencyList));
@@ -66,7 +67,7 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
 
     @Override
     public List<String> findCompetenciesForPostTest(UUID postTestId) {
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        AlternatePathGlobalStrategyDao dao = dbi.onDemand(AlternatePathGlobalStrategyDao.class);
         return dao.findCompetenciesForPostTest(postTestId.toString());
     }
 
@@ -80,38 +81,38 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
 
     @Override
     public List<String> findBackfillsForPreTestAndScoreRange(UUID preTestId, String scoreRangeName) {
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        AlternatePathGlobalStrategyDao dao = dbi.onDemand(AlternatePathGlobalStrategyDao.class);
         return dao.findBackfillsForPreTestAndScoreRange(preTestId, scoreRangeName);
     }
 
     @Override
     public AlternatePath findAlternatePathForUser(ContentAddress currentAddress, String user) {
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        AlternatePathGlobalStrategyDao dao = dbi.onDemand(AlternatePathGlobalStrategyDao.class);
         return dao.findAlternatePathByPathIdAndUser(currentAddress.getPathId(), user);
     }
 
     @Override
     public AlternatePath findAlternatePathForUserInClass(ContentAddress currentAddress, String user, String classId) {
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        AlternatePathGlobalStrategyDao dao = dbi.onDemand(AlternatePathGlobalStrategyDao.class);
         return dao.findAlternatePathByPathIdAndUserInClass(currentAddress.getPathId(), user, classId);
     }
 
     @Override
     public List<AlternatePath> findChildPathsOfTypeBA(AlternatePath currentPath) {
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        AlternatePathGlobalStrategyDao dao = dbi.onDemand(AlternatePathGlobalStrategyDao.class);
         return dao.findBASubPathsForGivenPath(currentPath.getId());
     }
 
     @Override
     public List<AlternatePath> findChildPathsOfTypeBackfill(AlternatePath currentPath) {
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        AlternatePathGlobalStrategyDao dao = dbi.onDemand(AlternatePathGlobalStrategyDao.class);
         return dao.findBackfillsSubPathsForGivenPath(currentPath.getId());
     }
 
     @Override
     public List<AlternatePath> findChildPathsOfTypePostTest(ContentAddress currentAddress, String user,
         String classId) {
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        AlternatePathGlobalStrategyDao dao = dbi.onDemand(AlternatePathGlobalStrategyDao.class);
         if (classId != null) {
             return dao
                 .findPostTestAlternatePathsForCULAndUserInClass(currentAddress.getCourse(), currentAddress.getUnit(),
@@ -124,7 +125,7 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
 
     @Override
     public List<AlternatePath> findChildPathsOfTypePreTest(ContentAddress currentAddress, String user, String classId) {
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        AlternatePathGlobalStrategyDao dao = dbi.onDemand(AlternatePathGlobalStrategyDao.class);
         if (classId != null) {
             return dao
                 .findPreTestAlternatePathsForCULAndUserInClass(currentAddress.getCourse(), currentAddress.getUnit(),
@@ -141,21 +142,26 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
             || contentAddress.getLesson() == null) {
             return false;
         }
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
         long validRecordCount = 0;
         if (contentAddress.getCollection() == null) {
+            ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
             validRecordCount =
                 dao.validateCUL(contentAddress.getCourse(), contentAddress.getUnit(), contentAddress.getLesson());
         } else if (!contentAddress.isOnAlternatePath()) {
+            ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
             validRecordCount =
                 dao.validateCULC(contentAddress.getCourse(), contentAddress.getUnit(), contentAddress.getLesson(),
                     contentAddress.getCollection());
         } else if (contentAddress.isOnAlternatePath()) {
+            ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
             validRecordCount =
                 dao.validateCUL(contentAddress.getCourse(), contentAddress.getUnit(), contentAddress.getLesson());
             if (validRecordCount > 0) {
-                validRecordCount = dao.validatePath(contentAddress.getPathId(), contentAddress.getCollection(),
-                    contentAddress.getCollectionType().getName());
+                AlternatePathGlobalStrategyDao alternatePathGlobalStrategyDao =
+                    dbi.onDemand(AlternatePathGlobalStrategyDao.class);
+                validRecordCount = alternatePathGlobalStrategyDao
+                    .validatePath(contentAddress.getPathId(), contentAddress.getCollection(),
+                        contentAddress.getCollectionType().getName());
             }
         }
         return (validRecordCount > 0);

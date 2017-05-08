@@ -3,7 +3,7 @@ package org.gooru.navigatemap.processor.coursepath.repositories.global;
 import java.util.List;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.AbstractContentRepository;
-import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
+import org.gooru.navigatemap.processor.coursepath.repositories.dao.AlternatePathGlobalStrategyDao;
 import org.gooru.navigatemap.processor.utilities.CollectionUtils;
 
 /**
@@ -13,7 +13,7 @@ final class ContentFilterRepositoryImpl extends AbstractContentRepository implem
 
     @Override
     public List<String> filterBAForNotAddedByUser(List<String> inputBAList, String userId) {
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        AlternatePathGlobalStrategyDao dao = dbi.onDemand(AlternatePathGlobalStrategyDao.class);
         List<String> baAddedByUser =
             dao.findBenchmarksAddedByUserFromList(userId, CollectionUtils.convertToSqlArrayOfUUID(inputBAList));
 
@@ -23,7 +23,7 @@ final class ContentFilterRepositoryImpl extends AbstractContentRepository implem
 
     @Override
     public List<String> filterPreTestForNotAddedByUser(List<String> inputPreTestList, String userId) {
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        AlternatePathGlobalStrategyDao dao = dbi.onDemand(AlternatePathGlobalStrategyDao.class);
         List<String> preTestAddedByUser =
             dao.findPreTestsAddedByUserFromList(userId, CollectionUtils.convertToSqlArrayOfUUID(inputPreTestList));
 
@@ -33,7 +33,7 @@ final class ContentFilterRepositoryImpl extends AbstractContentRepository implem
 
     @Override
     public List<String> filterPostTestForNotAddedByUser(List<String> inputPostTestList, String userId) {
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
+        AlternatePathGlobalStrategyDao dao = dbi.onDemand(AlternatePathGlobalStrategyDao.class);
         List<String> postTestsAddedByUser =
             dao.findPostTestsAddedByUserFromList(userId, CollectionUtils.convertToSqlArrayOfUUID(inputPostTestList));
 
