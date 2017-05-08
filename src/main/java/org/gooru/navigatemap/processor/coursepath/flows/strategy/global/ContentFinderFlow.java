@@ -101,7 +101,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
     }
 
     private ExecutionResult<NavigateProcessorContext> fetchNextItem() {
-        final FinderContext finderContext = createFinderContext();
+        final FinderContext finderContext = npc.createFinderContext();
         ContentAddress contentAddress = ContentRepositoryBuilder.buildNavigateService().navigateNext(finderContext);
         if (contentAddress != null) {
             LOGGER.debug("Found next item");
@@ -119,11 +119,6 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
             markAsDone(State.Done);
         }
         return executionResult;
-    }
-
-    private FinderContext createFinderContext() {
-        return new FinderContext(npc.requestContext().getState(), npc.requestContext(), npc.getCurrentContentAddress(),
-            npc.navigateMessageContext().getUserId());
     }
 
     private ExecutionResult<NavigateProcessorContext> fetchNextItemFromCULWithoutSuggestions() {

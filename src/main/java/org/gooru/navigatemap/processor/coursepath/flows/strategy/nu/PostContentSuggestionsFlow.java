@@ -4,9 +4,8 @@ import java.util.List;
 
 import org.gooru.navigatemap.app.components.utilities.DbLookupUtility;
 import org.gooru.navigatemap.processor.coursepath.flows.Flow;
-import org.gooru.navigatemap.processor.coursepath.repositories.global.ContentFinderRepository;
-import org.gooru.navigatemap.processor.coursepath.repositories.global.ContentRepositoryBuilder;
-import org.gooru.navigatemap.processor.data.CurrentItemSubtype;
+import org.gooru.navigatemap.processor.coursepath.repositories.nu.ContentFinderRepository;
+import org.gooru.navigatemap.processor.coursepath.repositories.nu.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.CurrentItemType;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.State;
@@ -35,76 +34,35 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
         }
         if (npc.requestContext().needToStartLesson()) {
             LOGGER.debug("Starting lesson so skipping post content suggestions flow");
+            return result;
         }
-        // Right now we only serve benchmark if user did a post test successfully or backfills if user did pre test
-        if (userDidAPostTest()) {
-            LOGGER.debug("User did a post test. Trying to apply BA suggestions");
-            applyBASuggestions();
-        } else if (userDidAPreTest()) {
-            LOGGER.debug("User did a pre test. Trying to apply back fills suggestions");
-            applyBackfillsSuggestions();
+        // Right now we only serve resource if user did an assessment
+        if (userDidAnAssessment()) {
+            LOGGER.debug("User did an assessment. Trying to apply resource suggestions");
+            applyResourceSuggestions();
         }
         return result;
     }
 
-    private boolean userDidAPreTest() {
+    private boolean userDidAnAssessment() {
         return npc.requestContext().getCurrentItemType() == CurrentItemType.Assessment
-            && npc.requestContext().getCurrentItemSubtype() == CurrentItemSubtype.PreTest
             && npc.requestContext().getState() == State.ContentServed;
     }
 
-    private boolean userDidAPostTest() {
-        return npc.requestContext().getCurrentItemType() == CurrentItemType.Assessment
-            && npc.requestContext().getCurrentItemSubtype() == CurrentItemSubtype.PostTest
-            && npc.requestContext().getState() == State.ContentServed;
-    }
-
-    private void applyBASuggestions() {
-        if (!isEligibleForBA()) {
-            LOGGER.debug("User is not eligible for BA suggestions");
-            return;
-        }
-
+    private void applyResourceSuggestions() {
         final ContentFinderRepository contentFinderRepository = ContentRepositoryBuilder.buildContentFinderRepository();
-        // Find competencies for this post test
-        List<String> competencies =
-            contentFinderRepository.findCompetenciesForPostTest(npc.requestContext().getCurrentItemId());
-        // Find benchmark associated with standards for post test
-        List<String> benchmarks = contentFinderRepository.findBenchmarkAssessments(competencies);
-        // Filter it based on if user has already taken them or user has already added them to map
-        List<String> benchmarksNotAddedByUser = ContentRepositoryBuilder.buildContentFilterRepository()
-            .filterBAForNotAddedByUser(benchmarks, npc.navigateMessageContext().getUserId());
-
-        // If any suggestions remains, we present it
-        if (benchmarksNotAddedByUser != null && !benchmarksNotAddedByUser.isEmpty()) {
-            LOGGER.debug("Found BA which are not added by user");
-            benchmarksNotAddedByUser.forEach(benchmark -> npc.getCtxSuggestions().addAssessment(benchmark));
-            markAsDone();
+        if (isEligibleForResourceSuggestion()) {
+            LOGGER.debug("User is eligible for resource suggestions");
+            List<String> resourceSuggestions =
+                contentFinderRepository.findResourceSuggestionsForAssessment(npc.createFinderContext());
+            if (resourceSuggestions != null && !resourceSuggestions.isEmpty()) {
+                resourceSuggestions.forEach(resource -> npc.getCtxSuggestions().addResource(resource));
+                markAsDone();
+            }
+        } else if (isCompetencyCompleted()) {
+            LOGGER.debug("User completed the competency. Will mark as completed if not already completed");
+            contentFinderRepository.markCompetencyCompletedForUser(npc.createFinderContext());
         }
-    }
-
-    private void applyBackfillsSuggestions() {
-        if (npc.requestContext().getScorePercent() == null) {
-            LOGGER.debug("Null score. Won't apply backfills.");
-            return;
-        }
-        String rangeName =
-            DbLookupUtility.getInstance().preTestScoreRangeNameByScore(npc.requestContext().getScorePercent());
-        if (rangeName == null || rangeName.isEmpty()) {
-            LOGGER.debug("Score range name not found. Won't apply backfills");
-            return;
-        }
-
-        final ContentFinderRepository contentFinderRepository = ContentRepositoryBuilder.buildContentFinderRepository();
-        List<String> backfills = contentFinderRepository
-            .findBackfillsForPreTestAndScoreRange(npc.requestContext().getCurrentItemId(), rangeName);
-
-        if (backfills != null && !backfills.isEmpty()) {
-            LOGGER.debug("Found backfills. Willl apply");
-            backfills.forEach(backfill -> npc.getCtxSuggestions().addCollection(backfill));
-            markAsDone();
-        }
-        LOGGER.debug("No backfills found");
 
     }
 
@@ -113,8 +71,15 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
         npc.responseContext().setState(State.ContentEndSuggested);
     }
 
-    private boolean isEligibleForBA() {
+    private boolean isEligibleForResourceSuggestion() {
         return npc.requestContext().getScorePercent() != null
-            && npc.requestContext().getScorePercent() >= DbLookupUtility.getInstance().postTestThresholdForBA();
+            && npc.requestContext().getScorePercent() < DbLookupUtility.getInstance()
+            .thresholdForCompetencyCompletionBasedOnAssessment();
+    }
+
+    private boolean isCompetencyCompleted() {
+        return npc.requestContext().getScorePercent() != null
+            && npc.requestContext().getScorePercent() >= DbLookupUtility.getInstance()
+            .thresholdForCompetencyCompletionBasedOnAssessment();
     }
 }
