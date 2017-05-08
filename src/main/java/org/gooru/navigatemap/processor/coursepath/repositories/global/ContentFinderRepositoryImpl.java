@@ -6,14 +6,12 @@ import org.gooru.navigatemap.processor.coursepath.repositories.AbstractContentRe
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentFinderNoSuggestionsDelegate;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.AlternatePathGlobalStrategyDao;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
+import org.gooru.navigatemap.processor.coursepath.repositories.helpers.TaxonomyParserHelper;
 import org.gooru.navigatemap.processor.data.AlternatePath;
 import org.gooru.navigatemap.processor.data.ContentAddress;
 import org.gooru.navigatemap.processor.utilities.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.vertx.core.json.DecodeException;
-import io.vertx.core.json.JsonObject;
 
 /**
  * @author ashish on 7/3/17.
@@ -77,7 +75,7 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
         ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
         String lessonTaxonomy = dao.findCompetenciesForLesson(contentAddress.getCourse(), contentAddress.getUnit(),
             contentAddress.getLesson());
-        return parseLessonTaxonomy(contentAddress, lessonTaxonomy);
+        return TaxonomyParserHelper.parseLessonTaxonomy(contentAddress, lessonTaxonomy);
     }
 
     @Override
@@ -173,21 +171,6 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
         finderDao = dbi.onDemand(ContentFinderDao.class);
 
         return finderDao.findCourseVersion(course.toString());
-    }
-
-    private static Set<String> parseLessonTaxonomy(ContentAddress contentAddress, String lessonTaxonomy) {
-        if (lessonTaxonomy != null && !lessonTaxonomy.isEmpty()) {
-            // Lesson taxonomy is supposed to be a JsonObject with keys as competencies' internal code
-            // Note that they are not GDT aware but FW specific
-            try {
-                JsonObject taxonomy = new JsonObject(lessonTaxonomy);
-                return taxonomy.fieldNames();
-            } catch (DecodeException ex) {
-                LOGGER.warn("Invalid taxonomy string for address: Course='{}', Unit='{}', Lesson='{}'",
-                    contentAddress.getCourse(), contentAddress.getUnit(), contentAddress.getLesson());
-            }
-        }
-        return Collections.emptySet();
     }
 
     private ContentAddress findFirstValidContentInCourse(String course) {
