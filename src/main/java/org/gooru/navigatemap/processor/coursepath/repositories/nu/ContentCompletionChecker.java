@@ -2,8 +2,8 @@ package org.gooru.navigatemap.processor.coursepath.repositories.nu;
 
 import java.util.List;
 
-import org.gooru.navigatemap.processor.coursepath.repositories.dao.AlternatePathNUStrategyDao;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
+import org.gooru.navigatemap.processor.coursepath.repositories.dao.UserCompetencyCompletionDao;
 import org.gooru.navigatemap.processor.coursepath.repositories.helpers.TaxonomyParserHelper;
 import org.gooru.navigatemap.processor.data.CollectionType;
 import org.gooru.navigatemap.processor.data.ContentAddress;
@@ -12,22 +12,20 @@ import org.gooru.navigatemap.processor.utilities.CollectionUtils;
 /**
  * @author ashish on 8/5/17.
  */
-public class ContentCompletionChecker {
+class ContentCompletionChecker {
 
     private final String user;
-    private final AlternatePathNUStrategyDao alternatePathNUStrategyDao;
     private final ContentFinderDao finderDao;
-    private final ContentAddress contentAddress;
+    private final UserCompetencyCompletionDao userCompetencyCompletionDao;
 
-    public ContentCompletionChecker(ContentAddress contentAddress, ContentFinderDao finderDao,
-        AlternatePathNUStrategyDao alternatePathNUStrategyDao, String user) {
-        this.contentAddress = contentAddress;
+    ContentCompletionChecker(ContentFinderDao finderDao, UserCompetencyCompletionDao userCompetencyCompletionDao,
+        String user) {
         this.finderDao = finderDao;
-        this.alternatePathNUStrategyDao = alternatePathNUStrategyDao;
         this.user = user;
+        this.userCompetencyCompletionDao = userCompetencyCompletionDao;
     }
 
-    public boolean isContentNotCompletedOnMainPath() {
+    boolean isContentNotCompletedOnMainPath(ContentAddress contentAddress) {
         if (contentAddress.getCollectionType() != CollectionType.Assessment) {
             return true;
         } else {
@@ -39,7 +37,7 @@ public class ContentCompletionChecker {
             if (competencyList.isEmpty()) {
                 return true;
             } else {
-                List<String> completedCompetenciesByUser = alternatePathNUStrategyDao
+                List<String> completedCompetenciesByUser = userCompetencyCompletionDao
                     .findCompletedCompetenciesForUserInGivenList(user,
                         CollectionUtils.convertToSqlArrayOfString(competencyList));
                 competencyList.removeAll(completedCompetenciesByUser);

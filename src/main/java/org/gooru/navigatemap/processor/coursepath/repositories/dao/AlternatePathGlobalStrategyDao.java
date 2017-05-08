@@ -56,7 +56,7 @@ public interface AlternatePathGlobalStrategyDao {
         @Bind("scoreRangeName") String scoreRangeName);
 
     @Mapper(AlternatePathMapper.class)
-    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, "
                   + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
                   + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype, "
                   + "target_resource_id from user_navigation_paths where id = :pathId and ctx_user_id = :user::uuid "
@@ -64,7 +64,7 @@ public interface AlternatePathGlobalStrategyDao {
     AlternatePath findAlternatePathByPathIdAndUser(@Bind("pathId") Long pathId, @Bind("user") String user);
 
     @Mapper(AlternatePathMapper.class)
-    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, "
                   + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
                   + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype, "
                   + "target_resource_id from user_navigation_paths where id = :pathId and ctx_user_id = :user::uuid "
@@ -73,7 +73,7 @@ public interface AlternatePathGlobalStrategyDao {
         @Bind("classId") String classId);
 
     @Mapper(AlternatePathMapper.class)
-    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, "
                   + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
                   + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype, "
                   + "target_resource_id from user_navigation_paths where parent_path_id = :id and "
@@ -81,7 +81,7 @@ public interface AlternatePathGlobalStrategyDao {
     List<AlternatePath> findBASubPathsForGivenPath(@Bind("id") Long id);
 
     @Mapper(AlternatePathMapper.class)
-    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, "
                   + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
                   + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype, "
                   + "target_resource_id from user_navigation_paths where parent_path_id = :id and target_content_type"
@@ -89,7 +89,7 @@ public interface AlternatePathGlobalStrategyDao {
     List<AlternatePath> findBackfillsSubPathsForGivenPath(@Bind("id") Long id);
 
     @Mapper(AlternatePathMapper.class)
-    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, "
                   + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
                   + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype, "
                   + "target_resource_id from user_navigation_paths where ctx_course_id = :courseId::uuid and "
@@ -101,7 +101,7 @@ public interface AlternatePathGlobalStrategyDao {
         @Bind("classId") String classId);
 
     @Mapper(AlternatePathMapper.class)
-    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, "
                   + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
                   + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype, "
                   + "target_resource_id from user_navigation_paths where ctx_course_id = :courseId::uuid and "
@@ -111,7 +111,7 @@ public interface AlternatePathGlobalStrategyDao {
         @Bind("unitId") String unit, @Bind("lessonId") String lesson, @Bind("userId") String user);
 
     @Mapper(AlternatePathMapper.class)
-    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, "
                   + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
                   + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype, "
                   + "target_resource_id from user_navigation_paths where ctx_course_id = :courseId::uuid and "
@@ -123,7 +123,7 @@ public interface AlternatePathGlobalStrategyDao {
         @Bind("classId") String classId);
 
     @Mapper(AlternatePathMapper.class)
-    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, "
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, "
                   + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
                   + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype, "
                   + "target_resource_id from user_navigation_paths where ctx_course_id = :courseId::uuid and "

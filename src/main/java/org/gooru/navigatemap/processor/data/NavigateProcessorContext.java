@@ -29,6 +29,8 @@ public final class NavigateProcessorContext implements Stateful {
         nextContentAddress = new ContentAddress();
         currentContentAddress = new ContentAddress();
         currentQualifiedContentAddress = new ContentAddress();
+        getCurrentContentAddress();
+        getCurrentContentAddressQualified();
     }
 
     public boolean suggestionsTurnedOff() {

@@ -9,6 +9,7 @@ import org.gooru.navigatemap.processor.coursepath.repositories.AbstractContentRe
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentFinderNoSuggestionsDelegate;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.AlternatePathNUStrategyDao;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
+import org.gooru.navigatemap.processor.coursepath.repositories.dao.UserCompetencyCompletionDao;
 import org.gooru.navigatemap.processor.coursepath.repositories.helpers.TaxonomyParserHelper;
 import org.gooru.navigatemap.processor.data.ContentAddress;
 import org.gooru.navigatemap.processor.data.FinderContext;
@@ -58,7 +59,7 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
 
     @Override
     public ContentAddress fetchNextItem(FinderContext finderContext) {
-        return null;
+        return new ContentFinderDelegate(finderContext, dbi).findNextEligibleContentInCourse();
     }
 
     @Override
@@ -85,7 +86,8 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
             TaxonomyParserHelper.parseCollectionTaxonomy(finderContext.getCurrentAddress(), competencies);
         if (!competencyList.isEmpty()) {
             AlternatePathNUStrategyDao alternatePathNUStrategyDao = dbi.onDemand(AlternatePathNUStrategyDao.class);
-            List<String> completedCompetenciesByUser = alternatePathNUStrategyDao
+            UserCompetencyCompletionDao userCompetencyCompletionDao = dbi.onDemand(UserCompetencyCompletionDao.class);
+            List<String> completedCompetenciesByUser = userCompetencyCompletionDao
                 .findCompletedCompetenciesForUserInGivenList(finderContext.getUser(),
                     CollectionUtils.convertToSqlArrayOfString(competencyList));
             competencyList.removeAll(completedCompetenciesByUser);
@@ -99,12 +101,12 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
                 if (finderContext.getUserClass() != null) {
                     alreadyAddedResources = alternatePathNUStrategyDao
                         .findResourceAlreadyAddedFromListInCourseClass(finderContext.getUser(),
-                            CollectionUtils.convertToSqlArrayOfString(resourceList),
+                            CollectionUtils.convertToSqlArrayOfUUID(resourceList),
                             finderContext.getCurrentAddress().getCourse(), finderContext.getUserClass());
                 } else {
                     alreadyAddedResources = alternatePathNUStrategyDao
                         .findResourceAlreadyAddedFromListInCourseNoClass(finderContext.getUser(),
-                            CollectionUtils.convertToSqlArrayOfString(resourceList),
+                            CollectionUtils.convertToSqlArrayOfUUID(resourceList),
                             finderContext.getCurrentAddress().getCourse());
                 }
                 if (alreadyAddedResources != null && !alreadyAddedResources.isEmpty()) {
@@ -125,20 +127,20 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
         List<String> competencyList =
             TaxonomyParserHelper.parseCollectionTaxonomy(finderContext.getCurrentAddress(), competencies);
         if (!competencyList.isEmpty()) {
-            AlternatePathNUStrategyDao alternatePathNUStrategyDao = dbi.onDemand(AlternatePathNUStrategyDao.class);
-            List<String> completedCompetenciesByUser = alternatePathNUStrategyDao
+            UserCompetencyCompletionDao userCompetencyCompletionDao = dbi.onDemand(UserCompetencyCompletionDao.class);
+            List<String> completedCompetenciesByUser = userCompetencyCompletionDao
                 .findCompletedCompetenciesForUserInGivenList(finderContext.getUser(),
                     CollectionUtils.convertToSqlArrayOfString(competencyList));
             competencyList.removeAll(completedCompetenciesByUser);
             if (!competencyList.isEmpty()) {
                 if (finderContext.getUserClass() != null) {
-                    alternatePathNUStrategyDao
+                    userCompetencyCompletionDao
                         .markCompetencyCompletedInClassContext(finderContext.getUser(), competencyList,
                             finderContext.getCurrentAddress().getCourse(), finderContext.getCurrentAddress().getUnit(),
                             finderContext.getCurrentAddress().getLesson(), finderContext.getUserClass(),
                             finderContext.getCurrentAddress().getCollection());
                 } else {
-                    alternatePathNUStrategyDao
+                    userCompetencyCompletionDao
                         .markCompetencyCompletedNoClassContext(finderContext.getUser(), competencyList,
                             finderContext.getCurrentAddress().getCourse(), finderContext.getCurrentAddress().getUnit(),
                             finderContext.getCurrentAddress().getLesson(),

@@ -20,7 +20,7 @@ public interface SuggestionCardDao {
     List<SuggestionCard> createSuggestionsCardForCollections(@Bind("collections") PGArray<UUID> collections);
 
     @Mapper(SuggestionCardMapper.class)
-    @SqlQuery("select id, title, content_subformat, thumbnail, metadata, taxonomy from original_resource where id = any"
-                  + "(:resources)")
+    @SqlQuery("select id, title, 'resource' as format, content_subformat as subformat, thumbnail, metadata, taxonomy "
+                  + "from original_resource where id = any(:resources)")
     List<SuggestionCard> createSuggestionsCardForResources(@Bind("resources") PGArray<UUID> resources);
 }

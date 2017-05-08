@@ -70,7 +70,7 @@ public interface ContentFinderDao {
         @Bind("lessonId") String lesson);
 
     @SqlQuery("select taxonomy from collection where course_id = :courseId::uuid and unit_id = :unitId::uuid and "
-                  + "lesson_id = :lessonId::uuid and id = collectionId::uuid and is_deleted = false")
+                  + "lesson_id = :lessonId::uuid and id = :collectionId::uuid and is_deleted = false")
     String findCompetenciesForCollection(@Bind("courseId") String course, @Bind("unitId") String unit,
         @Bind("lessonId") String lesson, @Bind("collectionId") String collectionId);
 

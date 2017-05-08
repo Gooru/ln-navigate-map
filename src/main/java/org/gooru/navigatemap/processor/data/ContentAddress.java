@@ -15,6 +15,22 @@ public final class ContentAddress {
     private CurrentItemType currentItemType;
     private CurrentItemSubtype currentItemSubtype;
 
+    public ContentAddress() {
+    }
+
+    public ContentAddress(ContentAddress address) {
+        this.course = address.course;
+        this.unit = address.unit;
+        this.lesson = address.lesson;
+        this.collection = address.collection;
+        this.pathId = address.pathId;
+        this.collectionType = address.collectionType;
+        this.collectionSubtype = address.collectionSubtype;
+        this.currentItem = address.currentItem;
+        this.currentItemType = address.currentItemType;
+        this.currentItemSubtype = address.currentItemSubtype;
+    }
+
     public String getCourse() {
         return course;
     }
