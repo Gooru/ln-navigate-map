@@ -1,12 +1,10 @@
 package org.gooru.navigatemap.processor.coursepath.repositories.global;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import org.gooru.navigatemap.processor.data.ContentAddress;
-import org.gooru.navigatemap.processor.data.SuggestionCard;
 import org.gooru.navigatemap.processor.data.SuggestionContext;
 
 /**
@@ -59,22 +57,6 @@ final class ContentSuggestionsServiceImpl implements ContentSuggestionsService {
             }
         }
         return SuggestionContext.buildSuggestionContextWithoutSuggestions();
-    }
-
-    @Override
-    public List<SuggestionCard> suggestionCardForCollections(Set<String> collections) {
-        if (collections != null && !collections.isEmpty()) {
-            return contentFinderRepository.createSuggestionsCardForCollections(collections);
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<SuggestionCard> suggestionCardForResources(Set<String> resources) {
-        if (resources != null && !resources.isEmpty()) {
-            return contentFinderRepository.createSuggestionsCardForResources(resources);
-        }
-        return Collections.emptyList();
     }
 
 }

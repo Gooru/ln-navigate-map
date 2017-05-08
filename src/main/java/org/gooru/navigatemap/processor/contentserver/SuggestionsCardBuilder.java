@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.gooru.navigatemap.app.components.AppConfiguration;
-import org.gooru.navigatemap.processor.coursepath.repositories.global.ContentSuggestionsService;
+import org.gooru.navigatemap.processor.coursepath.repositories.SuggestionCardService;
 import org.gooru.navigatemap.processor.data.SuggestionCard;
 import org.gooru.navigatemap.processor.data.SuggestionContext;
 import org.slf4j.Logger;
@@ -22,14 +22,14 @@ import io.vertx.core.json.JsonArray;
 class SuggestionsCardBuilder {
     private static final Integer DEFAULT_LIMIT = 1;
     private final SuggestionContext suggestionContext;
-    private final ContentSuggestionsService suggestionRepository;
+    private final SuggestionCardService suggestionCardService;
     private Set<String> suggestions;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SuggestionsCardBuilder.class);
 
-    SuggestionsCardBuilder(SuggestionContext ctxSuggestions, ContentSuggestionsService contentSuggestionsService) {
+    SuggestionsCardBuilder(SuggestionContext ctxSuggestions, SuggestionCardService suggestionCardService) {
         suggestionContext = ctxSuggestions;
-        this.suggestionRepository = contentSuggestionsService;
+        this.suggestionCardService = suggestionCardService;
     }
 
     JsonArray createSuggestionCards() {
@@ -46,9 +46,9 @@ class SuggestionsCardBuilder {
 
     private List<SuggestionCard> getSuggestionCards() {
         if (suggestionContext.hasResourcesSuggested()) {
-            return suggestionRepository.suggestionCardForResources(suggestions);
+            return suggestionCardService.suggestionCardForResources(suggestions);
         } else {
-            return suggestionRepository.suggestionCardForCollections(suggestions);
+            return suggestionCardService.suggestionCardForCollections(suggestions);
         }
     }
 

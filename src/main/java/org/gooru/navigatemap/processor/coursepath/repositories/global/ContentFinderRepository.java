@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import org.gooru.navigatemap.processor.data.AlternatePath;
 import org.gooru.navigatemap.processor.data.ContentAddress;
-import org.gooru.navigatemap.processor.data.SuggestionCard;
 
 /**
  * @author ashish on 3/3/17.
@@ -27,8 +26,6 @@ public interface ContentFinderRepository {
 
     Set<String> findCompetenciesForLesson(ContentAddress contentAddress);
 
-    List<SuggestionCard> createSuggestionsCardForCollections(Set<String> collections);
-
     List<String> findBackfillsForPreTestAndScoreRange(UUID preTestId, String scoreRangeName);
 
     AlternatePath findAlternatePathForUser(ContentAddress currentAddress, String user);
@@ -46,6 +43,4 @@ public interface ContentFinderRepository {
     boolean validateContentAddress(ContentAddress contentAddress);
 
     String findCourseVersion(UUID course);
-
-    List<SuggestionCard> createSuggestionsCardForResources(Set<String> resources);
 }

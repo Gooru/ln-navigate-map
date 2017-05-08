@@ -5,10 +5,8 @@ import java.util.UUID;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.mappers.AlternatePathMapper;
 import org.gooru.navigatemap.processor.coursepath.repositories.mappers.ContentAddressMapper;
-import org.gooru.navigatemap.processor.coursepath.repositories.mappers.SuggestionCardMapper;
 import org.gooru.navigatemap.processor.data.AlternatePath;
 import org.gooru.navigatemap.processor.data.ContentAddress;
-import org.gooru.navigatemap.processor.data.SuggestionCard;
 import org.gooru.navigatemap.processor.utilities.jdbi.PGArray;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
@@ -105,11 +103,6 @@ public interface ContentFinderDao {
                   + "lesson_id = :lessonId::uuid and is_deleted = false")
     String findCompetenciesForLesson(@Bind("courseId") String course, @Bind("unitId") String unit,
         @Bind("lessonId") String lesson);
-
-    @Mapper(SuggestionCardMapper.class)
-    @SqlQuery("select id, title, format, subformat, thumbnail, metadata, taxonomy from collection where id = any"
-                  + "(:collections)")
-    List<SuggestionCard> createSuggestionsCardForCollections(@Bind("collections") PGArray<UUID> collections);
 
     @SqlQuery("select linked_content_id from assessment_extension where assessment_id = :preTestId and "
                   + "score_range_name = :scoreRangeName")
@@ -208,8 +201,4 @@ public interface ContentFinderDao {
     @SqlQuery("select version from course where id = :courseId::uuid")
     String findCourseVersion(@Bind("courseId") String courseId);
 
-    @Mapper(SuggestionCardMapper.class)
-    @SqlQuery("select id, title, content_subformat, thumbnail, metadata, taxonomy from original_resource where id = any"
-                  + "(:resources)")
-    List<SuggestionCard> createSuggestionsCardForResources(@Bind("resources") PGArray<UUID> resources);
 }

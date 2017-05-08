@@ -6,7 +6,6 @@ import org.gooru.navigatemap.processor.coursepath.repositories.AbstractContentRe
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
 import org.gooru.navigatemap.processor.data.AlternatePath;
 import org.gooru.navigatemap.processor.data.ContentAddress;
-import org.gooru.navigatemap.processor.data.SuggestionCard;
 import org.gooru.navigatemap.processor.utilities.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,14 +76,6 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
         String lessonTaxonomy = dao.findCompetenciesForLesson(contentAddress.getCourse(), contentAddress.getUnit(),
             contentAddress.getLesson());
         return parseLessonTaxonomy(contentAddress, lessonTaxonomy);
-    }
-
-    @Override
-    public List<SuggestionCard> createSuggestionsCardForCollections(Set<String> collections) {
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
-        List<String> collectionsList = new ArrayList<>(collections);
-
-        return dao.createSuggestionsCardForCollections(CollectionUtils.convertToSqlArrayOfUUID(collectionsList));
     }
 
     @Override
@@ -175,14 +166,6 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
         finderDao = dbi.onDemand(ContentFinderDao.class);
 
         return finderDao.findCourseVersion(course.toString());
-    }
-
-    @Override
-    public List<SuggestionCard> createSuggestionsCardForResources(Set<String> resources) {
-        ContentFinderDao dao = dbi.onDemand(ContentFinderDao.class);
-        List<String> resourcesList = new ArrayList<>(resources);
-
-        return dao.createSuggestionsCardForResources(CollectionUtils.convertToSqlArrayOfUUID(resourcesList));
     }
 
     private static Set<String> parseLessonTaxonomy(ContentAddress contentAddress, String lessonTaxonomy) {

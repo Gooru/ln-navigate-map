@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.gooru.navigatemap.constants.Constants;
-import org.gooru.navigatemap.processor.coursepath.repositories.global.ContentRepositoryBuilder;
+import org.gooru.navigatemap.processor.coursepath.repositories.SuggestionServiceBuilder;
 import org.gooru.navigatemap.processor.data.CurrentItemType;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.State;
@@ -120,7 +120,7 @@ public class ContentServer {
 
     private JsonObject serveSuggestions() {
         JsonArray suggestions = new SuggestionsCardBuilder(navigateProcessorContext.getCtxSuggestions(),
-            ContentRepositoryBuilder.buildContentSuggestionsService()).createSuggestionCards();
+            SuggestionServiceBuilder.buildContentSuggestionsService()).createSuggestionCards();
         return new SuccessResponseBuilder(navigateProcessorContext.responseContext(), suggestions).buildResponse();
     }
 
