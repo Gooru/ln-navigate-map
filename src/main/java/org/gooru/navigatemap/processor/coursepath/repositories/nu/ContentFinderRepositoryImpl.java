@@ -1,8 +1,10 @@
 package org.gooru.navigatemap.processor.coursepath.repositories.nu;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.AbstractContentRepository;
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentFinderNoSuggestionsDelegate;
@@ -119,7 +121,42 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
 
     @Override
     public List<String> findResourceSuggestionsForAssessment(FinderContext finderContext) {
-        return null;
+        ContentFinderDao finderDao = dbi.onDemand(ContentFinderDao.class);
+        String competencies = finderDao.findCompetenciesForCollection(finderContext.getCurrentAddress().getCourse(),
+            finderContext.getCurrentAddress().getUnit(), finderContext.getCurrentAddress().getLesson(),
+            finderContext.getCurrentAddress().getCollection());
+        List<String> competencyList = parseCollectionTaxonomy(finderContext.getCurrentAddress(), competencies);
+        if (!competencyList.isEmpty()) {
+            AlternatePathNUStrategyDao alternatePathNUStrategyDao = dbi.onDemand(AlternatePathNUStrategyDao.class);
+            List<String> completedCompetenciesByUser = alternatePathNUStrategyDao
+                .findCompletedCompetenciesForUserInGivenList(finderContext.getUser(),
+                    CollectionUtils.convertToSqlArrayOfString(competencyList));
+            competencyList.removeAll(completedCompetenciesByUser);
+            if (!competencyList.isEmpty()) {
+                List<String[]> result = alternatePathNUStrategyDao
+                    .findResourceSuggestionsBasedOnCompetencyAndScoreRange(
+                        CollectionUtils.convertToSqlArrayOfString(competencyList), finderContext.getScoreRange());
+
+                List<String> resourceList = result.stream().flatMap(Arrays::stream).collect(Collectors.toList());
+                List<String> alreadyAddedResources;
+                if (finderContext.getUserClass() != null) {
+                    alreadyAddedResources = alternatePathNUStrategyDao
+                        .findResourceAlreadyAddedFromListInCourseClass(finderContext.getUser(),
+                            CollectionUtils.convertToSqlArrayOfString(resourceList),
+                            finderContext.getCurrentAddress().getCourse(), finderContext.getUserClass());
+                } else {
+                    alreadyAddedResources = alternatePathNUStrategyDao
+                        .findResourceAlreadyAddedFromListInCourseNoClass(finderContext.getUser(),
+                            CollectionUtils.convertToSqlArrayOfString(resourceList),
+                            finderContext.getCurrentAddress().getCourse());
+                }
+                if (alreadyAddedResources != null && !alreadyAddedResources.isEmpty()) {
+                    resourceList.removeAll(alreadyAddedResources);
+                }
+                return resourceList;
+            }
+        }
+        return Collections.emptyList();
     }
 
     @Override

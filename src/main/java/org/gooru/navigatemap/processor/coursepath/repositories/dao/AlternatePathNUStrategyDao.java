@@ -3,6 +3,7 @@ package org.gooru.navigatemap.processor.coursepath.repositories.dao;
 import java.util.List;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.mappers.AlternatePathMapper;
+import org.gooru.navigatemap.processor.coursepath.repositories.mappers.JavaSqlArrayToStringMapper;
 import org.gooru.navigatemap.processor.data.AlternatePath;
 import org.gooru.navigatemap.processor.utilities.jdbi.PGArray;
 import org.skife.jdbi.v2.sqlobject.Bind;
@@ -55,5 +56,24 @@ public interface AlternatePathNUStrategyDao {
         @Bind("competency") List<String> competency, @Bind("course") String course, @Bind("unit") String unit,
         @Bind("lesson") String lesson, @Bind("collection") String collection);
 
+    @SqlQuery("select ids_to_suggest from concept_based_resource_suggest where (competency_internal_code = any"
+                  + "(:competencyList) OR micro_competency_internal_code = any(:competencyList)) and "
+                  + "performance_range = :scoreRange")
+    @Mapper(JavaSqlArrayToStringMapper.class)
+    List<String[]> findResourceSuggestionsBasedOnCompetencyAndScoreRange(
+        @Bind("competencyList") PGArray<String> competencyList, @Bind("scoreRange") String scoreRange);
+
+    @SqlQuery(" select target_resource_id from user_navigation_paths where ctx_user_id = :user::uuid and "
+                  + "ctx_course_id = :course::uuid and ctx_class_id = :userClass::uuid and target_resource_id = any"
+                  + "(:resourceList)")
+    List<String> findResourceAlreadyAddedFromListInCourseClass(@Bind("user") String user,
+        @Bind("resourceList") PGArray<String> resourceList, @Bind("course") String course,
+        @Bind("userClass") String userClass);
+
+    @SqlQuery(" select target_resource_id from user_navigation_paths where ctx_user_id = :user::uuid and "
+                  + "ctx_course_id = :course::uuid and ctx_class_id is null and target_resource_id = any"
+                  + "(:resourceList)")
+    List<String> findResourceAlreadyAddedFromListInCourseNoClass(@Bind("user") String user,
+        @Bind("resourceList") PGArray<String> resourceList, @Bind("course") String course);
 }
 

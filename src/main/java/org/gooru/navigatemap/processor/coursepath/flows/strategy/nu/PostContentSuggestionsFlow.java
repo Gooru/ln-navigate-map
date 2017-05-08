@@ -7,6 +7,7 @@ import org.gooru.navigatemap.processor.coursepath.flows.Flow;
 import org.gooru.navigatemap.processor.coursepath.repositories.nu.ContentFinderRepository;
 import org.gooru.navigatemap.processor.coursepath.repositories.nu.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.CurrentItemType;
+import org.gooru.navigatemap.processor.data.FinderContext;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.State;
 import org.gooru.navigatemap.responses.ExecutionResult;
@@ -53,8 +54,11 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
         final ContentFinderRepository contentFinderRepository = ContentRepositoryBuilder.buildContentFinderRepository();
         if (isEligibleForResourceSuggestion()) {
             LOGGER.debug("User is eligible for resource suggestions");
+            String scoreRange = findScoreRange();
+            FinderContext finderContext = npc.createFinderContext();
+            finderContext.setScoreRange(scoreRange);
             List<String> resourceSuggestions =
-                contentFinderRepository.findResourceSuggestionsForAssessment(npc.createFinderContext());
+                contentFinderRepository.findResourceSuggestionsForAssessment(finderContext);
             if (resourceSuggestions != null && !resourceSuggestions.isEmpty()) {
                 resourceSuggestions.forEach(resource -> npc.getCtxSuggestions().addResource(resource));
                 markAsDone();
@@ -64,6 +68,10 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
             contentFinderRepository.markCompetencyCompletedForUser(npc.createFinderContext());
         }
 
+    }
+
+    private String findScoreRange() {
+        return DbLookupUtility.getInstance().preTestScoreRangeNameByScore(npc.requestContext().getScorePercent());
     }
 
     private void markAsDone() {
