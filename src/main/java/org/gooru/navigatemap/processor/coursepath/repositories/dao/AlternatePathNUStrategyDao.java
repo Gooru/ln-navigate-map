@@ -1,7 +1,10 @@
 package org.gooru.navigatemap.processor.coursepath.repositories.dao;
 
+import java.util.List;
+
 import org.gooru.navigatemap.processor.coursepath.repositories.mappers.AlternatePathMapper;
 import org.gooru.navigatemap.processor.data.AlternatePath;
+import org.gooru.navigatemap.processor.utilities.jdbi.PGArray;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
@@ -32,4 +35,10 @@ public interface AlternatePathNUStrategyDao {
     AlternatePath findAlternatePathByPathIdAndUserInClass(@Bind("pathId") Long pathId, @Bind("user") String user,
         @Bind("classId") String classId);
 
+    @SqlQuery("select comp_mcomp_id from user_competency_completion where comp_mcomp_id = any(:competencyList) "
+                  + "and user_id = :userId::uuid")
+    List<String> findCompletedCompetenciesForUserInGivenList(@Bind("userId") String userId,
+        @Bind("competencyList") PGArray<String> competencyList);
+
 }
+
