@@ -6,6 +6,7 @@ import org.gooru.navigatemap.processor.coursepath.repositories.mappers.Alternate
 import org.gooru.navigatemap.processor.data.AlternatePath;
 import org.gooru.navigatemap.processor.utilities.jdbi.PGArray;
 import org.skife.jdbi.v2.sqlobject.Bind;
+import org.skife.jdbi.v2.sqlobject.SqlBatch;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
@@ -39,6 +40,20 @@ public interface AlternatePathNUStrategyDao {
                   + "and user_id = :userId::uuid")
     List<String> findCompletedCompetenciesForUserInGivenList(@Bind("userId") String userId,
         @Bind("competencyList") PGArray<String> competencyList);
+
+    @SqlBatch("insert into user_competency_completion (user_id, comp_mcomp_id, ctx_course_id, ctx_unit_id, "
+                  + "ctx_lesson_id, ctx_class_id, ctx_collection_id)values(:userId::uuid, :competency, :course::uuid,"
+                  + " :unit::uuid, :lesson::uuid, :classId::uuid, :collection::uuid)")
+    void markCompetencyCompletedInClassContext(@Bind("userId") String userId,
+        @Bind("competency") List<String> competency, @Bind("course") String course, @Bind("unit") String unit,
+        @Bind("lesson") String lesson, @Bind("classId") String classId, @Bind("collection") String collection);
+
+    @SqlBatch("insert into user_competency_completion (user_id, comp_mcomp_id, ctx_course_id, ctx_unit_id, "
+                  + "ctx_lesson_id, ctx_collection_id)values(:userId::uuid, :competency, :course::uuid,"
+                  + " :unit::uuid, :lesson::uuid, :collection::uuid)")
+    void markCompetencyCompletedNoClassContext(@Bind("userId") String userId,
+        @Bind("competency") List<String> competency, @Bind("course") String course, @Bind("unit") String unit,
+        @Bind("lesson") String lesson, @Bind("collection") String collection);
 
 }
 

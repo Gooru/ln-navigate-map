@@ -75,7 +75,7 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
                             String competencies = finderDao
                                 .findCompetenciesForCollection(course, unit, lesson, contentAddress.getCollection());
                             List<String> competencyList = parseCollectionTaxonomy(contentAddress, competencies);
-                            if (competencyList == null || competencyList.isEmpty()) {
+                            if (competencyList.isEmpty()) {
                                 contentAddress.populateCurrentItemsFromCollections();
                                 return contentAddress;
                             } else {
@@ -124,7 +124,33 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
 
     @Override
     public void markCompetencyCompletedForUser(FinderContext finderContext) {
-
+        ContentFinderDao finderDao = dbi.onDemand(ContentFinderDao.class);
+        String competencies = finderDao.findCompetenciesForCollection(finderContext.getCurrentAddress().getCourse(),
+            finderContext.getCurrentAddress().getUnit(), finderContext.getCurrentAddress().getLesson(),
+            finderContext.getCurrentAddress().getCollection());
+        List<String> competencyList = parseCollectionTaxonomy(finderContext.getCurrentAddress(), competencies);
+        if (!competencyList.isEmpty()) {
+            AlternatePathNUStrategyDao alternatePathNUStrategyDao = dbi.onDemand(AlternatePathNUStrategyDao.class);
+            List<String> completedCompetenciesByUser = alternatePathNUStrategyDao
+                .findCompletedCompetenciesForUserInGivenList(finderContext.getUser(),
+                    CollectionUtils.convertToSqlArrayOfString(competencyList));
+            competencyList.removeAll(completedCompetenciesByUser);
+            if (!competencyList.isEmpty()) {
+                if (finderContext.getUserClass() != null) {
+                    alternatePathNUStrategyDao
+                        .markCompetencyCompletedInClassContext(finderContext.getUser(), competencyList,
+                            finderContext.getCurrentAddress().getCourse(), finderContext.getCurrentAddress().getUnit(),
+                            finderContext.getCurrentAddress().getLesson(), finderContext.getUserClass(),
+                            finderContext.getCurrentAddress().getCollection());
+                } else {
+                    alternatePathNUStrategyDao
+                        .markCompetencyCompletedNoClassContext(finderContext.getUser(), competencyList,
+                            finderContext.getCurrentAddress().getCourse(), finderContext.getCurrentAddress().getUnit(),
+                            finderContext.getCurrentAddress().getLesson(),
+                            finderContext.getCurrentAddress().getCollection());
+                }
+            }
+        }
     }
 
     private static List<String> parseCollectionTaxonomy(ContentAddress contentAddress, String collectionTaxonomy) {
