@@ -107,4 +107,12 @@ public final class ContentAddress {
         return isOnAlternatePath() && collectionSubtype != null && (CollectionSubtype.BenchMark == collectionSubtype
             || CollectionSubtype.PostTest == collectionSubtype);
     }
+
+    public void populateCurrentItemsFromCollections() {
+        this.currentItem = collection;
+        this.currentItemType = collectionType == null ? null : CurrentItemType.builder(collectionType.getName());
+        this.currentItemSubtype =
+            collectionSubtype == null ? null : CurrentItemSubtype.builder(collectionSubtype.getName());
+
+    }
 }

@@ -3,6 +3,7 @@ package org.gooru.navigatemap.processor.coursepath.repositories.global;
 import java.util.*;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.AbstractContentRepository;
+import org.gooru.navigatemap.processor.coursepath.repositories.ContentFinderNoSuggestionsDelegate;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.AlternatePathGlobalStrategyDao;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
 import org.gooru.navigatemap.processor.data.AlternatePath;

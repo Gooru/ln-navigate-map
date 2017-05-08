@@ -10,6 +10,6 @@ public final class ContentRepositoryBuilder {
     }
 
     public static ContentFinderRepository buildContentFinderRepository() {
-        throw new AssertionError("not implemented");
+        return new ContentFinderRepositoryImpl();
     }
 }

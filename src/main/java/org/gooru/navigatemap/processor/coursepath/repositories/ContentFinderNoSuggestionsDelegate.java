@@ -1,4 +1,4 @@
-package org.gooru.navigatemap.processor.coursepath.repositories.global;
+package org.gooru.navigatemap.processor.coursepath.repositories;
 
 import java.util.List;
 
@@ -8,14 +8,14 @@ import org.gooru.navigatemap.processor.data.ContentAddress;
 /**
  * @author ashish on 5/4/17.
  */
-class ContentFinderNoSuggestionsDelegate {
+public class ContentFinderNoSuggestionsDelegate {
     private final ContentFinderDao finderDao;
 
-    ContentFinderNoSuggestionsDelegate(ContentFinderDao finderDao) {
+    public ContentFinderNoSuggestionsDelegate(ContentFinderDao finderDao) {
         this.finderDao = finderDao;
     }
 
-    ContentAddress findNextContentFromCULWithoutAlternatePaths(ContentAddress address) {
+    public ContentAddress findNextContentFromCULWithoutAlternatePaths(ContentAddress address) {
         List<ContentAddress> result;
         if (address.getCollection() != null && !address.isOnAlternatePath()) {
             result = finderDao.findNextCollectionsInCUL(address.getCourse(), address.getUnit(), address.getLesson(),
