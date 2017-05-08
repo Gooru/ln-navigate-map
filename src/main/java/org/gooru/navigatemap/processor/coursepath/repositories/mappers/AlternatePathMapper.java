@@ -36,6 +36,7 @@ public class AlternatePathMapper implements ResultSetMapper<AlternatePath> {
         result.setTargetCollection(safeStringToUUID(r.getString("target_collection_id")));
         result.setTargetContentType(r.getString("target_content_type"));
         result.setTargetContentSubtype(r.getString("target_content_subtype"));
+        result.setTargetResourceId(safeStringToUUID(r.getString("target_resource_id")));
 
         return result;
     }

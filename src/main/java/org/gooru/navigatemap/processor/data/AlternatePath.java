@@ -22,6 +22,7 @@ public final class AlternatePath {
     private UUID targetCollection;
     private String targetContentType;
     private String targetContentSubtype;
+    private UUID targetResourceId;
 
     public Long getId() {
         return id;
@@ -167,4 +168,11 @@ public final class AlternatePath {
         this.classId = classId;
     }
 
+    public UUID getTargetResourceId() {
+        return targetResourceId;
+    }
+
+    public void setTargetResourceId(UUID targetResourceId) {
+        this.targetResourceId = targetResourceId;
+    }
 }
