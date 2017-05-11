@@ -120,8 +120,8 @@ public final class ContentAddress {
     }
 
     public boolean isOnAlternatePathAtLessonEnd() {
-        return isOnAlternatePath() && collectionSubtype != null && (CollectionSubtype.BenchMark == collectionSubtype
-            || CollectionSubtype.PostTest == collectionSubtype);
+        return isOnAlternatePath() && currentItemSubtype != null && (CurrentItemSubtype.BenchMark == currentItemSubtype
+            || CurrentItemSubtype.PostTest == currentItemSubtype);
     }
 
     public void populateCurrentItemsFromCollections() {

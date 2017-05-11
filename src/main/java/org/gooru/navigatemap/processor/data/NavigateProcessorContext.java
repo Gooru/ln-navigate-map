@@ -76,10 +76,17 @@ public final class NavigateProcessorContext implements Stateful {
 
     public ContentAddress getCurrentContentAddress() {
         if (!currentAddressSet) {
-            currentContentAddress.setCollectionSubtype(requestContext().getCurrentItemSubtype() == null ? null :
-                CollectionSubtype.builder(requestContext().getCurrentItemSubtype().getName()));
-            currentContentAddress.setCollectionType(requestContext().getCurrentItemType() == null ? null :
-                CollectionType.builder(requestContext().getCurrentItemType().getName()));
+            if (Objects.equals(CurrentItemType.Resource.getName(), requestContext().getCurrentItemType().getName())) {
+                currentContentAddress.setCollectionSubtype(requestContext().getCollectionSubType() == null ? null :
+                    CollectionSubtype.builder(requestContext().getCollectionSubType().getName()));
+                currentContentAddress.setCollectionType(requestContext().getCollectionType() == null ? null :
+                    CollectionType.builder(requestContext().getCollectionType().getName()));
+            } else {
+                currentContentAddress.setCollectionSubtype(requestContext().getCurrentItemSubtype() == null ? null :
+                    CollectionSubtype.builder(requestContext().getCurrentItemSubtype().getName()));
+                currentContentAddress.setCollectionType(requestContext().getCurrentItemType() == null ? null :
+                    CollectionType.builder(requestContext().getCurrentItemType().getName()));
+            }
             currentContentAddress.setCollection(Objects.toString(requestContext().getCurrentItemId(), null));
             currentContentAddress.setCourse(requestContext().getCourseId().toString());
             currentContentAddress.setUnit(Objects.toString(requestContext().getUnitId(), null));
