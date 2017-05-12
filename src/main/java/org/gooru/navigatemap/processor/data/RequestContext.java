@@ -99,8 +99,8 @@ public final class RequestContext {
         }
 
         if (onMainPath() && state == State.Start) {
-            if (!Objects.equals(collectionId, currentItemId) || !Objects
-                .equals(collectionType.getName(), currentItemType.getName()) || !collectionCurrentSubtypeEqual()) {
+            if (!Objects.equals(collectionId, currentItemId) || !collectionAndCurrentItemTypeAreSame()
+                || !collectionAndCurrentSubtypeAreSame()) {
                 throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                     "Collection fields should be same as current item fields on main path");
 
@@ -108,11 +108,15 @@ public final class RequestContext {
         }
     }
 
-    private boolean collectionCurrentSubtypeEqual() {
-        if (currentItemSubtype == null && collectionSubType == null) {
-            return true;
-        }
-        return currentItemSubtype != null && collectionSubType != null && Objects
+    private boolean collectionAndCurrentItemTypeAreSame() {
+        return currentItemType == null && collectionType == null
+            || currentItemType != null && collectionType != null && Objects
+            .equals(currentItemType.getName(), collectionType.getName());
+    }
+
+    private boolean collectionAndCurrentSubtypeAreSame() {
+        return currentItemSubtype == null && collectionSubType == null
+            || currentItemSubtype != null && collectionSubType != null && Objects
             .equals(currentItemSubtype.getName(), collectionSubType.getName());
     }
 

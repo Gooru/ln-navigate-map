@@ -76,7 +76,7 @@ public final class NavigateProcessorContext implements Stateful {
 
     public ContentAddress getCurrentContentAddress() {
         if (!currentAddressSet) {
-            if (Objects.equals(CurrentItemType.Resource.getName(), requestContext().getCurrentItemType().getName())) {
+            if (currentItemIsResource()) {
                 currentContentAddress.setCollectionSubtype(requestContext().getCollectionSubType() == null ? null :
                     CollectionSubtype.builder(requestContext().getCollectionSubType().getName()));
                 currentContentAddress.setCollectionType(requestContext().getCollectionType() == null ? null :
@@ -96,6 +96,11 @@ public final class NavigateProcessorContext implements Stateful {
             return currentContentAddress;
         }
         return currentContentAddress;
+    }
+
+    private boolean currentItemIsResource() {
+        return requestContext().getCurrentItemType() != null && Objects
+            .equals(CurrentItemType.Resource.getName(), requestContext().getCurrentItemType().getName());
     }
 
     public ContentAddress getCurrentContentAddressQualified() {
