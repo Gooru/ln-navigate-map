@@ -102,7 +102,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
         final FinderContext finderContext = npc.createFinderContext();
         ContentAddress contentAddress =
             ContentRepositoryBuilder.buildContentFinderRepository().fetchNextItem(finderContext);
-        if (contentAddress != null) {
+        if (contentAddress != null && contentAddress.getCollection() != null) {
             LOGGER.debug("Found next item");
             // NOTE that we need to populate currentItem* fields in content address object from repo
             npc.setNextContextAddress(contentAddress);
