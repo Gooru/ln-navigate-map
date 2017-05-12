@@ -22,8 +22,8 @@ public final class RequestContext {
     private CollectionSubtype collectionSubType;
 
     private UUID currentItemId;
-    private CollectionType currentItemType;
-    private CollectionSubtype currentItemSubtype;
+    private CurrentItemType currentItemType;
+    private CurrentItemSubtype currentItemSubtype;
 
     private State state;
     private Long pathId;
@@ -73,11 +73,11 @@ public final class RequestContext {
         return currentItemId;
     }
 
-    public CollectionType getCurrentItemType() {
+    public CurrentItemType getCurrentItemType() {
         return currentItemType;
     }
 
-    public CollectionSubtype getCurrentItemSubtype() {
+    public CurrentItemSubtype getCurrentItemSubtype() {
         return currentItemSubtype;
     }
 
@@ -99,13 +99,25 @@ public final class RequestContext {
         }
 
         if (onMainPath() && state == State.Start) {
-            if (!Objects.equals(collectionId, currentItemId) || !Objects.equals(collectionType, currentItemType)
-                || !Objects.equals(collectionSubType, currentItemSubtype)) {
+            if (!Objects.equals(collectionId, currentItemId) || !collectionAndCurrentItemTypeAreSame()
+                || !collectionAndCurrentSubtypeAreSame()) {
                 throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                     "Collection fields should be same as current item fields on main path");
 
             }
         }
+    }
+
+    private boolean collectionAndCurrentItemTypeAreSame() {
+        return currentItemType == null && collectionType == null
+            || currentItemType != null && collectionType != null && Objects
+            .equals(currentItemType.getName(), collectionType.getName());
+    }
+
+    private boolean collectionAndCurrentSubtypeAreSame() {
+        return currentItemSubtype == null && collectionSubType == null
+            || currentItemSubtype != null && collectionSubType != null && Objects
+            .equals(currentItemSubtype.getName(), collectionSubType.getName());
     }
 
     private boolean onMainPath() {
@@ -133,11 +145,11 @@ public final class RequestContext {
             String value = input.getString(ContextAttributes.COLLECTION_TYPE);
             context.collectionType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
             value = input.getString(ContextAttributes.CURRENT_ITEM_TYPE);
-            context.currentItemType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
+            context.currentItemType = (value != null && !value.isEmpty()) ? CurrentItemType.builder(value) : null;
             value = input.getString(ContextAttributes.COLLECTION_SUBTYPE);
             context.collectionSubType = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
             value = input.getString(ContextAttributes.CURRENT_ITEM_SUBTYPE);
-            context.currentItemSubtype = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
+            context.currentItemSubtype = (value != null && !value.isEmpty()) ? CurrentItemSubtype.builder(value) : null;
             value = input.getString(ContextAttributes.STATE);
             context.state = State.builder(value);
         } catch (IllegalArgumentException e) {

@@ -7,7 +7,7 @@ import org.skife.jdbi.v2.DBI;
 /**
  * @author ashish on 7/3/17.
  */
-class AbstractUsageRepository {
+public class AbstractUsageRepository {
 
     protected final DBI dbi;
 

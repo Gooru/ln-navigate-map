@@ -1,4 +1,4 @@
-package org.gooru.navigatemap.processor.coursepath.repositories;
+package org.gooru.navigatemap.processor.coursepath.repositories.global;
 
 import java.util.List;
 import java.util.Objects;
@@ -183,7 +183,13 @@ final class NavigateServiceImpl implements NavigateService {
             }
         }
         // If there is nothing to show, use current address to find next content
-        return finderRepository.findNextContentFromCUL(finderContext.getCurrentAddress());
+        return finderRepository.findNextContentFromCUL(createContentAddressForLessonStart());
+    }
+
+    private ContentAddress createContentAddressForLessonStart() {
+        ContentAddress currentAddressForLessonStart = new ContentAddress(finderContext.getCurrentAddress());
+        currentAddressForLessonStart.setCollection(null);
+        return currentAddressForLessonStart;
     }
 
     private AlternatePath findATargetAlternatePath(List<AlternatePath> filteredChildPaths) {

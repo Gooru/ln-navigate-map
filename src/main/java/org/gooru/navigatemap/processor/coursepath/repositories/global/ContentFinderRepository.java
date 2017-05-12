@@ -1,4 +1,4 @@
-package org.gooru.navigatemap.processor.coursepath.repositories;
+package org.gooru.navigatemap.processor.coursepath.repositories.global;
 
 import java.util.List;
 import java.util.Set;
@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import org.gooru.navigatemap.processor.data.AlternatePath;
 import org.gooru.navigatemap.processor.data.ContentAddress;
-import org.gooru.navigatemap.processor.data.SuggestionCard4Collection;
 
 /**
  * @author ashish on 3/3/17.
@@ -27,8 +26,6 @@ public interface ContentFinderRepository {
 
     Set<String> findCompetenciesForLesson(ContentAddress contentAddress);
 
-    List<SuggestionCard4Collection> createSuggestionsCardForCollections(Set<String> collections);
-
     List<String> findBackfillsForPreTestAndScoreRange(UUID preTestId, String scoreRangeName);
 
     AlternatePath findAlternatePathForUser(ContentAddress currentAddress, String user);
@@ -44,4 +41,6 @@ public interface ContentFinderRepository {
     List<AlternatePath> findChildPathsOfTypePreTest(ContentAddress currentAddress, String user, String classId);
 
     boolean validateContentAddress(ContentAddress contentAddress);
+
+    String findCourseVersion(UUID course);
 }

@@ -1,9 +1,10 @@
-package org.gooru.navigatemap.processor.coursepath.flows;
+package org.gooru.navigatemap.processor.coursepath.flows.strategy.global;
 
 import org.gooru.navigatemap.constants.HttpConstants;
 import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
-import org.gooru.navigatemap.processor.coursepath.repositories.ContentFinderRepository;
-import org.gooru.navigatemap.processor.coursepath.repositories.ContentRepositoryBuilder;
+import org.gooru.navigatemap.processor.coursepath.flows.Flow;
+import org.gooru.navigatemap.processor.coursepath.repositories.global.ContentFinderRepository;
+import org.gooru.navigatemap.processor.coursepath.repositories.global.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.ContentAddress;
 import org.gooru.navigatemap.processor.data.FinderContext;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
@@ -61,7 +62,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
             return fetchNextItem();
         } else {
             npc.setNextContextAddress(npc.getCurrentContentAddress());
-            npc.responseContext().setContentAddress(npc.getNextContentAddress());
+            npc.responseContext().setContentAddressWithItemFromCollection(npc.getNextContentAddress());
             markAsDone(State.ContentServed);
             return executionResult;
         }
@@ -85,7 +86,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
             if (contentAddress.getCollection() != null) {
                 npc.setNextContextAddress(contentAddress);
                 if (npc.suggestionsTurnedOff()) {
-                    npc.responseContext().setContentAddress(contentAddress);
+                    npc.responseContext().setContentAddressWithItemFromCollection(contentAddress);
                     markAsDone(State.ContentServed);
                 }
             } else {
@@ -100,13 +101,13 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
     }
 
     private ExecutionResult<NavigateProcessorContext> fetchNextItem() {
-        final FinderContext finderContext = createFinderContext();
+        final FinderContext finderContext = npc.createFinderContext();
         ContentAddress contentAddress = ContentRepositoryBuilder.buildNavigateService().navigateNext(finderContext);
         if (contentAddress != null) {
             LOGGER.debug("Found next item");
             npc.setNextContextAddress(contentAddress);
             if (finderContext.isStatusDone()) {
-                npc.responseContext().setContentAddress(contentAddress);
+                npc.responseContext().setContentAddressWithItemFromCollection(contentAddress);
                 npc.responseContext()
                     .setCurrentItemAddress(finderContext.getCurrentItemId(), finderContext.getCurrentItemType(),
                         finderContext.getCurrentItemSubtype());
@@ -120,18 +121,13 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
         return executionResult;
     }
 
-    private FinderContext createFinderContext() {
-        return new FinderContext(npc.requestContext().getState(), npc.requestContext(), npc.getCurrentContentAddress(),
-            npc.navigateMessageContext().getUserId());
-    }
-
     private ExecutionResult<NavigateProcessorContext> fetchNextItemFromCULWithoutSuggestions() {
         ContentAddress contentAddress = ContentRepositoryBuilder.buildContentFinderRepository()
             .findNextContentFromCUL(npc.getCurrentContentAddress());
         if (contentAddress != null) {
             if (contentAddress.getCollection() != null) {
                 npc.setNextContextAddress(contentAddress);
-                npc.responseContext().setContentAddress(contentAddress);
+                npc.responseContext().setContentAddressWithItemFromCollection(contentAddress);
                 markAsDone(State.ContentServed);
             } else {
                 markAsDone(State.Done);

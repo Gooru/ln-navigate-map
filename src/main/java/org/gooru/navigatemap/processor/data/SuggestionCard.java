@@ -3,7 +3,7 @@ package org.gooru.navigatemap.processor.data;
 /**
  * @author ashish on 4/4/17.
  */
-public final class SuggestionCard4Collection {
+public final class SuggestionCard {
     private String id;
     private String title;
     private String format;

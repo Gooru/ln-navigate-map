@@ -5,7 +5,7 @@
       "nucleus.ds.type": "hikari",
       "username": "nucleus",
       "password": "nucleus",
-      "autoCommit": false,
+      "autoCommit": true,
       "jdbcUrl": "jdbc:postgresql://localhost:5432/nucleus",
       "maximumPoolSize": 5
     },
@@ -39,6 +39,7 @@
       "config": {
         "collection.fetch.uri": "http://nile-dev.gooru.org/api/nucleus/v2/collections/",
         "assessment.fetch.uri": "http://nile-dev.gooru.org/api/nucleus/v2/assessments/",
+        "resource.fetch.uri": "http://nile-dev.gooru.org/api/nucleus/v2/resources/",
         "http.timeout": 60000,
         "http.poolSize": 20
       }

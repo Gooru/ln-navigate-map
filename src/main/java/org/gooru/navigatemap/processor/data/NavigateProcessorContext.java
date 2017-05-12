@@ -18,6 +18,8 @@ public final class NavigateProcessorContext implements Stateful {
     private final ContentAddress currentContentAddress;
     private boolean nextAddressSet = false;
     private boolean currentAddressSet = false;
+    private boolean qualifiedCurrentAddressSet = false;
+    private final ContentAddress currentQualifiedContentAddress;
 
     public NavigateProcessorContext(RequestContext requestContext, NavigateMessageContext navigateMessageContext) {
         this.ctxIn = requestContext;
@@ -26,6 +28,9 @@ public final class NavigateProcessorContext implements Stateful {
         ctxSuggestions = new SuggestionContext();
         nextContentAddress = new ContentAddress();
         currentContentAddress = new ContentAddress();
+        currentQualifiedContentAddress = new ContentAddress();
+        getCurrentContentAddress();
+        getCurrentContentAddressQualified();
     }
 
     public boolean suggestionsTurnedOff() {
@@ -63,13 +68,25 @@ public final class NavigateProcessorContext implements Stateful {
         nextContentAddress.setCollectionType(address.getCollectionType());
         nextContentAddress.setCollectionSubtype(address.getCollectionSubtype());
         nextContentAddress.setPathId(address.getPathId());
+        nextContentAddress.setCurrentItem(address.getCurrentItem());
+        nextContentAddress.setCurrentItemType(address.getCurrentItemType());
+        nextContentAddress.setCurrentItemSubtype(address.getCurrentItemSubtype());
         nextAddressSet = true;
     }
 
     public ContentAddress getCurrentContentAddress() {
         if (!currentAddressSet) {
-            currentContentAddress.setCollectionSubtype(requestContext().getCurrentItemSubtype());
-            currentContentAddress.setCollectionType(requestContext().getCurrentItemType());
+            if (currentItemIsResource()) {
+                currentContentAddress.setCollectionSubtype(requestContext().getCollectionSubType() == null ? null :
+                    CollectionSubtype.builder(requestContext().getCollectionSubType().getName()));
+                currentContentAddress.setCollectionType(requestContext().getCollectionType() == null ? null :
+                    CollectionType.builder(requestContext().getCollectionType().getName()));
+            } else {
+                currentContentAddress.setCollectionSubtype(requestContext().getCurrentItemSubtype() == null ? null :
+                    CollectionSubtype.builder(requestContext().getCurrentItemSubtype().getName()));
+                currentContentAddress.setCollectionType(requestContext().getCurrentItemType() == null ? null :
+                    CollectionType.builder(requestContext().getCurrentItemType().getName()));
+            }
             currentContentAddress.setCollection(Objects.toString(requestContext().getCurrentItemId(), null));
             currentContentAddress.setCourse(requestContext().getCourseId().toString());
             currentContentAddress.setUnit(Objects.toString(requestContext().getUnitId(), null));
@@ -79,6 +96,36 @@ public final class NavigateProcessorContext implements Stateful {
             return currentContentAddress;
         }
         return currentContentAddress;
+    }
+
+    private boolean currentItemIsResource() {
+        return requestContext().getCurrentItemType() != null && Objects
+            .equals(CurrentItemType.Resource.getName(), requestContext().getCurrentItemType().getName());
+    }
+
+    public ContentAddress getCurrentContentAddressQualified() {
+        if (!qualifiedCurrentAddressSet) {
+            currentQualifiedContentAddress.setCollectionSubtype(requestContext().getCollectionSubType());
+            currentQualifiedContentAddress.setCollectionType(requestContext().getCollectionType());
+            currentQualifiedContentAddress.setCollection(Objects.toString(requestContext().getCollectionId(), null));
+
+            currentQualifiedContentAddress.setCurrentItemSubtype(requestContext().getCurrentItemSubtype());
+            currentQualifiedContentAddress.setCurrentItemType(requestContext().getCurrentItemType());
+            currentQualifiedContentAddress.setCurrentItem(Objects.toString(requestContext().getCurrentItemId(), null));
+
+            currentQualifiedContentAddress.setCourse(requestContext().getCourseId().toString());
+            currentQualifiedContentAddress.setUnit(Objects.toString(requestContext().getUnitId(), null));
+            currentQualifiedContentAddress.setLesson(Objects.toString(requestContext().getLessonId(), null));
+            currentQualifiedContentAddress.setPathId(requestContext().getPathId());
+            currentAddressSet = true;
+            return currentQualifiedContentAddress;
+        }
+        return currentQualifiedContentAddress;
+    }
+
+    public FinderContext createFinderContext() {
+        return new FinderContext(requestContext().getState(), requestContext(), getCurrentContentAddressQualified(),
+            navigateMessageContext().getUserId());
     }
 
     @Override

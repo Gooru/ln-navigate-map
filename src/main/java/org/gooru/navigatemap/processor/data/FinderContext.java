@@ -15,6 +15,7 @@ public final class FinderContext {
     private UUID currentItemId;
     private CollectionType currentItemType;
     private CollectionSubtype currentItemSubtype;
+    private String scoreRange;
 
     public State getState() {
         return state;
@@ -67,5 +68,13 @@ public final class FinderContext {
 
     public String getUser() {
         return user;
+    }
+
+    public String getScoreRange() {
+        return scoreRange;
+    }
+
+    public void setScoreRange(String scoreRange) {
+        this.scoreRange = scoreRange;
     }
 }
