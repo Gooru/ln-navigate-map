@@ -99,13 +99,21 @@ public final class RequestContext {
         }
 
         if (onMainPath() && state == State.Start) {
-            if (!Objects.equals(collectionId, currentItemId) || !Objects.equals(collectionType, currentItemType)
-                || !Objects.equals(collectionSubType, currentItemSubtype)) {
+            if (!Objects.equals(collectionId, currentItemId) || !Objects
+                .equals(collectionType.getName(), currentItemType.getName()) || !collectionCurrentSubtypeEqual()) {
                 throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                     "Collection fields should be same as current item fields on main path");
 
             }
         }
+    }
+
+    private boolean collectionCurrentSubtypeEqual() {
+        if (currentItemSubtype == null && collectionSubType == null) {
+            return true;
+        }
+        return currentItemSubtype != null && collectionSubType != null && Objects
+            .equals(currentItemSubtype.getName(), collectionSubType.getName());
     }
 
     private boolean onMainPath() {
