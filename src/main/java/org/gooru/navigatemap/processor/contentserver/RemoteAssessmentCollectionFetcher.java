@@ -1,7 +1,6 @@
 package org.gooru.navigatemap.processor.contentserver;
 
 import org.gooru.navigatemap.constants.HttpConstants;
-import org.gooru.navigatemap.processor.data.CurrentItemType;
 import org.gooru.navigatemap.processor.data.ResponseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,31 +18,20 @@ public final class RemoteAssessmentCollectionFetcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoteAssessmentCollectionFetcher.class);
     private static final String HEADER_AUTH_PREFIX = "Token ";
 
-    private final String collectionUri;
-    private final String assessmentUri;
     private final HttpClient client;
     private final Future<JsonObject> completionFuture;
-    private final String resourceUri;
+    private final RemoteUriLocator remoteUriLocator;
 
-    public RemoteAssessmentCollectionFetcher(HttpClient client, String assessmentUri, String collectionUri,
-        String resourceUri) {
+    public RemoteAssessmentCollectionFetcher(HttpClient client, RemoteUriLocator remoteUriLocator) {
         this.client = client;
-        this.assessmentUri = assessmentUri;
-        this.collectionUri = collectionUri;
-        this.resourceUri = resourceUri;
         this.completionFuture = Future.future();
+        this.remoteUriLocator = remoteUriLocator;
     }
 
-    public Future<JsonObject> fetch(ResponseContext context, String auth) {
-        String uri;
-        if (context.getCurrentItemType() == CurrentItemType.Collection) {
-            uri = collectionUri + context.getCurrentItemId().toString();
-            fetchFromRemote(context, uri, auth);
-        } else if (context.getCurrentItemType() == CurrentItemType.Assessment) {
-            uri = assessmentUri + context.getCurrentItemId().toString();
-            fetchFromRemote(context, uri, auth);
-        } else if (context.getCurrentItemType() == CurrentItemType.Resource) {
-            uri = resourceUri + context.getCurrentItemId().toString();
+    Future<JsonObject> fetch(ResponseContext context, String auth) {
+        String uri = remoteUriLocator.getUriForItemType(context.getCurrentItemType());
+        if (uri != null) {
+            uri += context.getCurrentItemId().toString();
             fetchFromRemote(context, uri, auth);
         } else {
             LOGGER.warn("Unsupported CollectionType: '{}'", context.getCurrentItemType());
