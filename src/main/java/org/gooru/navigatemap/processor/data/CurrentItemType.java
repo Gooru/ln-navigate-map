@@ -10,7 +10,8 @@ public enum CurrentItemType {
 
     Collection("collection"),
     Assessment("assessment"),
-    Resource("resource");
+    Resource("resource"),
+    AssessmentExternal("assessment-external");
 
     private final String name;
 

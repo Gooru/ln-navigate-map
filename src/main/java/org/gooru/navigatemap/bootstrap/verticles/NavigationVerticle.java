@@ -7,6 +7,7 @@ import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.exceptions.MessageResponseWrapperException;
 import org.gooru.navigatemap.processor.contentserver.ContentServer;
 import org.gooru.navigatemap.processor.contentserver.RemoteAssessmentCollectionFetcher;
+import org.gooru.navigatemap.processor.contentserver.RemoteUriLocator;
 import org.gooru.navigatemap.processor.context.ContextAttributes;
 import org.gooru.navigatemap.processor.context.ContextProcessor;
 import org.gooru.navigatemap.processor.context.ContextUtil;
@@ -30,9 +31,7 @@ import io.vertx.core.json.JsonObject;
 public class NavigationVerticle extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(NavigationVerticle.class);
     private HttpClient client;
-    private String assessmentUri;
-    private String collectionUri;
-    private String resourceUri;
+    private RemoteUriLocator remoteUriLocator;
 
     @Override
     public void start(Future<Void> startFuture) throws Exception {
@@ -49,12 +48,15 @@ public class NavigationVerticle extends AbstractVerticle {
         final Integer poolSize = config().getInteger("http.poolSize");
         Objects.requireNonNull(timeout);
         Objects.requireNonNull(poolSize);
-        assessmentUri = config().getString("assessment.fetch.uri");
+        String assessmentUri = config().getString("assessment.fetch.uri");
         Objects.requireNonNull(assessmentUri);
-        collectionUri = config().getString("collection.fetch.uri");
+        String collectionUri = config().getString("collection.fetch.uri");
         Objects.requireNonNull(collectionUri);
-        resourceUri = config().getString("resource.fetch.uri");
+        String resourceUri = config().getString("resource.fetch.uri");
         Objects.requireNonNull(resourceUri);
+        String assessmentExternalUri = config().getString("assessment-external.fetch.uri");
+        Objects.requireNonNull(assessmentExternalUri);
+        remoteUriLocator = new RemoteUriLocator(assessmentUri, collectionUri, resourceUri, assessmentExternalUri);
 
         client = vertx.createHttpClient(new HttpClientOptions().setConnectTimeout(timeout).setMaxPoolSize(poolSize));
     }
@@ -75,8 +77,7 @@ public class NavigationVerticle extends AbstractVerticle {
         Future<JsonObject> future = Future.future();
         new ContextProcessor(vertx).fetchContext(message)
             .compose(navigateProcessorContext -> new PathMapper(vertx).mapPath(navigateProcessorContext)).compose(
-            ar -> new ContentServer(vertx, future,
-                new RemoteAssessmentCollectionFetcher(client, assessmentUri, collectionUri, resourceUri))
+            ar -> new ContentServer(vertx, future, new RemoteAssessmentCollectionFetcher(client, remoteUriLocator))
                 .serveContent(ar), future);
 
         future.setHandler(event -> {

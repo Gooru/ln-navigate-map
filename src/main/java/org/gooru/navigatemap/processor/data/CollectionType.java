@@ -9,7 +9,8 @@ import java.util.Map;
 public enum CollectionType {
 
     Collection("collection"),
-    Assessment("assessment");
+    Assessment("assessment"),
+    AssessmentExternal("assessment-external");
 
     private final String name;
 

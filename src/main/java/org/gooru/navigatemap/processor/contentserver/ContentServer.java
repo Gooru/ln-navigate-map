@@ -59,6 +59,8 @@ public class ContentServer {
                 serveAssessment();
             } else if (npc.responseContext().getCurrentItemType() == CurrentItemType.Resource) {
                 serveResources();
+            } else if (npc.responseContext().getCurrentItemType() == CurrentItemType.AssessmentExternal) {
+                serveAssessmentExternal();
             } else {
                 // TODO: What to do??
                 LOGGER.warn("Invalid content to serve, not sure what to do");
@@ -90,6 +92,10 @@ public class ContentServer {
     }
 
     private void serveAssessment() {
+        serveAssessmentCollection();
+    }
+
+    private void serveAssessmentExternal() {
         serveAssessmentCollection();
     }
 
