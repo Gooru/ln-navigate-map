@@ -1,13 +1,12 @@
 package org.gooru.navigatemap.processor.coursepath.repositories;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.SuggestionCardDao;
+import org.gooru.navigatemap.processor.data.CollectionRQCount;
 import org.gooru.navigatemap.processor.data.SuggestionCard;
 import org.gooru.navigatemap.processor.utilities.CollectionUtils;
+import org.gooru.navigatemap.processor.utilities.jdbi.PGArray;
 
 /**
  * @author ashish on 7/5/17.
@@ -33,7 +32,25 @@ class SuggestionCardServiceImpl extends AbstractContentRepository implements Sug
         SuggestionCardDao dao = dbi.onDemand(SuggestionCardDao.class);
         List<String> collectionsList = new ArrayList<>(collections);
 
-        return dao.createSuggestionsCardForCollections(CollectionUtils.convertToSqlArrayOfUUID(collectionsList));
+        final PGArray<UUID> collectionsPGArray = CollectionUtils.convertToSqlArrayOfUUID(collectionsList);
+
+        List<SuggestionCard> suggestionCards =
+            dao.createSuggestionsCardForCollectionsWithoutRQCount(collectionsPGArray);
+
+        List<CollectionRQCount> countRQForCollection = dao.fetchRQCountForCollections(collectionsPGArray);
+
+        for (SuggestionCard suggestionCardWithoutRQCount : suggestionCards) {
+            String collectionId = suggestionCardWithoutRQCount.getId();
+            for (CollectionRQCount collectionRQCount : countRQForCollection) {
+                if (Objects.equals(collectionId, collectionRQCount.getCollectionId())) {
+                    suggestionCardWithoutRQCount.setQuestionCount(collectionRQCount.getQuestionCount());
+                    suggestionCardWithoutRQCount.setResourceCount(collectionRQCount.getResourceCount());
+                    break;
+                }
+            }
+        }
+
+        return suggestionCards;
     }
 
     private List<SuggestionCard> createSuggestionsCardForResources(Set<String> resources) {
