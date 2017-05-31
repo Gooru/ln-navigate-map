@@ -11,6 +11,8 @@ public final class SuggestionCard {
     private String thumbnail;
     private String metadata;
     private String taxonomy;
+    private int resourceCount;
+    private int questionCount;
 
     public String getId() {
         return id;
@@ -66,5 +68,21 @@ public final class SuggestionCard {
 
     public void setTaxonomy(String taxonomy) {
         this.taxonomy = taxonomy;
+    }
+
+    public int getResourceCount() {
+        return resourceCount;
+    }
+
+    public void setResourceCount(int resourceCount) {
+        this.resourceCount = resourceCount;
+    }
+
+    public int getQuestionCount() {
+        return questionCount;
+    }
+
+    public void setQuestionCount(int questionCount) {
+        this.questionCount = questionCount;
     }
 }
