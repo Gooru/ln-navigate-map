@@ -61,8 +61,13 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
         if (npc.requestContext().needToStartLesson()) {
             return fetchNextItem();
         } else {
-            npc.setNextContextAddress(npc.getCurrentContentAddress());
-            npc.responseContext().setContentAddressWithItemFromCollection(npc.getNextContentAddress());
+            if (npc.currentItemIsResource()) {
+                npc.setNextContextAddress(npc.getCurrentContentAddressQualified());
+                npc.responseContext().setContentAddress(npc.getNextContentAddress());
+            } else {
+                npc.setNextContextAddress(npc.getCurrentContentAddress());
+                npc.responseContext().setContentAddressWithItemFromCollection(npc.getNextContentAddress());
+            }
             markAsDone(State.ContentServed);
             return executionResult;
         }

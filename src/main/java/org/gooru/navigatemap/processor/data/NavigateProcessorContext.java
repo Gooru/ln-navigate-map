@@ -98,7 +98,7 @@ public final class NavigateProcessorContext implements Stateful {
         return currentContentAddress;
     }
 
-    private boolean currentItemIsResource() {
+    public boolean currentItemIsResource() {
         return requestContext().getCurrentItemType() != null && Objects
             .equals(CurrentItemType.Resource.getName(), requestContext().getCurrentItemType().getName());
     }
