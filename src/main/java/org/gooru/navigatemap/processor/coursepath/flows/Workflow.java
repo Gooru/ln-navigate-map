@@ -19,9 +19,11 @@ public final class Workflow {
 
     public static void submit(NavigateProcessorContext npc) {
         ExecutionResult<NavigateProcessorContext> result =
-            new ExecutionResult<>(npc, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
+                new ExecutionResult<>(npc, ExecutionResult.ExecutionStatus.CONTINUE_PROCESSING);
 
         FlowBuilder flowBuilder = new StrategySelector(npc).findFlowBuilderBasedOnStrategy();
+
+        npc.responseContext().setVersion(flowBuilder.version().flowVersion());
 
         result = flowBuilder.buildPostContentSuggestionsFlow().apply(result);
         result = flowBuilder.buildContentFinderFlow().apply(result);
@@ -45,8 +47,8 @@ public final class Workflow {
     }
 
     public static void terminateFlowWithContent(ExecutionResult<NavigateProcessorContext> result,
+            NavigateProcessorContext npc) {
         // Currently you can't set up a separate item on alternate path as address
-        NavigateProcessorContext npc) {
         if (npc.getNextContentAddress().isValidAddress()) {
             npc.responseContext().setContentAddressWithItemFromCollection(npc.getNextContentAddress());
             npc.responseContext().setState(State.ContentServed);

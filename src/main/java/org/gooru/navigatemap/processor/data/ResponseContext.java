@@ -24,6 +24,7 @@ public final class ResponseContext {
     private State state;
     private Long pathId;
     private final Double scorePercent;
+    private int version;
 
     public ResponseContext(RequestContext context) {
         this.classId = context.getClassId();
@@ -59,6 +60,7 @@ public final class ResponseContext {
         context.put(ContextAttributes.CURRENT_ITEM_TYPE, currentItemType != null ? currentItemType.getName() : null);
         context.put(ContextAttributes.CURRENT_ITEM_SUBTYPE,
             currentItemSubtype != null ? currentItemSubtype.getName() : null);
+        context.put(ContextAttributes.VERSION, version);
         return context;
     }
 
@@ -220,4 +222,13 @@ public final class ResponseContext {
     public void setCurrentItemSubtype(CurrentItemSubtype currentItemSubtype) {
         this.currentItemSubtype = currentItemSubtype;
     }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
 }
