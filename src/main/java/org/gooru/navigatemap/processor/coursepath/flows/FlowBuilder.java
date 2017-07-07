@@ -7,6 +7,8 @@ import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
  */
 public interface FlowBuilder {
 
+    FlowVersion version();
+
     Flow<NavigateProcessorContext> buildContentFinderFlow();
 
     Flow<NavigateProcessorContext> buildPostContentSuggestionsFlow();
