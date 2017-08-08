@@ -19,7 +19,6 @@ import io.vertx.core.json.JsonObject;
  */
 public class ContextProcessor {
 
-    private static final String ABSENT_PLACEHOLDER = "NONE";
     private final Vertx vertx;
     private final int timeout;
     private NavigateMessageContext messageContext;
@@ -64,9 +63,8 @@ public class ContextProcessor {
     }
 
     private String getUserContextKey() {
-        return messageContext.getUserId() + ':' + (context.getCourseId() != null ? context.getCourseId().toString() :
-            ABSENT_PLACEHOLDER) + ':' + (context.getClassId() != null ? context.getClassId().toString() :
-            ABSENT_PLACEHOLDER);
+        return ContextUtil
+            .createUserContextKey(messageContext.getUserId(), context.getCourseId(), context.getClassId());
     }
 
 }

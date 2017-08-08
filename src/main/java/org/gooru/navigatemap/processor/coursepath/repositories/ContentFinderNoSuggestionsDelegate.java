@@ -1,37 +1,31 @@
 package org.gooru.navigatemap.processor.coursepath.repositories;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
 import org.gooru.navigatemap.processor.data.ContentAddress;
 
 /**
- * @author ashish on 7/3/17.
+ * @author ashish on 5/4/17.
  */
-class ContentFinderRepositoryImpl extends AbstractContentRepository implements ContentFinderRepository {
+public class ContentFinderNoSuggestionsDelegate {
+    private final ContentFinderDao finderDao;
 
-    private ContentFinderDao finderDao;
-
-    @Override
-    public ContentAddress findFirstContentInCourse(UUID course) {
-
-        finderDao = dbi.onDemand(ContentFinderDao.class);
-
-        ContentAddress address = finderDao.findFirstContentInCourse(course.toString());
-        if (address != null && address.getCollection() != null) {
-            return address;
-        }
-        return findFirstValidContentInCourse(course.toString());
+    public ContentFinderNoSuggestionsDelegate(ContentFinderDao finderDao) {
+        this.finderDao = finderDao;
     }
 
-    @Override
-    public ContentAddress findNextContent(ContentAddress address) {
-        finderDao = dbi.onDemand(ContentFinderDao.class);
-
-        List<ContentAddress> result = finderDao
-            .findNextCollectionsInCUL(address.getCourse(), address.getUnit(), address.getLesson(),
+    public ContentAddress findNextContentFromCULWithoutAlternatePaths(ContentAddress address) {
+        List<ContentAddress> result;
+        if (address.getCollection() != null && !address.isOnAlternatePath()) {
+            result = finderDao.findNextCollectionsInCUL(address.getCourse(), address.getUnit(), address.getLesson(),
                 address.getCollection());
+        } else if (address.isOnAlternatePathAtLessonEnd()) {
+            // Trigger find next valid content flow
+            result = null;
+        } else {
+            result = finderDao.findFirstCollectionInLesson(address.getCourse(), address.getUnit(), address.getLesson());
+        }
         if (result != null && !result.isEmpty()) {
             return result.get(0);
         }
@@ -63,20 +57,4 @@ class ContentFinderRepositoryImpl extends AbstractContentRepository implements C
         return new ContentAddress();
     }
 
-    private ContentAddress findFirstValidContentInCourse(String course) {
-        List<String> lessons;
-        List<ContentAddress> contentAddresses;
-
-        List<String> units = finderDao.findUnitsInCourse(course);
-        for (String unit : units) {
-            lessons = finderDao.findLessonsInCU(course, unit);
-            for (String lesson : lessons) {
-                contentAddresses = finderDao.findCollectionsInCUL(course, unit, lesson);
-                if (contentAddresses != null && !contentAddresses.isEmpty()) {
-                    return contentAddresses.get(0);
-                }
-            }
-        }
-        return new ContentAddress();
-    }
 }

@@ -1,6 +1,11 @@
 package org.gooru.navigatemap.processor.data;
 
+import java.util.Objects;
 import java.util.UUID;
+
+import org.gooru.navigatemap.constants.HttpConstants;
+import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.processor.context.ContextAttributes;
 
 import io.vertx.core.json.JsonObject;
 
@@ -17,8 +22,8 @@ public final class RequestContext {
     private CollectionSubtype collectionSubType;
 
     private UUID currentItemId;
-    private CollectionType currentItemType;
-    private CollectionSubtype currentItemSubtype;
+    private CurrentItemType currentItemType;
+    private CurrentItemSubtype currentItemSubtype;
 
     private State state;
     private Long pathId;
@@ -68,11 +73,11 @@ public final class RequestContext {
         return currentItemId;
     }
 
-    public CollectionType getCurrentItemType() {
+    public CurrentItemType getCurrentItemType() {
         return currentItemType;
     }
 
-    public CollectionSubtype getCurrentItemSubtype() {
+    public CurrentItemSubtype getCurrentItemSubtype() {
         return currentItemSubtype;
     }
 
@@ -80,11 +85,43 @@ public final class RequestContext {
         return (state == State.Continue);
     }
 
+    public boolean needToStartLesson() {
+        return (state == State.Start && currentItemId == null);
+    }
+
     private void validate() {
-        if ((courseId == null) || ((unitId == null || lessonId == null || currentItemId == null)
-            && state == State.Start)) {
-            throw new IllegalArgumentException("Invalid context");
+        if (courseId == null) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid course id");
         }
+        if (((unitId == null || lessonId == null) && state == State.Start)) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
+                "Invalid context for Start flow");
+        }
+
+        if (onMainPath() && state == State.Start) {
+            if (!Objects.equals(collectionId, currentItemId) || !collectionAndCurrentItemTypeAreSame()
+                || !collectionAndCurrentSubtypeAreSame()) {
+                throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
+                    "Collection fields should be same as current item fields on main path");
+
+            }
+        }
+    }
+
+    private boolean collectionAndCurrentItemTypeAreSame() {
+        return currentItemType == null && collectionType == null
+            || currentItemType != null && collectionType != null && Objects
+            .equals(currentItemType.getName(), collectionType.getName());
+    }
+
+    private boolean collectionAndCurrentSubtypeAreSame() {
+        return currentItemSubtype == null && collectionSubType == null
+            || currentItemSubtype != null && collectionSubType != null && Objects
+            .equals(currentItemSubtype.getName(), collectionSubType.getName());
+    }
+
+    private boolean onMainPath() {
+        return pathId == null || pathId == 0;
     }
 
     public static RequestContext builder(JsonObject input) {
@@ -96,24 +133,28 @@ public final class RequestContext {
     private static RequestContext buildFromJsonObject(JsonObject input) {
         RequestContext context = new RequestContext();
 
-        context.classId = toUuid(input, "class_id");
-        context.courseId = toUuid(input, "course_id");
-        context.unitId = toUuid(input, "unit_id");
-        context.lessonId = toUuid(input, "lesson_id");
-        context.collectionId = toUuid(input, "collection_id");
-        context.currentItemId = toUuid(input, "current_item_id");
-        context.pathId = input.getLong("path_id");
-        context.scorePercent = input.getDouble("score_percent");
-        String value = input.getString("collection_type");
-        context.collectionType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
-        value = input.getString("current_item_type");
-        context.currentItemType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
-        value = input.getString("collection_subtype");
-        context.collectionSubType = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
-        value = input.getString("current_item_subtype");
-        context.currentItemSubtype = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
-        value = input.getString("state");
-        context.state = State.builder(value);
+        try {
+            context.classId = toUuid(input, ContextAttributes.CLASS_ID);
+            context.courseId = toUuid(input, ContextAttributes.COURSE_ID);
+            context.unitId = toUuid(input, ContextAttributes.UNIT_ID);
+            context.lessonId = toUuid(input, ContextAttributes.LESSON_ID);
+            context.collectionId = toUuid(input, ContextAttributes.COLLECTION_ID);
+            context.currentItemId = toUuid(input, ContextAttributes.CURRENT_ITEM_ID);
+            context.pathId = input.getLong(ContextAttributes.PATH_ID);
+            context.scorePercent = input.getDouble(ContextAttributes.SCORE_PERCENT);
+            String value = input.getString(ContextAttributes.COLLECTION_TYPE);
+            context.collectionType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
+            value = input.getString(ContextAttributes.CURRENT_ITEM_TYPE);
+            context.currentItemType = (value != null && !value.isEmpty()) ? CurrentItemType.builder(value) : null;
+            value = input.getString(ContextAttributes.COLLECTION_SUBTYPE);
+            context.collectionSubType = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
+            value = input.getString(ContextAttributes.CURRENT_ITEM_SUBTYPE);
+            context.currentItemSubtype = (value != null && !value.isEmpty()) ? CurrentItemSubtype.builder(value) : null;
+            value = input.getString(ContextAttributes.STATE);
+            context.state = State.builder(value);
+        } catch (IllegalArgumentException e) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, e.getMessage());
+        }
 
         return context;
     }

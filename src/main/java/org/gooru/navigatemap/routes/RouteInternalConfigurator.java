@@ -18,6 +18,7 @@ class RouteInternalConfigurator implements RouteConfigurator {
 
     @Override
     public void configureRoutes(Vertx vertx, Router router, JsonObject config) {
+        LOGGER.debug("Configuring routes for internal route");
         router.route(Constants.Route.API_INTERNAL_BANNER).handler(routingContext -> {
             JsonObject result =
                 new JsonObject().put("Organisation", "gooru.org").put("Product", "navigator-map").put("purpose", "api")

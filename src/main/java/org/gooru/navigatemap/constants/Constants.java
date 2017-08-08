@@ -58,11 +58,21 @@ public final class Constants {
         }
     }
 
+    public static final class Params {
+        public static final String PARAM_COURSE_ID = "course_id";
+        public static final String PARAM_CLASS_ID = "class_id";
+
+        private Params() {
+            throw new AssertionError();
+        }
+    }
+
     public static final class Route {
 
         public static final String API_AUTH_ROUTE = "/api/navigate-map/*";
         private static final String API_BASE_ROUTE = "/api/navigate-map/:version/";
         public static final String API_NAVIGATE_NEXT = API_BASE_ROUTE + "next";
+        public static final String API_NAVIGATE_CONTEXT = API_BASE_ROUTE + "context";
         public static final String API_INTERNAL_BANNER = "/api/internal/banner";
         public static final String API_INTERNAL_METRICS = "/api/internal/metrics";
 

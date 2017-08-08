@@ -32,9 +32,9 @@ public class UserContextVerticle extends AbstractVerticle {
             String key = message.headers().get(Constants.Message.MSG_HDR_KEY_CONTEXT);
             if (op.equalsIgnoreCase(Constants.Message.MSG_OP_CONTEXT_GET)) {
                 Future<JsonObject> contextFetch = fetchContextFromRedis(key);
-                contextFetch.setHandler(sessionAsyncResult -> {
-                    if (sessionAsyncResult.succeeded()) {
-                        ResponseUtil.processSuccess(message, sessionAsyncResult.result());
+                contextFetch.setHandler(asyncResultHandler -> {
+                    if (asyncResultHandler.succeeded()) {
+                        ResponseUtil.processSuccess(message, asyncResultHandler.result());
                     } else {
                         ResponseUtil.processFailure(message);
                     }
@@ -67,11 +67,11 @@ public class UserContextVerticle extends AbstractVerticle {
                         JsonObject jsonResult = new JsonObject(redisResult);
                         future.complete(jsonResult);
                     } catch (DecodeException de) {
-                        LOGGER.error("exception while decoding json for token '{}'", contextKey, de);
+                        LOGGER.error("Exception while decoding json for context '{}'", contextKey, de);
                         future.fail(de);
                     }
                 } else {
-                    LOGGER.info("Session not found. Invalid session");
+                    LOGGER.info("Context not found or invalid context");
                     future.complete(new JsonObject());
                 }
             } else {

@@ -1,7 +1,7 @@
-package org.gooru.navigatemap.processor.coursepath.repositories;
+package org.gooru.navigatemap.processor.coursepath.repositories.nu;
 
 /**
- * @author ashish on 3/3/17.
+ * @author ashish on 8/5/17.
  */
 public final class ContentRepositoryBuilder {
 
@@ -9,7 +9,7 @@ public final class ContentRepositoryBuilder {
         throw new AssertionError();
     }
 
-    public static ContentFinderRepository buildContentFinderService() {
+    public static ContentFinderRepository buildContentFinderRepository() {
         return new ContentFinderRepositoryImpl();
     }
 }

@@ -1,33 +1,120 @@
 package org.gooru.navigatemap.processor.data;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * @author ashish on 28/2/17.
  */
 public final class SuggestionContext {
-    private final Set<UUID> assessments = new HashSet<>();
-    private final Set<UUID> collections = new HashSet<>();
+    private final Set<String> assessments = new HashSet<>();
+    private final Set<String> collections = new HashSet<>();
+    private final Set<String> resources = new HashSet<>();
 
-    public void addAssessment(UUID uuid) {
-        assessments.add(uuid);
+    public void addAssessment(String id) {
+        assessments.add(id);
     }
 
-    public void removeAssessment(UUID uuid) {
-        assessments.remove(uuid);
+    public void removeAssessment(String id) {
+        assessments.remove(id);
     }
 
-    public void addCollection(UUID uuid) {
-        collections.add(uuid);
+    public void addCollections(Set<String> collectionsToSuggest) {
+        if (collectionsToSuggest.isEmpty()) {
+            return;
+        }
+        collections.addAll(collectionsToSuggest);
     }
 
-    public void removeCollection(UUID uuid) {
-        collections.remove(uuid);
+    public void addAssessments(Set<String> assessmentsToSuggest) {
+        if (assessmentsToSuggest.isEmpty()) {
+            return;
+        }
+        assessments.addAll(assessmentsToSuggest);
+    }
+
+    public void addCollection(String id) {
+        collections.add(id);
+    }
+
+    public void removeCollection(String id) {
+        collections.remove(id);
     }
 
     public boolean hasSuggestions() {
-        return (assessments.size() > 0 || collections.size() > 0);
+        return (!assessments.isEmpty() || !collections.isEmpty() || !resources.isEmpty());
     }
+
+    public boolean hasAssessmentsSuggested() {
+        return !assessments.isEmpty();
+    }
+
+    public boolean hasCollectionsSuggested() {
+        return !collections.isEmpty();
+    }
+
+    public Set<String> getAssessments() {
+        return Collections.unmodifiableSet(assessments);
+    }
+
+    public Set<String> getCollections() {
+        return Collections.unmodifiableSet(collections);
+    }
+
+    public boolean hasResourcesSuggested() {
+        return !resources.isEmpty();
+    }
+
+    public Set<String> getResources() {
+        return Collections.unmodifiableSet(resources);
+    }
+
+    public void addResources(Set<String> resourcesToSuggest) {
+        if (resourcesToSuggest.isEmpty()) {
+            return;
+        }
+        resources.addAll(resourcesToSuggest);
+    }
+
+    public void addResource(String id) {
+        resources.add(id);
+    }
+
+    public void removeResource(String id) {
+        resources.remove(id);
+    }
+
+    public static SuggestionContext buildSuggestionContextWithAssessments(List<String> suggestedAssessments) {
+        SuggestionContext suggestions = new SuggestionContext();
+        if (suggestedAssessments != null && !suggestedAssessments.isEmpty()) {
+            Set<String> suggestedSet = new HashSet<>(suggestedAssessments);
+            suggestions.addAssessments(suggestedSet);
+        }
+        return suggestions;
+    }
+
+    public static SuggestionContext buildSuggestionContextWithCollections(List<String> suggestedCollections) {
+        SuggestionContext suggestions = new SuggestionContext();
+        if (suggestedCollections != null && !suggestedCollections.isEmpty()) {
+            Set<String> suggestedSet = new HashSet<>(suggestedCollections);
+            suggestions.addCollections(suggestedSet);
+        }
+        return suggestions;
+    }
+
+    public static SuggestionContext buildSuggestionContextWithResources(List<String> suggestedResources) {
+        SuggestionContext suggestions = new SuggestionContext();
+        if (suggestedResources != null && !suggestedResources.isEmpty()) {
+            Set<String> suggestedSet = new HashSet<>(suggestedResources);
+            suggestions.addCollections(suggestedSet);
+        }
+        return suggestions;
+    }
+
+    public static SuggestionContext buildSuggestionContextWithoutSuggestions() {
+        return new SuggestionContext();
+    }
+
 }

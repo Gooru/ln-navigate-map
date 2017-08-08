@@ -11,8 +11,7 @@ import io.vertx.core.json.JsonObject;
  */
 public final class AppConfiguration implements Initializer {
     private static final String APP_CONFIG_KEY = "app.configuration";
-    private static final String KEY = "__KEY__";
-    private static JsonObject configuration;
+    private JsonObject configuration;
     private static final Logger LOGGER = LoggerFactory.getLogger(AppConfiguration.class);
 
     public static AppConfiguration getInstance() {
@@ -59,6 +58,14 @@ public final class AppConfiguration implements Initializer {
 
     public boolean suggestionsTurnedOn() {
         return configuration.getBoolean("suggestions.advise");
+    }
+
+    public Integer suggestionsLimit() {
+        return configuration.getInteger("suggestions.limit");
+    }
+
+    public boolean serveContentDetails() {
+        return configuration.getBoolean("serve.content.details");
     }
 
     private static final class Holder {
