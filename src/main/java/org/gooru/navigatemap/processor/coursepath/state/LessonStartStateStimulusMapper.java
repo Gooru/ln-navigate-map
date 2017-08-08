@@ -1,5 +1,6 @@
 package org.gooru.navigatemap.processor.coursepath.state;
 
+import org.gooru.navigatemap.processor.coursepath.flows.Workflow;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.State;
 
@@ -9,8 +10,12 @@ import org.gooru.navigatemap.processor.data.State;
 final class LessonStartStateStimulusMapper
     implements StimulusMapper<NavigateProcessorContext, NavigateProcessorContext> {
 
+    private NavigateProcessorContext stimulusContent;
+
     @Override
     public Stimulus<NavigateProcessorContext> applyStimulus(State state, Stimulus<NavigateProcessorContext> stimulus) {
-        return null;
+        stimulusContent = stimulus.getStimulusContent();
+        Workflow.submit(stimulusContent);
+        return stimulus;
     }
 }

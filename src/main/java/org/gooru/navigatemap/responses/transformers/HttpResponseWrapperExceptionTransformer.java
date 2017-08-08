@@ -1,6 +1,6 @@
 package org.gooru.navigatemap.responses.transformers;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
@@ -30,7 +30,7 @@ public final class HttpResponseWrapperExceptionTransformer implements ResponseTr
 
     @Override
     public Map<String, String> transformedHeaders() {
-        return new HashMap<>(1);
+        return Collections.emptyMap();
     }
 
     @Override

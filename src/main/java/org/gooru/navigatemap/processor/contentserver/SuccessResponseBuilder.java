@@ -28,6 +28,12 @@ final class SuccessResponseBuilder implements ResponseBuilder {
         this.content = new JsonObject();
     }
 
+    SuccessResponseBuilder(ResponseContext context) {
+        this.context = context;
+        this.suggestions = new JsonArray();
+        this.content = new JsonObject();
+    }
+
     @Override
     public JsonObject buildResponse() {
         JsonObject body = createHttpBodyResponse();

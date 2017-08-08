@@ -3,9 +3,14 @@ package org.gooru.navigatemap.bootstrap.verticles;
 import java.util.Objects;
 
 import org.gooru.navigatemap.constants.Constants;
+import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.exceptions.MessageResponseWrapperException;
 import org.gooru.navigatemap.processor.contentserver.ContentServer;
 import org.gooru.navigatemap.processor.contentserver.RemoteAssessmentCollectionFetcher;
+import org.gooru.navigatemap.processor.contentserver.RemoteUriLocator;
+import org.gooru.navigatemap.processor.context.ContextAttributes;
 import org.gooru.navigatemap.processor.context.ContextProcessor;
+import org.gooru.navigatemap.processor.context.ContextUtil;
 import org.gooru.navigatemap.processor.coursepath.PathMapper;
 import org.gooru.navigatemap.responses.ResponseUtil;
 import org.slf4j.Logger;
@@ -13,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpClient;
@@ -25,8 +31,7 @@ import io.vertx.core.json.JsonObject;
 public class NavigationVerticle extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(NavigationVerticle.class);
     private HttpClient client;
-    private String assessmentUri;
-    private String collectionUri;
+    private RemoteUriLocator remoteUriLocator;
 
     @Override
     public void start(Future<Void> startFuture) throws Exception {
@@ -43,10 +48,15 @@ public class NavigationVerticle extends AbstractVerticle {
         final Integer poolSize = config().getInteger("http.poolSize");
         Objects.requireNonNull(timeout);
         Objects.requireNonNull(poolSize);
-        assessmentUri = config().getString("assessment.fetch.uri");
+        String assessmentUri = config().getString("assessment.fetch.uri");
         Objects.requireNonNull(assessmentUri);
-        collectionUri = config().getString("collection.fetch.uri");
+        String collectionUri = config().getString("collection.fetch.uri");
         Objects.requireNonNull(collectionUri);
+        String resourceUri = config().getString("resource.fetch.uri");
+        Objects.requireNonNull(resourceUri);
+        String assessmentExternalUri = config().getString("assessment-external.fetch.uri");
+        Objects.requireNonNull(assessmentExternalUri);
+        remoteUriLocator = new RemoteUriLocator(assessmentUri, collectionUri, resourceUri, assessmentExternalUri);
 
         client = vertx.createHttpClient(new HttpClientOptions().setConnectTimeout(timeout).setMaxPoolSize(poolSize));
     }
@@ -66,23 +76,46 @@ public class NavigationVerticle extends AbstractVerticle {
     private void processNextCommand(Message<JsonObject> message) {
         Future<JsonObject> future = Future.future();
         new ContextProcessor(vertx).fetchContext(message)
-            .compose(navigateProcessorContext -> new PathMapper(vertx).mapPath(navigateProcessorContext))
-            .compose(ar -> {
-                new ContentServer(vertx, future,
-                    new RemoteAssessmentCollectionFetcher(client, assessmentUri, collectionUri)).serveContent(ar);
-            }, future);
+            .compose(navigateProcessorContext -> new PathMapper(vertx).mapPath(navigateProcessorContext)).compose(
+            ar -> new ContentServer(vertx, future, new RemoteAssessmentCollectionFetcher(client, remoteUriLocator))
+                .serveContent(ar), future);
 
         future.setHandler(event -> {
             if (event.succeeded()) {
                 message.reply(event.result());
+                String user = message.body().getString(Constants.Message.MSG_USER_ID);
+                persistNewContext(event.result(), user);
             } else {
-                // TODO: Implement this
                 LOGGER.warn("Failed to process next command", event.cause());
-                message.reply(new JsonObject().put(Constants.Message.MSG_HTTP_STATUS, 500)
-                    .put(Constants.Message.MSG_HTTP_BODY, new JsonObject())
-                    .put(Constants.Message.MSG_HTTP_HEADERS, new JsonObject()));
+                if (event.cause() instanceof HttpResponseWrapperException) {
+                    HttpResponseWrapperException exception = (HttpResponseWrapperException) event.cause();
+                    message.reply(new JsonObject().put(Constants.Message.MSG_HTTP_STATUS, exception.getStatus())
+                        .put(Constants.Message.MSG_HTTP_BODY, exception.getBody())
+                        .put(Constants.Message.MSG_HTTP_HEADERS, new JsonObject()));
+                } else if (event.cause() instanceof MessageResponseWrapperException) {
+                    MessageResponseWrapperException exception = (MessageResponseWrapperException) event.cause();
+                    message.reply(exception.getMessageResponse().reply(),
+                        exception.getMessageResponse().deliveryOptions());
+                } else {
+                    message.reply(new JsonObject().put(Constants.Message.MSG_HTTP_STATUS, 500)
+                        .put(Constants.Message.MSG_HTTP_BODY, new JsonObject())
+                        .put(Constants.Message.MSG_HTTP_HEADERS, new JsonObject()));
+                }
             }
         });
+    }
+
+    private void persistNewContext(JsonObject result, String user) {
+        JsonObject newContext =
+            result.getJsonObject(Constants.Message.MSG_HTTP_BODY).getJsonObject(Constants.Response.RESP_CONTEXT);
+        if (newContext != null) {
+            String contextKey = ContextUtil
+                .createUserContextKey(user, newContext.getString(ContextAttributes.COURSE_ID),
+                    newContext.getString(ContextAttributes.CLASS_ID));
+            vertx.eventBus().send(Constants.EventBus.MBEP_USER_CONTEXT, newContext,
+                new DeliveryOptions().addHeader(Constants.Message.MSG_OP, Constants.Message.MSG_OP_CONTEXT_SET)
+                    .addHeader(Constants.Message.MSG_HDR_KEY_CONTEXT, contextKey));
+        }
     }
 
     @Override

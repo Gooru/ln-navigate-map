@@ -2,8 +2,10 @@ package org.gooru.navigatemap.processor.contentserver;
 
 import java.util.Objects;
 
+import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.gooru.navigatemap.constants.Constants;
-import org.gooru.navigatemap.processor.data.CollectionType;
+import org.gooru.navigatemap.processor.coursepath.repositories.SuggestionServiceBuilder;
+import org.gooru.navigatemap.processor.data.CurrentItemType;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.gooru.navigatemap.processor.data.State;
 import org.slf4j.Logger;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 /**
@@ -33,19 +36,31 @@ public class ContentServer {
     public void serveContent(NavigateProcessorContext npc) {
 
         this.navigateProcessorContext = npc;
+        LOGGER.debug("Starting ContentServer flow");
 
         if (npc.getCtxSuggestions().hasSuggestions()) {
+            LOGGER.debug("Will serve suggestions");
             completionFuture.complete(serveSuggestions());
         } else if (npc.responseContext().getState() == State.Done) {
-            completionFuture.complete(new JsonObject());
+            LOGGER.debug("Status done. Won't serve anything");
+            JsonObject result = ResponseBuilder
+                .createSuccessResponseBuilder(navigateProcessorContext.responseContext(), new JsonObject())
+                .buildResponse();
+            completionFuture.complete(result);
         } else {
             Objects.requireNonNull(npc.responseContext().getCurrentItemId());
             Objects.requireNonNull(npc.responseContext().getCurrentItemType());
 
-            if (npc.responseContext().getCurrentItemType() == CollectionType.Collection) {
+            LOGGER.debug("Will serve content (assessment/collection)");
+
+            if (npc.responseContext().getCurrentItemType() == CurrentItemType.Collection) {
                 serveCollection();
-            } else if (npc.responseContext().getCurrentItemType() == CollectionType.Assessment) {
+            } else if (npc.responseContext().getCurrentItemType() == CurrentItemType.Assessment) {
                 serveAssessment();
+            } else if (npc.responseContext().getCurrentItemType() == CurrentItemType.Resource) {
+                serveResources();
+            } else if (npc.responseContext().getCurrentItemType() == CurrentItemType.AssessmentExternal) {
+                serveAssessmentExternal();
             } else {
                 // TODO: What to do??
                 LOGGER.warn("Invalid content to serve, not sure what to do");
@@ -55,21 +70,64 @@ public class ContentServer {
         }
     }
 
+    private void serveResources() {
+        if (AppConfiguration.getInstance().serveContentDetails()) {
+            LOGGER.debug("Will fetch content details from remote servers");
+
+            fetcher.fetch(navigateProcessorContext.responseContext(),
+                navigateProcessorContext.navigateMessageContext().getSessionToken())
+                .setHandler(ar -> completionFuture.complete(ar.result()));
+        } else {
+            LOGGER.debug("Will serve content without details");
+            JsonObject result = ResponseBuilder.createSuccessResponseBuilder(navigateProcessorContext.responseContext(),
+                new JsonObject()
+                    .put("id", Objects.toString(navigateProcessorContext.responseContext().getCurrentItemId(), null))
+                    .put("type", Objects
+                        .toString(navigateProcessorContext.responseContext().getCurrentItemType().getName(), null))
+                    .put("subtype",
+                        Objects.toString(navigateProcessorContext.responseContext().getCurrentItemSubtype(), null)))
+                .buildResponse();
+            completionFuture.complete(result);
+        }
+    }
+
     private void serveAssessment() {
-        fetcher.fetch(navigateProcessorContext.responseContext(),
-            navigateProcessorContext.navigateMessageContext().getSessionToken())
-            .setHandler(ar -> completionFuture.complete(ar.result()));
+        serveAssessmentCollection();
+    }
+
+    private void serveAssessmentExternal() {
+        serveAssessmentCollection();
     }
 
     private void serveCollection() {
-        fetcher.fetch(navigateProcessorContext.responseContext(),
-            navigateProcessorContext.navigateMessageContext().getSessionToken())
-            .setHandler(ar -> completionFuture.complete(ar.result()));
+        serveAssessmentCollection();
+    }
+
+    private void serveAssessmentCollection() {
+        if (AppConfiguration.getInstance().serveContentDetails()) {
+            LOGGER.debug("Will fetch content details from remote servers");
+
+            fetcher.fetch(navigateProcessorContext.responseContext(),
+                navigateProcessorContext.navigateMessageContext().getSessionToken())
+                .setHandler(ar -> completionFuture.complete(ar.result()));
+        } else {
+            LOGGER.debug("Will serve content without details");
+            JsonObject result = ResponseBuilder.createSuccessResponseBuilder(navigateProcessorContext.responseContext(),
+                new JsonObject()
+                    .put("id", Objects.toString(navigateProcessorContext.responseContext().getCurrentItemId(), null))
+                    .put("type", Objects
+                        .toString(navigateProcessorContext.responseContext().getCurrentItemType().getName(), null))
+                    .put("subtype",
+                        Objects.toString(navigateProcessorContext.responseContext().getCurrentItemSubtype(), null)))
+                .buildResponse();
+            completionFuture.complete(result);
+        }
     }
 
     private JsonObject serveSuggestions() {
-        // TODO: Blocking method, needs real implementation. Need to be complete response not just assessment
-        return new JsonObject();
+        JsonArray suggestions = new SuggestionsCardBuilder(navigateProcessorContext.getCtxSuggestions(),
+            SuggestionServiceBuilder.buildContentSuggestionsService()).createSuggestionCards();
+        return new SuccessResponseBuilder(navigateProcessorContext.responseContext(), suggestions).buildResponse();
     }
 
     private void serveDummyResponse() {

@@ -32,7 +32,7 @@ public class NavigateMapRunner {
         }
 
         NavigateMapRunner runner = new NavigateMapRunner();
-        runner.initializeConfig(args[0]);
+        NavigateMapRunner.initializeConfig(args[0]);
 
         runner.run();
     }
@@ -51,7 +51,7 @@ public class NavigateMapRunner {
         });
     }
 
-    private void setupSystemProperties() {
+    private static void setupSystemProperties() {
         JsonObject systemProperties = conf.getJsonObject("systemProperties");
         for (Map.Entry<String, Object> property : systemProperties) {
             String propValue = systemProperties.getString(property.getKey());
@@ -63,7 +63,7 @@ public class NavigateMapRunner {
         }
     }
 
-    private void setupLoggerMachinery(String logbackFile) {
+    private static void setupLoggerMachinery(String logbackFile) {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 
         try {
@@ -97,7 +97,7 @@ public class NavigateMapRunner {
 
     private void deployVerticles(Future<Void> startFuture) {
         JsonObject verticles = conf.getJsonObject("verticles");
-        List<Future<String>> futures = new ArrayList<>();
+        List<Future<String>> futures = new ArrayList<>(verticles.size());
 
         for (Map.Entry<String, Object> verticle : verticles) {
             Future<String> future = Future.future();
@@ -119,15 +119,11 @@ public class NavigateMapRunner {
 
     }
 
-    private List<Future> eraseTypeList(List<Future<String>> list) {
-        List<Future> result = new ArrayList<>();
-        for (Future<String> future : list) {
-            result.add(future);
-        }
-        return result;
+    private static List<Future> eraseTypeList(List<Future<String>> list) {
+        return new ArrayList<>(list);
     }
 
-    private void initializeConfig(String configFile) {
+    private static void initializeConfig(String configFile) {
         if (configFile != null) {
             try (Scanner scanner = new Scanner(new File(configFile)).useDelimiter("\\A")) {
                 String sconf = scanner.next();

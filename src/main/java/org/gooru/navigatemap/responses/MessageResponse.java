@@ -2,8 +2,6 @@ package org.gooru.navigatemap.responses;
 
 import org.gooru.navigatemap.constants.Constants;
 import org.gooru.navigatemap.constants.HttpConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonObject;
@@ -13,7 +11,6 @@ import io.vertx.core.json.JsonObject;
  */
 public final class MessageResponse {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageResponse.class);
     private final DeliveryOptions deliveryOptions;
     private final JsonObject reply;
 

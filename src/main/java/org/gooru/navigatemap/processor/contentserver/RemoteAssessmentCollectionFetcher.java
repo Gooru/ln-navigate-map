@@ -1,7 +1,6 @@
 package org.gooru.navigatemap.processor.contentserver;
 
 import org.gooru.navigatemap.constants.HttpConstants;
-import org.gooru.navigatemap.processor.data.CollectionType;
 import org.gooru.navigatemap.processor.data.ResponseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,25 +18,20 @@ public final class RemoteAssessmentCollectionFetcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoteAssessmentCollectionFetcher.class);
     private static final String HEADER_AUTH_PREFIX = "Token ";
 
-    private final String collectionUri;
-    private final String assessmentUri;
     private final HttpClient client;
     private final Future<JsonObject> completionFuture;
+    private final RemoteUriLocator remoteUriLocator;
 
-    public RemoteAssessmentCollectionFetcher(HttpClient client, String assessmentUri, String collectionUri) {
+    public RemoteAssessmentCollectionFetcher(HttpClient client, RemoteUriLocator remoteUriLocator) {
         this.client = client;
-        this.assessmentUri = assessmentUri;
-        this.collectionUri = collectionUri;
         this.completionFuture = Future.future();
+        this.remoteUriLocator = remoteUriLocator;
     }
 
-    public Future<JsonObject> fetch(ResponseContext context, String auth) {
-        String uri;
-        if (context.getCurrentItemType() == CollectionType.Collection) {
-            uri = collectionUri + context.getCurrentItemId().toString();
-            fetchFromRemote(context, uri, auth);
-        } else if (context.getCurrentItemType() == CollectionType.Assessment) {
-            uri = assessmentUri + context.getCurrentItemId().toString();
+    Future<JsonObject> fetch(ResponseContext context, String auth) {
+        String uri = remoteUriLocator.getUriForItemType(context.getCurrentItemType());
+        if (uri != null) {
+            uri += context.getCurrentItemId().toString();
             fetchFromRemote(context, uri, auth);
         } else {
             LOGGER.warn("Unsupported CollectionType: '{}'", context.getCurrentItemType());
@@ -47,24 +41,21 @@ public final class RemoteAssessmentCollectionFetcher {
 
     private void fetchFromRemote(ResponseContext context, String uri, String auth) {
         LOGGER.debug("Need to fetch data from remote server");
-        HttpClientRequest request = client.getAbs(uri, response -> {
-            response.bodyHandler(buffer -> {
-                JsonObject result;
-                String fromBuffer = buffer.toString();
-                JsonObject body =
-                    (fromBuffer == null || fromBuffer.isEmpty()) ? new JsonObject() : new JsonObject(fromBuffer);
-                if (response.statusCode() != HttpConstants.HttpStatus.SUCCESS.getCode()) {
-                    LOGGER.warn("Remote fetch failed, status code: '{}'", response.statusCode());
-                    result =
-                        ResponseBuilder.createExceptionResponseBuilder(response.statusCode(), body).buildResponse();
-                } else {
-                    LOGGER.debug("Communication with remote successful");
-                    result = ResponseBuilder.createSuccessResponseBuilder(context, body).buildResponse();
-                }
-                LOGGER.debug("Response from remote <{}>", result);
-                completionFuture.complete(result);
-            });
-        }).exceptionHandler(ex -> {
+        HttpClientRequest request = client.getAbs(uri, response -> response.bodyHandler(buffer -> {
+            JsonObject result;
+            String fromBuffer = buffer.toString();
+            JsonObject body =
+                (fromBuffer == null || fromBuffer.isEmpty()) ? new JsonObject() : new JsonObject(fromBuffer);
+            if (response.statusCode() != HttpConstants.HttpStatus.SUCCESS.getCode()) {
+                LOGGER.warn("Remote fetch failed, status code: '{}'", response.statusCode());
+                result = ResponseBuilder.createExceptionResponseBuilder(response.statusCode(), body).buildResponse();
+            } else {
+                LOGGER.debug("Communication with remote successful");
+                result = ResponseBuilder.createSuccessResponseBuilder(context, body).buildResponse();
+            }
+            LOGGER.debug("Response from remote <{}>", result);
+            completionFuture.complete(result);
+        })).exceptionHandler(ex -> {
             LOGGER.warn("Error while communicating with remote server: ", ex);
             completionFuture.complete(ResponseBuilder
                 .createExceptionResponseBuilder(HttpConstants.HttpStatus.UPSTREAM_ERROR.getCode(), new JsonObject())
