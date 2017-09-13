@@ -12,9 +12,9 @@ import org.gooru.navigatemap.processor.data.ContentAddress;
  */
 public interface ContentFinderRepository {
 
-    ContentAddress findFirstContentInCourse(UUID course);
+    ContentAddress findFirstContentInCourse(UUID course, UUID classId);
 
-    ContentAddress findNextContentFromCUL(ContentAddress address);
+    ContentAddress findNextContentFromCUL(ContentAddress address, UUID classId);
 
     List<String> findBenchmarkAssessments(List<String> competencies);
 

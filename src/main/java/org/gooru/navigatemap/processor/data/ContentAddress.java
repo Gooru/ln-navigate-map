@@ -8,6 +8,7 @@ public final class ContentAddress {
     private String unit;
     private String lesson;
     private String collection;
+    private String visibility;
     private Long pathId;
     private CollectionType collectionType;
     private CollectionSubtype collectionSubtype;
@@ -105,6 +106,14 @@ public final class ContentAddress {
 
     public CurrentItemSubtype getCurrentItemSubtype() {
         return currentItemSubtype;
+    }
+
+    public String getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
     }
 
     public void setCurrentItemSubtype(CurrentItemSubtype currentItemSubtype) {

@@ -123,7 +123,8 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
 
     private ExecutionResult<NavigateProcessorContext> fetchNextItemFromCULWithoutSuggestions() {
         ContentAddress contentAddress = ContentRepositoryBuilder.buildContentFinderRepository()
-            .findNextContentFromCULWithoutSkipLogicAndAlternatePaths(npc.getCurrentContentAddress());
+            .findNextContentFromCULWithoutSkipLogicAndAlternatePaths(npc.getCurrentContentAddress(),
+                npc.createFinderContext());
         if (contentAddress != null) {
             if (contentAddress.getCollection() != null) {
                 // NOTE that we need to populate currentItem* fields in content address object from repo

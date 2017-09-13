@@ -15,7 +15,8 @@ public interface ContentFinderRepository {
 
     ContentAddress fetchNextItem(FinderContext finderContext);
 
-    ContentAddress findNextContentFromCULWithoutSkipLogicAndAlternatePaths(ContentAddress currentContentAddress);
+    ContentAddress findNextContentFromCULWithoutSkipLogicAndAlternatePaths(ContentAddress currentContentAddress,
+        FinderContext finderContext);
 
     /*
      * Note that will not assume that competency is not mastered. It will check for all competencies for that
