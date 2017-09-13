@@ -5,8 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.gooru.navigatemap.processor.coursepath.repositories.AbstractContentRepository;
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentFinderNoSuggestionsDelegate;
+import org.gooru.navigatemap.processor.coursepath.repositories.ContentFinderVisibilityVerifierDelegate;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.AlternatePathNUStrategyDao;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.UserCompetencyCompletionDao;
@@ -63,11 +65,21 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
     }
 
     @Override
-    public ContentAddress findNextContentFromCULWithoutSkipLogicAndAlternatePaths(
-        ContentAddress currentContentAddress) {
+    public ContentAddress findNextContentFromCULWithoutSkipLogicAndAlternatePaths(ContentAddress currentContentAddress,
+        FinderContext finderContext) {
+
+        ContentFinderVisibilityVerifierDelegate visibilityVerifier;
+        if (needToApplyVisibility()) {
+            visibilityVerifier =
+                ContentFinderVisibilityVerifierDelegate.build(finderContext.getRequestContext().getClassId(), dbi);
+        } else {
+            visibilityVerifier = ContentFinderVisibilityVerifierDelegate
+                .buildPlaceholderVerifier(finderContext.getRequestContext().getClassId());
+        }
+
         ContentFinderDao finderDao = dbi.onDemand(ContentFinderDao.class);
 
-        ContentAddress address = new ContentFinderNoSuggestionsDelegate(finderDao)
+        ContentAddress address = new ContentFinderNoSuggestionsDelegate(finderDao, visibilityVerifier)
             .findNextContentFromCULWithoutAlternatePaths(currentContentAddress);
 
         if (address != null && address.getCollection() != null) {
@@ -150,4 +162,7 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
         }
     }
 
+    private boolean needToApplyVisibility() {
+        return AppConfiguration.getInstance().applyContentVisibilityToNonGlobalStrategy();
+    }
 }

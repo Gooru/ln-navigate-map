@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.AbstractContentRepository;
 import org.gooru.navigatemap.processor.coursepath.repositories.ContentFinderNoSuggestionsDelegate;
+import org.gooru.navigatemap.processor.coursepath.repositories.ContentFinderVisibilityVerifierDelegate;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.AlternatePathGlobalStrategyDao;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
 import org.gooru.navigatemap.processor.coursepath.repositories.helpers.TaxonomyParserHelper;
@@ -22,22 +23,27 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
     private static final Logger LOGGER = LoggerFactory.getLogger(ContentFinderRepository.class);
 
     @Override
-    public ContentAddress findFirstContentInCourse(UUID course) {
+    public ContentAddress findFirstContentInCourse(UUID course, UUID classId) {
 
         finderDao = dbi.onDemand(ContentFinderDao.class);
 
         ContentAddress address = finderDao.findFirstContentInCourse(course.toString());
-        if (address != null && address.getCollection() != null) {
+        ContentFinderVisibilityVerifierDelegate visibilityVerifier =
+            ContentFinderVisibilityVerifierDelegate.build(classId, dbi);
+        if (address != null && address.getCollection() != null && visibilityVerifier.verifyVisibility(address)) {
             return address;
         }
-        return findFirstValidContentInCourse(course.toString());
+        return findFirstValidContentInCourse(course.toString(), visibilityVerifier);
     }
 
     @Override
-    public ContentAddress findNextContentFromCUL(ContentAddress address) {
-        finderDao = dbi.onDemand(ContentFinderDao.class);
+    public ContentAddress findNextContentFromCUL(ContentAddress address, UUID classId) {
+        ContentFinderVisibilityVerifierDelegate visibilityVerifier =
+            ContentFinderVisibilityVerifierDelegate.build(classId, dbi);
 
-        return new ContentFinderNoSuggestionsDelegate(finderDao).findNextContentFromCULWithoutAlternatePaths(address);
+        finderDao = dbi.onDemand(ContentFinderDao.class);
+        return new ContentFinderNoSuggestionsDelegate(finderDao, visibilityVerifier)
+            .findNextContentFromCULWithoutAlternatePaths(address);
     }
 
     @Override
@@ -173,7 +179,8 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
         return finderDao.findCourseVersion(course.toString());
     }
 
-    private ContentAddress findFirstValidContentInCourse(String course) {
+    private ContentAddress findFirstValidContentInCourse(String course,
+        ContentFinderVisibilityVerifierDelegate visibilityVerifier) {
         List<String> lessons;
         List<ContentAddress> contentAddresses;
 
@@ -182,12 +189,13 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
             lessons = finderDao.findLessonsInCU(course, unit);
             for (String lesson : lessons) {
                 contentAddresses = finderDao.findCollectionsInCUL(course, unit, lesson);
-                if (contentAddresses != null && !contentAddresses.isEmpty()) {
-                    return contentAddresses.get(0);
-                }
+                ContentAddress address = visibilityVerifier.findContentAddressBasedOnVisibility(contentAddresses);
+                if (address != null)
+                    return address;
             }
         }
         return new ContentAddress();
     }
+
 
 }

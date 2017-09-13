@@ -24,6 +24,7 @@ public class ContentAddressMapper implements ResultSetMapper<ContentAddress> {
         result.setLesson(r.getString(ContextAttributes.LESSON_ID));
         result.setUnit(r.getString(ContextAttributes.UNIT_ID));
         result.setPathId(r.getLong(ContextAttributes.PATH_ID));
+        result.setVisibility(r.getString(ContextAttributes.VISIBILITY));
         return result;
     }
 }
