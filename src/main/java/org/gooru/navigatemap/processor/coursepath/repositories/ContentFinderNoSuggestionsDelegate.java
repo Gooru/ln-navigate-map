@@ -49,7 +49,8 @@ public class ContentFinderNoSuggestionsDelegate {
                 lessons = finderDao.findLessonsInCU(address.getCourse(), unit);
             }
             for (String lesson : lessons) {
-                if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())) {
+                if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())
+                    && address.getCollection() != null) {
                     contentAddresses =
                         finderDao.findNextCollectionsInCUL(address.getCourse(), unit, lesson, address.getCollection());
                     result = visibilityVerifierDelegate.findContentAddressBasedOnVisibility(contentAddresses);
