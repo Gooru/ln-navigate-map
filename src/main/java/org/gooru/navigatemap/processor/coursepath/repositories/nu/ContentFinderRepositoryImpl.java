@@ -1,6 +1,5 @@
 package org.gooru.navigatemap.processor.coursepath.repositories.nu;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +14,7 @@ import org.gooru.navigatemap.processor.coursepath.repositories.dao.UserCompetenc
 import org.gooru.navigatemap.processor.coursepath.repositories.helpers.TaxonomyParserHelper;
 import org.gooru.navigatemap.processor.data.ContentAddress;
 import org.gooru.navigatemap.processor.data.FinderContext;
+import org.gooru.navigatemap.processor.data.SignatureResource;
 import org.gooru.navigatemap.processor.utilities.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +89,7 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
     }
 
     @Override
-    public List<String> findResourceSuggestionsForAssessment(FinderContext finderContext) {
+    public List<SignatureResource> findResourceSuggestionsForAssessment(FinderContext finderContext) {
         ContentFinderDao finderDao = dbi.onDemand(ContentFinderDao.class);
         String competencies = finderDao.findCompetenciesForCollection(finderContext.getCurrentAddress().getCourse(),
             finderContext.getCurrentAddress().getUnit(), finderContext.getCurrentAddress().getLesson(),
@@ -104,27 +104,34 @@ final class ContentFinderRepositoryImpl extends AbstractContentRepository implem
                     CollectionUtils.convertToSqlArrayOfString(competencyList));
             competencyList.removeAll(completedCompetenciesByUser);
             if (!competencyList.isEmpty()) {
-                List<String[]> result = alternatePathNUStrategyDao
+                List<SignatureResource> suggestions;
+                List<SignatureResource> result = alternatePathNUStrategyDao
                     .findResourceSuggestionsBasedOnCompetencyAndScoreRange(
                         CollectionUtils.convertToSqlArrayOfString(competencyList), finderContext.getScoreRange());
 
-                List<String> resourceList = result.stream().flatMap(Arrays::stream).collect(Collectors.toList());
+                List<String> resourceIdList =
+                    result.stream().map(SignatureResource::getResourceId).collect(Collectors.toList());
                 List<String> alreadyAddedResources;
                 if (finderContext.getUserClass() != null) {
                     alreadyAddedResources = alternatePathNUStrategyDao
                         .findResourceAlreadyAddedFromListInCourseClass(finderContext.getUser(),
-                            CollectionUtils.convertToSqlArrayOfUUID(resourceList),
+                            CollectionUtils.convertToSqlArrayOfUUID(resourceIdList),
                             finderContext.getCurrentAddress().getCourse(), finderContext.getUserClass());
                 } else {
                     alreadyAddedResources = alternatePathNUStrategyDao
                         .findResourceAlreadyAddedFromListInCourseNoClass(finderContext.getUser(),
-                            CollectionUtils.convertToSqlArrayOfUUID(resourceList),
+                            CollectionUtils.convertToSqlArrayOfUUID(resourceIdList),
                             finderContext.getCurrentAddress().getCourse());
                 }
                 if (alreadyAddedResources != null && !alreadyAddedResources.isEmpty()) {
-                    resourceList.removeAll(alreadyAddedResources);
+                    // TODO: AM: Provide a component to requery or implement the logic
+                    resourceIdList.removeAll(alreadyAddedResources);
+                    suggestions = result.stream().filter(resource -> resourceIdList.contains(resource.getResourceId()))
+                        .collect(Collectors.toList());
+                } else {
+                    suggestions = result;
                 }
-                return resourceList;
+                return suggestions;
             }
         }
         return Collections.emptyList();

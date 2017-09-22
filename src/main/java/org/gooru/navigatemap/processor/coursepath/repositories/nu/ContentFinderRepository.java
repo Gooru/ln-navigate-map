@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.gooru.navigatemap.processor.data.ContentAddress;
 import org.gooru.navigatemap.processor.data.FinderContext;
+import org.gooru.navigatemap.processor.data.SignatureResource;
 
 /**
  * @author ashish on 8/5/17.
@@ -24,7 +25,7 @@ public interface ContentFinderRepository {
      * If all of them are completed, then it may return empty or in case we are out of suggestions, it will return
      * empty list
      */
-    List<String> findResourceSuggestionsForAssessment(FinderContext finderContext);
+    List<SignatureResource> findResourceSuggestionsForAssessment(FinderContext finderContext);
 
     /*
      * This will mark the competencies associated with current items to be completed only if they are not already
