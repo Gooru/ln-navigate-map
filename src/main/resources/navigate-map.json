@@ -58,6 +58,12 @@
         }
       }
     },
+    "org.gooru.navigatemap.bootstrap.verticles.PostProcessVerticle": {
+      "instances": 1,
+      "worker": false,
+      "config": {
+      }
+    },
     "org.gooru.navigatemap.bootstrap.verticles.HttpVerticle": {
       "instances": 1,
       "worker": false,

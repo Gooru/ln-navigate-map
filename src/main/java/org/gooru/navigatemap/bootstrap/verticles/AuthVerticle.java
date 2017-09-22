@@ -27,7 +27,7 @@ public class AuthVerticle extends AbstractVerticle {
 
         initializeVerticle(startFuture);
 
-        eb.<JsonObject>consumer(Constants.EventBus.MBEP_AUTH, message -> {
+        eb.<JsonObject>localConsumer(Constants.EventBus.MBEP_AUTH, message -> {
             String sessionToken = message.headers().get(Constants.Message.MSG_SESSION_TOKEN);
             Future<JsonObject> fetchSessionFuture = fetchSessionFromRedis(sessionToken);
 
