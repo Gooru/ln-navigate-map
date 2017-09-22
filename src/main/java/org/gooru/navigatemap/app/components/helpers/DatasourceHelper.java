@@ -1,6 +1,7 @@
 package org.gooru.navigatemap.app.components.helpers;
 
 import java.util.Map;
+import java.util.Objects;
 
 import javax.sql.DataSource;
 
@@ -24,7 +25,7 @@ public final class DatasourceHelper {
         // The default DS provider is hikari, so if set explicitly or not set
         // use it, else error out
         String dsType = dbConfig.getString(DEFAULT_DATA_SOURCE_TYPE);
-        if (dsType != null && !dsType.equals(DS_HIKARI)) {
+        if (!Objects.equals(dsType, DS_HIKARI)) {
             // No support
             throw new IllegalStateException("Unsupported data store type");
         }

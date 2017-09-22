@@ -116,7 +116,7 @@ public final class NavigateProcessorContext {
             currentQualifiedContentAddress.setUnit(Objects.toString(requestContext().getUnitId(), null));
             currentQualifiedContentAddress.setLesson(Objects.toString(requestContext().getLessonId(), null));
             currentQualifiedContentAddress.setPathId(requestContext().getPathId());
-            currentAddressSet = true;
+            qualifiedCurrentAddressSet = true;
             return currentQualifiedContentAddress;
         }
         return currentQualifiedContentAddress;
