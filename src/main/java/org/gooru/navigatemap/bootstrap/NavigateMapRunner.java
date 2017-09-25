@@ -43,7 +43,7 @@ public class NavigateMapRunner {
         initialize(startFuture);
         startFuture.setHandler(event -> {
             if (event.succeeded()) {
-                LOGGER.info("Will do application initialization");
+                LOGGER.info("Application startup complete");
             } else {
                 LOGGER.error("Error in initialization. Exiting");
                 Runtime.getRuntime().halt(1);
