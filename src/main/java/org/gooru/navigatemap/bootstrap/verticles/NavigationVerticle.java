@@ -8,6 +8,7 @@ import org.gooru.navigatemap.exceptions.MessageResponseWrapperException;
 import org.gooru.navigatemap.processor.contentserver.ContentServer;
 import org.gooru.navigatemap.processor.contentserver.RemoteAssessmentCollectionFetcher;
 import org.gooru.navigatemap.processor.contentserver.RemoteUriLocator;
+import org.gooru.navigatemap.processor.contentserver.ResponseParser;
 import org.gooru.navigatemap.processor.context.ContextAttributes;
 import org.gooru.navigatemap.processor.context.ContextProcessor;
 import org.gooru.navigatemap.processor.context.ContextUtil;
@@ -37,7 +38,16 @@ public class NavigationVerticle extends AbstractVerticle {
     public void start(Future<Void> startFuture) throws Exception {
 
         EventBus eb = vertx.eventBus();
-        eb.consumer(Constants.EventBus.MBEP_NAVIGATE, this::processMessage);
+        eb.localConsumer(Constants.EventBus.MBEP_NAVIGATE, this::processMessage).completionHandler(result -> {
+            if (result.succeeded()) {
+                LOGGER.info("Navigation end point ready to listen");
+                startFuture.complete();
+            } else {
+                LOGGER.error("Error registering the Navigation handler. Halting the machinery");
+                startFuture.fail(result.cause());
+                Runtime.getRuntime().halt(1);
+            }
+        });
 
         initializeHttpClient();
     }
@@ -83,8 +93,11 @@ public class NavigationVerticle extends AbstractVerticle {
         future.setHandler(event -> {
             if (event.succeeded()) {
                 message.reply(event.result());
+                ResponseParser responseParser = ResponseParser.build(event.result());
+
                 String user = message.body().getString(Constants.Message.MSG_USER_ID);
-                persistNewContext(event.result(), user);
+                persistNewContext(responseParser, user);
+                persistSuggestion(responseParser);
             } else {
                 LOGGER.warn("Failed to process next command", event.cause());
                 if (event.cause() instanceof HttpResponseWrapperException) {
@@ -105,9 +118,15 @@ public class NavigationVerticle extends AbstractVerticle {
         });
     }
 
-    private void persistNewContext(JsonObject result, String user) {
-        JsonObject newContext =
-            result.getJsonObject(Constants.Message.MSG_HTTP_BODY).getJsonObject(Constants.Response.RESP_CONTEXT);
+    private void persistSuggestion(ResponseParser responseParser) {
+        if (responseParser.getSuggestions().isEmpty()) {
+            return;
+        }
+        vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, responseParser.getResponse());
+    }
+
+    private void persistNewContext(ResponseParser responseParser, String user) {
+        JsonObject newContext = responseParser.getContext();
         if (newContext != null) {
             String contextKey = ContextUtil
                 .createUserContextKey(user, newContext.getString(ContextAttributes.COURSE_ID),

@@ -15,7 +15,7 @@ import io.vertx.core.json.JsonObject;
 /**
  * @author ashish on 12/9/17.
  */
-public class ContentFinderVisibilityVerifierDelegate {
+public final class ContentFinderVisibilityVerifierDelegate {
 
     private final UUID classId;
     private final CLASS_VISIBILITY visibility;

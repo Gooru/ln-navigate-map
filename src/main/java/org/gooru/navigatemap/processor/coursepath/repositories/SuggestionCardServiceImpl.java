@@ -1,6 +1,9 @@
 package org.gooru.navigatemap.processor.coursepath.repositories;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.SuggestionCardDao;
 import org.gooru.navigatemap.processor.data.CollectionRQCount;
@@ -13,7 +16,7 @@ import org.gooru.navigatemap.processor.utilities.jdbi.PGArray;
  */
 class SuggestionCardServiceImpl extends AbstractContentRepository implements SuggestionCardService {
     @Override
-    public List<SuggestionCard> suggestionCardForCollections(Set<String> collections) {
+    public List<SuggestionCard> suggestionCardForCollections(List<String> collections) {
         if (collections != null && !collections.isEmpty()) {
             return createSuggestionsCardForCollections(collections);
         }
@@ -21,18 +24,17 @@ class SuggestionCardServiceImpl extends AbstractContentRepository implements Sug
     }
 
     @Override
-    public List<SuggestionCard> suggestionCardForResources(Set<String> resources) {
+    public List<SuggestionCard> suggestionCardForResources(List<String> resources) {
         if (resources != null && !resources.isEmpty()) {
             return createSuggestionsCardForResources(resources);
         }
         return Collections.emptyList();
     }
 
-    private List<SuggestionCard> createSuggestionsCardForCollections(Set<String> collections) {
+    private List<SuggestionCard> createSuggestionsCardForCollections(List<String> collections) {
         SuggestionCardDao dao = dbi.onDemand(SuggestionCardDao.class);
-        List<String> collectionsList = new ArrayList<>(collections);
 
-        final PGArray<UUID> collectionsPGArray = CollectionUtils.convertToSqlArrayOfUUID(collectionsList);
+        final PGArray<UUID> collectionsPGArray = CollectionUtils.convertToSqlArrayOfUUID(collections);
 
         List<SuggestionCard> suggestionCards =
             dao.createSuggestionsCardForCollectionsWithoutRQCount(collectionsPGArray);
@@ -53,10 +55,8 @@ class SuggestionCardServiceImpl extends AbstractContentRepository implements Sug
         return suggestionCards;
     }
 
-    private List<SuggestionCard> createSuggestionsCardForResources(Set<String> resources) {
+    private List<SuggestionCard> createSuggestionsCardForResources(List<String> resources) {
         SuggestionCardDao dao = dbi.onDemand(SuggestionCardDao.class);
-        List<String> resourcesList = new ArrayList<>(resources);
-
-        return dao.createSuggestionsCardForResources(CollectionUtils.convertToSqlArrayOfUUID(resourcesList));
+        return dao.createSuggestionsCardForResources(CollectionUtils.convertToSqlArrayOfUUID(resources));
     }
 }

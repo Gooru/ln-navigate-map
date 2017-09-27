@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.gooru.navigatemap.processor.coursepath.repositories.mappers.AlternatePathMapper;
-import org.gooru.navigatemap.processor.coursepath.repositories.mappers.JavaSqlArrayToStringMapper;
+import org.gooru.navigatemap.processor.coursepath.repositories.mappers.SignatureResourceMapper;
 import org.gooru.navigatemap.processor.data.AlternatePath;
+import org.gooru.navigatemap.processor.data.SignatureResource;
 import org.gooru.navigatemap.processor.utilities.jdbi.PGArray;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
@@ -44,11 +45,12 @@ public interface AlternatePathNUStrategyDao {
         @Bind("unitId") String unit, @Bind("lessonId") String lesson, @Bind("collectionId") String collection,
         @Bind("userId") String user);
 
-    @SqlQuery("select ids_to_suggest from concept_based_resource_suggest where (competency_internal_code = any"
-                  + "(:competencyList) OR micro_competency_internal_code = any(:competencyList)) and "
-                  + "performance_range = :scoreRange")
-    @Mapper(JavaSqlArrayToStringMapper.class)
-    List<String[]> findResourceSuggestionsBasedOnCompetencyAndScoreRange(
+    @SqlQuery("select resource_id, resource_type, publisher, language, efficacy, engagement, weight, suggested_count "
+                  + "from signature_resources where (competency_internal_code = any(:competencyList) OR "
+                  + "micro_competency_internal_code = any(:competencyList)) and performance_range = :scoreRange "
+                  + "order by weight desc")
+    @Mapper(SignatureResourceMapper.class)
+    List<SignatureResource> findResourceSuggestionsBasedOnCompetencyAndScoreRange(
         @Bind("competencyList") PGArray<String> competencyList, @Bind("scoreRange") String scoreRange);
 
     @SqlQuery(" select target_resource_id from user_navigation_paths where ctx_user_id = :user::uuid and "

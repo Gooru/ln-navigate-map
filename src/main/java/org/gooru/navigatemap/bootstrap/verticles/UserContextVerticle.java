@@ -27,7 +27,7 @@ public class UserContextVerticle extends AbstractVerticle {
 
         initializeVerticle(startFuture);
 
-        eb.<JsonObject>consumer(Constants.EventBus.MBEP_USER_CONTEXT, message -> {
+        eb.<JsonObject>localConsumer(Constants.EventBus.MBEP_USER_CONTEXT, message -> {
             String op = message.headers().get(Constants.Message.MSG_OP);
             String key = message.headers().get(Constants.Message.MSG_HDR_KEY_CONTEXT);
             if (op.equalsIgnoreCase(Constants.Message.MSG_OP_CONTEXT_GET)) {
