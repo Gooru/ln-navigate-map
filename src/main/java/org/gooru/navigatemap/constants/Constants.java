@@ -10,6 +10,7 @@ public final class Constants {
         public static final String MBEP_AUTH = "org.gooru.navigate-map.eventbus.auth";
         public static final String MBEP_NAVIGATE = "org.gooru.navigate-map.eventbus.navigate";
         public static final String MBEP_USER_CONTEXT = "org.gooru.navigate-map.eventbus.user.context";
+        public static final String MBEP_POST_PROCESS = "org.gooru.navigate-map.eventbus.post.process";
 
         public static final String MBUS_TIMEOUT = "event.bus.send.timeout.seconds";
 

@@ -1,11 +1,12 @@
 package org.gooru.navigatemap.processor.contentserver;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.gooru.navigatemap.processor.coursepath.repositories.SuggestionCardService;
+import org.gooru.navigatemap.processor.data.SignatureResource;
 import org.gooru.navigatemap.processor.data.SuggestionCard;
 import org.gooru.navigatemap.processor.data.SuggestionContext;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ class SuggestionsCardBuilder {
     private static final Integer DEFAULT_LIMIT = 1;
     private final SuggestionContext suggestionContext;
     private final SuggestionCardService suggestionCardService;
-    private Set<String> suggestions;
+    private List<String> suggestions;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SuggestionsCardBuilder.class);
 
@@ -59,24 +60,25 @@ class SuggestionsCardBuilder {
             limit = DEFAULT_LIMIT;
         }
         if (suggestions.size() > limit) {
-            Set<String> limitedCollectionsSet = new HashSet<>(limit);
+            List<String> limitedCollectionsList = new ArrayList<>(limit);
             int currentSize = 0;
             for (String item : suggestions) {
-                limitedCollectionsSet.add(item);
+                limitedCollectionsList.add(item);
                 currentSize++;
                 if (currentSize == limit) {
                     break;
                 }
             }
-            suggestions = limitedCollectionsSet;
+            suggestions = limitedCollectionsList;
         }
     }
 
     private void initializeSuggestionsList() {
-        suggestions = new HashSet<>();
         if (suggestionContext.hasResourcesSuggested()) {
-            suggestions.addAll(suggestionContext.getResources());
+            suggestions = suggestionContext.getResources().stream().map(SignatureResource::getResourceId)
+                .collect(Collectors.toList());
         } else {
+            suggestions = new ArrayList<>();
             if (suggestionContext.hasAssessmentsSuggested()) {
                 LOGGER.debug("Will add assessments suggested to suggestions list");
                 suggestions.addAll(suggestionContext.getAssessments());

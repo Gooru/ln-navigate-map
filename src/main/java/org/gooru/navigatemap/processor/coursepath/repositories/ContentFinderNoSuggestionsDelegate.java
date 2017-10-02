@@ -10,24 +10,29 @@ import org.gooru.navigatemap.processor.data.ContentAddress;
  */
 public class ContentFinderNoSuggestionsDelegate {
     private final ContentFinderDao finderDao;
+    private final ContentFinderVisibilityVerifierDelegate visibilityVerifierDelegate;
 
-    public ContentFinderNoSuggestionsDelegate(ContentFinderDao finderDao) {
+    public ContentFinderNoSuggestionsDelegate(ContentFinderDao finderDao,
+        ContentFinderVisibilityVerifierDelegate visibilityVerifierDelegate) {
         this.finderDao = finderDao;
+        this.visibilityVerifierDelegate = visibilityVerifierDelegate;
     }
 
     public ContentAddress findNextContentFromCULWithoutAlternatePaths(ContentAddress address) {
-        List<ContentAddress> result;
+        ContentAddress result;
         if (address.getCollection() != null && !address.isOnAlternatePath()) {
-            result = finderDao.findNextCollectionsInCUL(address.getCourse(), address.getUnit(), address.getLesson(),
-                address.getCollection());
+            result = visibilityVerifierDelegate.findContentAddressBasedOnVisibility(finderDao
+                .findNextCollectionsInCUL(address.getCourse(), address.getUnit(), address.getLesson(),
+                    address.getCollection()));
         } else if (address.isOnAlternatePathAtLessonEnd()) {
             // Trigger find next valid content flow
             result = null;
         } else {
-            result = finderDao.findFirstCollectionInLesson(address.getCourse(), address.getUnit(), address.getLesson());
+            result = visibilityVerifierDelegate.findContentAddressBasedOnVisibility(
+                finderDao.findFirstCollectionInLesson(address.getCourse(), address.getUnit(), address.getLesson()));
         }
-        if (result != null && !result.isEmpty()) {
-            return result.get(0);
+        if (result != null) {
+            return result;
         }
         return findNextValidContent(address);
     }
@@ -35,6 +40,7 @@ public class ContentFinderNoSuggestionsDelegate {
     private ContentAddress findNextValidContent(ContentAddress address) {
         List<String> lessons;
         List<ContentAddress> contentAddresses;
+        ContentAddress result;
         List<String> units = finderDao.findNextUnitsInCourse(address.getCourse(), address.getUnit());
         for (String unit : units) {
             if (unit.equalsIgnoreCase(address.getUnit())) {
@@ -43,14 +49,17 @@ public class ContentFinderNoSuggestionsDelegate {
                 lessons = finderDao.findLessonsInCU(address.getCourse(), unit);
             }
             for (String lesson : lessons) {
-                if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())) {
+                if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())
+                    && address.getCollection() != null) {
                     contentAddresses =
                         finderDao.findNextCollectionsInCUL(address.getCourse(), unit, lesson, address.getCollection());
+                    result = visibilityVerifierDelegate.findContentAddressBasedOnVisibility(contentAddresses);
                 } else {
                     contentAddresses = finderDao.findCollectionsInCUL(address.getCourse(), unit, lesson);
+                    result = visibilityVerifierDelegate.findContentAddressBasedOnVisibility(contentAddresses);
                 }
-                if (contentAddresses != null && !contentAddresses.isEmpty()) {
-                    return contentAddresses.get(0);
+                if (result != null) {
+                    return result;
                 }
             }
         }

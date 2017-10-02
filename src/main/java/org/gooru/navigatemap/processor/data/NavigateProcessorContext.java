@@ -3,12 +3,11 @@ package org.gooru.navigatemap.processor.data;
 import java.util.Objects;
 
 import org.gooru.navigatemap.app.components.AppConfiguration;
-import org.gooru.navigatemap.processor.coursepath.state.Stateful;
 
 /**
  * @author ashish on 27/2/17.
  */
-public final class NavigateProcessorContext implements Stateful {
+public final class NavigateProcessorContext {
 
     private final NavigateMessageContext nmc;
     private final RequestContext ctxIn;
@@ -117,7 +116,7 @@ public final class NavigateProcessorContext implements Stateful {
             currentQualifiedContentAddress.setUnit(Objects.toString(requestContext().getUnitId(), null));
             currentQualifiedContentAddress.setLesson(Objects.toString(requestContext().getLessonId(), null));
             currentQualifiedContentAddress.setPathId(requestContext().getPathId());
-            currentAddressSet = true;
+            qualifiedCurrentAddressSet = true;
             return currentQualifiedContentAddress;
         }
         return currentQualifiedContentAddress;
@@ -128,8 +127,4 @@ public final class NavigateProcessorContext implements Stateful {
             navigateMessageContext().getUserId());
     }
 
-    @Override
-    public State getCurrentState() {
-        return ctxIn.getState();
-    }
 }

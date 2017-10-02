@@ -1,5 +1,6 @@
 package org.gooru.navigatemap.processor.coursepath.flows.strategy;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import org.gooru.navigatemap.processor.coursepath.flows.FlowBuilder;
@@ -36,6 +37,6 @@ public final class StrategySelector {
     private boolean nuStrategyApplicable() {
         UUID courseId = npc.requestContext().getCourseId();
         String version = ContentRepositoryBuilder.buildContentFinderRepository().findCourseVersion(courseId);
-        return version != null && NU_VERSION.equals(version);
+        return Objects.equals(NU_VERSION, version);
     }
 }

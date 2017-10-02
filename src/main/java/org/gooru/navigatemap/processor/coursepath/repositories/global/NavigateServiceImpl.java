@@ -64,7 +64,8 @@ final class NavigateServiceImpl implements NavigateService {
         // If we are on alternate path, we have following cases
         // 1) If we have served Pre/Post, then backfill or BA will be taken care by suggestions machinery
         // 2) If we have served BA or backfill, then we may directly advance to next content
-        return finderRepository.findNextContentFromCUL(finderContext.getCurrentAddress());
+        return finderRepository
+            .findNextContentFromCUL(finderContext.getCurrentAddress(), finderContext.getRequestContext().getClassId());
     }
 
     /*
@@ -117,7 +118,8 @@ final class NavigateServiceImpl implements NavigateService {
             }
         }
         // If there is nothing to show, use current address to find next content
-        return finderRepository.findNextContentFromCUL(finderContext.getCurrentAddress());
+        return finderRepository
+            .findNextContentFromCUL(finderContext.getCurrentAddress(), finderContext.getRequestContext().getClassId());
     }
 
     /*
@@ -151,7 +153,8 @@ final class NavigateServiceImpl implements NavigateService {
             }
         }
         // If there is nothing to show, use current address to find next content
-        return finderRepository.findNextContentFromCUL(finderContext.getCurrentAddress());
+        return finderRepository
+            .findNextContentFromCUL(finderContext.getCurrentAddress(), finderContext.getRequestContext().getClassId());
     }
 
     private ContentAddress handleLessonStartSuggested() {
@@ -183,7 +186,8 @@ final class NavigateServiceImpl implements NavigateService {
             }
         }
         // If there is nothing to show, use current address to find next content
-        return finderRepository.findNextContentFromCUL(createContentAddressForLessonStart());
+        return finderRepository.findNextContentFromCUL(createContentAddressForLessonStart(),
+            finderContext.getRequestContext().getClassId());
     }
 
     private ContentAddress createContentAddressForLessonStart() {

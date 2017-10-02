@@ -6,10 +6,7 @@ import org.gooru.navigatemap.app.components.utilities.DbLookupUtility;
 import org.gooru.navigatemap.processor.coursepath.flows.Flow;
 import org.gooru.navigatemap.processor.coursepath.repositories.nu.ContentFinderRepository;
 import org.gooru.navigatemap.processor.coursepath.repositories.nu.ContentRepositoryBuilder;
-import org.gooru.navigatemap.processor.data.CurrentItemType;
-import org.gooru.navigatemap.processor.data.FinderContext;
-import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
-import org.gooru.navigatemap.processor.data.State;
+import org.gooru.navigatemap.processor.data.*;
 import org.gooru.navigatemap.responses.ExecutionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,10 +54,10 @@ final class PostContentSuggestionsFlow implements Flow<NavigateProcessorContext>
             String scoreRange = findScoreRange();
             FinderContext finderContext = npc.createFinderContext();
             finderContext.setScoreRange(scoreRange);
-            List<String> resourceSuggestions =
+            List<SignatureResource> resourceSuggestions =
                 contentFinderRepository.findResourceSuggestionsForAssessment(finderContext);
             if (resourceSuggestions != null && !resourceSuggestions.isEmpty()) {
-                resourceSuggestions.forEach(resource -> npc.getCtxSuggestions().addResource(resource));
+                npc.getCtxSuggestions().addResources(resourceSuggestions);
                 markAsDone();
             }
         } else if (isCompetencyCompleted()) {

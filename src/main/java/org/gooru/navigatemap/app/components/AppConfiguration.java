@@ -68,6 +68,11 @@ public final class AppConfiguration implements Initializer {
         return configuration.getBoolean("serve.content.details");
     }
 
+    public boolean applyContentVisibilityToNonGlobalStrategy() {
+        Boolean result = configuration.getBoolean("non.global.strategy.apply.visibility");
+        return result != null && result;
+    }
+
     private static final class Holder {
         private static final AppConfiguration INSTANCE = new AppConfiguration();
     }

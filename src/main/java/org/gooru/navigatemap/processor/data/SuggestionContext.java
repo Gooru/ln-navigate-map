@@ -1,9 +1,6 @@
 package org.gooru.navigatemap.processor.data;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author ashish on 28/2/17.
@@ -11,7 +8,7 @@ import java.util.Set;
 public final class SuggestionContext {
     private final Set<String> assessments = new HashSet<>();
     private final Set<String> collections = new HashSet<>();
-    private final Set<String> resources = new HashSet<>();
+    private final List<SignatureResource> resources = new ArrayList<>();
 
     public void addAssessment(String id) {
         assessments.add(id);
@@ -67,23 +64,19 @@ public final class SuggestionContext {
         return !resources.isEmpty();
     }
 
-    public Set<String> getResources() {
-        return Collections.unmodifiableSet(resources);
+    public List<SignatureResource> getResources() {
+        return Collections.unmodifiableList(resources);
     }
 
-    public void addResources(Set<String> resourcesToSuggest) {
+    public void addResources(List<SignatureResource> resourcesToSuggest) {
         if (resourcesToSuggest.isEmpty()) {
             return;
         }
         resources.addAll(resourcesToSuggest);
     }
 
-    public void addResource(String id) {
-        resources.add(id);
-    }
-
-    public void removeResource(String id) {
-        resources.remove(id);
+    public void addResource(SignatureResource resource) {
+        resources.add(resource);
     }
 
     public static SuggestionContext buildSuggestionContextWithAssessments(List<String> suggestedAssessments) {

@@ -81,7 +81,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
 
     private ExecutionResult<NavigateProcessorContext> startCourse() {
         ContentAddress contentAddress = ContentRepositoryBuilder.buildContentFinderRepository()
-            .findFirstContentInCourse(npc.requestContext().getCourseId());
+            .findFirstContentInCourse(npc.requestContext().getCourseId(), npc.requestContext().getClassId());
         if (contentAddress != null) {
             if (contentAddress.getCollection() != null) {
                 npc.setNextContextAddress(contentAddress);
@@ -123,7 +123,7 @@ final class ContentFinderFlow implements Flow<NavigateProcessorContext> {
 
     private ExecutionResult<NavigateProcessorContext> fetchNextItemFromCULWithoutSuggestions() {
         ContentAddress contentAddress = ContentRepositoryBuilder.buildContentFinderRepository()
-            .findNextContentFromCUL(npc.getCurrentContentAddress());
+            .findNextContentFromCUL(npc.getCurrentContentAddress(), npc.requestContext().getClassId());
         if (contentAddress != null) {
             if (contentAddress.getCollection() != null) {
                 npc.setNextContextAddress(contentAddress);

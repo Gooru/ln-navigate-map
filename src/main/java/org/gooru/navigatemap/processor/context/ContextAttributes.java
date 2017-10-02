@@ -19,6 +19,7 @@ public final class ContextAttributes {
     public static final String CURRENT_ITEM_SUBTYPE = "current_item_subtype";
     public static final String STATE = "state";
     public static final String VERSION = "version";
+    public static final String VISIBILITY = "visibility";
 
     private ContextAttributes() {
         throw new AssertionError();
