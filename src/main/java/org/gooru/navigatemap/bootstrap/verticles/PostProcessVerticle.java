@@ -55,17 +55,27 @@ public class PostProcessVerticle extends AbstractVerticle {
                         if (CurrentItemType.Resource.getName().equalsIgnoreCase(suggestion.getFormat())) {
                             repository.incrementResourceSuggestedCount(suggestion.getId());
                         }
+                        future.complete();
                     } catch (IOException e) {
                         LOGGER.warn("Suggestion Json failed to convert to suggestion card, will skip count update. "
                             + "Value : {}", suggestionObj.toString());
+                        future.fail(e);
+
+                    } catch (Throwable t) {
+                        LOGGER.warn("Suggestion count update failed", t);
+                        future.fail(t);
                     }
                 } else {
                     LOGGER.warn("Got non Json object as suggestion: {}", suggestionObj.toString());
+                    future.fail(new IllegalArgumentException("Non json object as suggestion"));
                 }
             });
-            future.complete();
         }, asyncResult -> {
-            LOGGER.info("Done updating the suggested count for resource suggestion");
+            if (asyncResult.succeeded()) {
+                LOGGER.info("Done updating the suggested count for resource suggestion");
+            } else {
+                LOGGER.warn("Not able to update the resource suggestion count");
+            }
         });
     }
 
