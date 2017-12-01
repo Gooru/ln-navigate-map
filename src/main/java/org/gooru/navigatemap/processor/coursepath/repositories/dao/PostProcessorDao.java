@@ -8,7 +8,6 @@ import org.skife.jdbi.v2.sqlobject.SqlUpdate;
  */
 public interface PostProcessorDao {
 
-    @SqlUpdate("update signature_resources set suggested_count = suggested_count + 1 where resource_id = "
-                   + ":resourceId::uuid")
+    @SqlUpdate("update signature_resources set suggested_count = suggested_count + 1 where resource_id = :resourceId")
     void incrementResourceSuggestCount(@Bind("resourceId") String resourceId);
 }
