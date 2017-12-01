@@ -37,7 +37,7 @@ public final class NavigateProcessorContext {
         if (suggestionsFlagInitialized == null) {
             suggestionsFlagInitialized = new SuggestionsApplicabilityVerifier(this).areSuggestionApplicable();
         }
-        return suggestionsFlagInitialized;
+        return !suggestionsFlagInitialized;
     }
 
     public NavigateMessageContext navigateMessageContext() {
