@@ -3,8 +3,8 @@ package org.gooru.navigatemap.routes;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.gooru.navigatemap.constants.Constants;
-import org.gooru.navigatemap.constants.HttpConstants;
+import org.gooru.navigatemap.app.constants.Constants;
+import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.responses.auth.AuthSessionResponseHolder;
 import org.gooru.navigatemap.responses.auth.AuthSessionResponseHolderBuilder;
 import org.slf4j.Logger;

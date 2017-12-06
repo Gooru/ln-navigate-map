@@ -1,4 +1,4 @@
-package org.gooru.navigatemap.constants;
+package org.gooru.navigatemap.app.constants;
 
 /**
  * @author ashish on 24/2/17.

@@ -1,7 +1,7 @@
 package org.gooru.navigatemap.processor.contentserver;
 
-import org.gooru.navigatemap.constants.Constants;
-import org.gooru.navigatemap.constants.HttpConstants;
+import org.gooru.navigatemap.app.constants.Constants;
+import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.processor.data.ResponseContext;
 
 import io.vertx.core.json.JsonArray;

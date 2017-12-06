@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.gooru.navigatemap.constants.HttpConstants;
-import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.app.constants.HttpConstants;
+import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

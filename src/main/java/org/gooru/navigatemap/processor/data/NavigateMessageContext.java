@@ -1,6 +1,6 @@
 package org.gooru.navigatemap.processor.data;
 
-import org.gooru.navigatemap.constants.Constants;
+import org.gooru.navigatemap.app.constants.Constants;
 
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;

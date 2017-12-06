@@ -3,7 +3,7 @@ package org.gooru.navigatemap.responses.writers;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import org.gooru.navigatemap.constants.HttpConstants;
+import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.responses.transformers.ResponseTransformer;
 import org.gooru.navigatemap.responses.transformers.ResponseTransformerBuilder;
 

@@ -2,7 +2,7 @@ package org.gooru.navigatemap.bootstrap.verticles;
 
 import java.io.IOException;
 
-import org.gooru.navigatemap.constants.Constants;
+import org.gooru.navigatemap.app.constants.Constants;
 import org.gooru.navigatemap.processor.contentserver.ResponseParser;
 import org.gooru.navigatemap.processor.data.CurrentItemType;
 import org.gooru.navigatemap.processor.data.SuggestionCard;

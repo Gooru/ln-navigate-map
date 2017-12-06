@@ -2,9 +2,9 @@ package org.gooru.navigatemap.bootstrap.verticles;
 
 import java.util.Objects;
 
-import org.gooru.navigatemap.constants.Constants;
-import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
-import org.gooru.navigatemap.exceptions.MessageResponseWrapperException;
+import org.gooru.navigatemap.app.constants.Constants;
+import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.app.exceptions.MessageResponseWrapperException;
 import org.gooru.navigatemap.processor.contentserver.ContentServer;
 import org.gooru.navigatemap.processor.contentserver.RemoteAssessmentCollectionFetcher;
 import org.gooru.navigatemap.processor.contentserver.RemoteUriLocator;

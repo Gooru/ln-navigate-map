@@ -1,7 +1,7 @@
 package org.gooru.navigatemap.processor.coursepath.flows.strategy.nu;
 
-import org.gooru.navigatemap.constants.HttpConstants;
-import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.app.constants.HttpConstants;
+import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.processor.coursepath.flows.Flow;
 import org.gooru.navigatemap.processor.coursepath.repositories.nu.ContentFinderRepository;
 import org.gooru.navigatemap.processor.coursepath.repositories.nu.ContentRepositoryBuilder;

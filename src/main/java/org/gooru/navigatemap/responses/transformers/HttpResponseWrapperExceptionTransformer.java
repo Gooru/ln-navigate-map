@@ -3,7 +3,7 @@ package org.gooru.navigatemap.responses.transformers;
 import java.util.Collections;
 import java.util.Map;
 
-import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 
 import io.vertx.core.json.JsonObject;
 

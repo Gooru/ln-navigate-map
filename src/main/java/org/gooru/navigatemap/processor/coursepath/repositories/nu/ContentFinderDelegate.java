@@ -2,8 +2,8 @@ package org.gooru.navigatemap.processor.coursepath.repositories.nu;
 
 import java.util.List;
 
-import org.gooru.navigatemap.constants.HttpConstants;
-import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.app.constants.HttpConstants;
+import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.AlternatePathNUStrategyDao;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.UserCompetencyCompletionDao;

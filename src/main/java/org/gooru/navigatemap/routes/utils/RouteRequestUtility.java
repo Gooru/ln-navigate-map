@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.gooru.navigatemap.constants.Constants;
+import org.gooru.navigatemap.app.constants.Constants;
 
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.vertx.core.http.HttpMethod;

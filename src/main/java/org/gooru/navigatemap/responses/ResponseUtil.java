@@ -1,6 +1,6 @@
 package org.gooru.navigatemap.responses;
 
-import org.gooru.navigatemap.constants.Constants;
+import org.gooru.navigatemap.app.constants.Constants;
 
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.Message;

@@ -1,7 +1,7 @@
-package org.gooru.navigatemap.exceptions;
+package org.gooru.navigatemap.app.exceptions;
 
-import org.gooru.navigatemap.constants.Constants;
-import org.gooru.navigatemap.constants.HttpConstants;
+import org.gooru.navigatemap.app.constants.Constants;
+import org.gooru.navigatemap.app.constants.HttpConstants;
 
 import io.vertx.core.json.JsonObject;
 
