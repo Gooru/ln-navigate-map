@@ -31,17 +31,17 @@ public final class Workflow {
         result = flowBuilder.buildPreLessonSuggestionsFlow().apply(result);
 
         if (!result.isCompleted()) {
-            LOGGER.warn("Workflow not completed, putting in done");
-            npc.responseContext().setState(State.Done);
+            terminateFlowWithContent(result.result());
         }
     }
 
-    public static void terminateFlowWithContent(NavigateProcessorContext npc) {
+    private static void terminateFlowWithContent(NavigateProcessorContext npc) {
         // Currently you can't set up a separate item on alternate path as address
         if (npc.getNextContentAddress().isValidAddress()) {
             npc.responseContext().setContentAddressWithItemFromCollection(npc.getNextContentAddress());
             npc.responseContext().setState(State.ContentServed);
         } else {
+            LOGGER.warn("Workflow not completed, putting in done");
             npc.responseContext().setState(State.Done);
         }
     }
