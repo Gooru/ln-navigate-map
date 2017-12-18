@@ -2,7 +2,7 @@ package org.gooru.navigatemap.processor.data;
 
 import java.util.Objects;
 
-import org.gooru.navigatemap.app.components.AppConfiguration;
+import org.gooru.navigatemap.processor.coursepath.flows.strategy.SuggestionsApplicabilityVerifier;
 
 /**
  * @author ashish on 27/2/17.
@@ -19,6 +19,7 @@ public final class NavigateProcessorContext {
     private boolean currentAddressSet = false;
     private boolean qualifiedCurrentAddressSet = false;
     private final ContentAddress currentQualifiedContentAddress;
+    private Boolean suggestionsFlagInitialized;
 
     public NavigateProcessorContext(RequestContext requestContext, NavigateMessageContext navigateMessageContext) {
         this.ctxIn = requestContext;
@@ -33,7 +34,10 @@ public final class NavigateProcessorContext {
     }
 
     public boolean suggestionsTurnedOff() {
-        return nmc.isUserAnonymous() || !AppConfiguration.getInstance().suggestionsTurnedOn();
+        if (suggestionsFlagInitialized == null) {
+            suggestionsFlagInitialized = new SuggestionsApplicabilityVerifier(this).areSuggestionApplicable();
+        }
+        return !suggestionsFlagInitialized;
     }
 
     public NavigateMessageContext navigateMessageContext() {
