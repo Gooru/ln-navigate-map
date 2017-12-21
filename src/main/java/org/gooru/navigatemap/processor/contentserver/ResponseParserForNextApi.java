@@ -8,11 +8,11 @@ import io.vertx.core.json.JsonObject;
 /**
  * @author ashish on 22/9/17.
  */
-public final class ResponseParser {
+public final class ResponseParserForNextApi {
 
     private JsonObject response;
 
-    private ResponseParser(JsonObject response) {
+    private ResponseParserForNextApi(JsonObject response) {
         this.response = response;
     }
 
@@ -29,17 +29,18 @@ public final class ResponseParser {
     }
 
     public JsonArray getSuggestions() {
-        return response.getJsonObject(Constants.Message.MSG_HTTP_BODY).getJsonArray(Constants.Response.RESP_SUGGESTIONS);
+        return response.getJsonObject(Constants.Message.MSG_HTTP_BODY)
+            .getJsonArray(Constants.Response.RESP_SUGGESTIONS);
     }
 
     public JsonObject getContent() {
         return response.getJsonObject(Constants.Message.MSG_HTTP_BODY).getJsonObject(Constants.Response.RESP_CONTENT);
     }
 
-    public static ResponseParser build(JsonObject responseJson) {
+    public static ResponseParserForNextApi build(JsonObject responseJson) {
         if (responseJson == null || responseJson.isEmpty()) {
             throw new IllegalStateException("No response to parse");
         }
-        return new ResponseParser(responseJson.copy());
+        return new ResponseParserForNextApi(responseJson.copy());
     }
 }

@@ -8,7 +8,7 @@ import org.gooru.navigatemap.app.exceptions.MessageResponseWrapperException;
 import org.gooru.navigatemap.processor.contentserver.ContentServer;
 import org.gooru.navigatemap.processor.contentserver.RemoteAssessmentCollectionFetcher;
 import org.gooru.navigatemap.processor.contentserver.RemoteUriLocator;
-import org.gooru.navigatemap.processor.contentserver.ResponseParser;
+import org.gooru.navigatemap.processor.contentserver.ResponseParserForNextApi;
 import org.gooru.navigatemap.processor.context.ContextAttributes;
 import org.gooru.navigatemap.processor.context.ContextProcessor;
 import org.gooru.navigatemap.processor.context.ContextUtil;
@@ -93,11 +93,11 @@ public class NavigationVerticle extends AbstractVerticle {
         future.setHandler(event -> {
             if (event.succeeded()) {
                 message.reply(event.result());
-                ResponseParser responseParser = ResponseParser.build(event.result());
+                ResponseParserForNextApi responseParserForNextApi = ResponseParserForNextApi.build(event.result());
 
                 String user = message.body().getString(Constants.Message.MSG_USER_ID);
-                persistNewContext(responseParser, user);
-                persistSuggestion(responseParser);
+                persistNewContext(responseParserForNextApi, user);
+                persistSuggestion(responseParserForNextApi);
             } else {
                 LOGGER.warn("Failed to process next command", event.cause());
                 if (event.cause() instanceof HttpResponseWrapperException) {
@@ -118,15 +118,15 @@ public class NavigationVerticle extends AbstractVerticle {
         });
     }
 
-    private void persistSuggestion(ResponseParser responseParser) {
-        if (responseParser.getSuggestions().isEmpty()) {
+    private void persistSuggestion(ResponseParserForNextApi responseParserForNextApi) {
+        if (responseParserForNextApi.getSuggestions().isEmpty()) {
             return;
         }
-        vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, responseParser.getResponse());
+        vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, responseParserForNextApi.getResponse());
     }
 
-    private void persistNewContext(ResponseParser responseParser, String user) {
-        JsonObject newContext = responseParser.getContext();
+    private void persistNewContext(ResponseParserForNextApi responseParserForNextApi, String user) {
+        JsonObject newContext = responseParserForNextApi.getContext();
         if (newContext != null) {
             String contextKey = ContextUtil
                 .createUserContextKey(user, newContext.getString(ContextAttributes.COURSE_ID),

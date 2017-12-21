@@ -3,7 +3,7 @@ package org.gooru.navigatemap.bootstrap.verticles;
 import java.io.IOException;
 
 import org.gooru.navigatemap.app.constants.Constants;
-import org.gooru.navigatemap.processor.contentserver.ResponseParser;
+import org.gooru.navigatemap.processor.contentserver.ResponseParserForNextApi;
 import org.gooru.navigatemap.processor.data.CurrentItemType;
 import org.gooru.navigatemap.processor.data.SuggestionCard;
 import org.gooru.navigatemap.processor.postprocessor.repositories.PostProcessorRepository;
@@ -30,7 +30,7 @@ public class PostProcessVerticle extends AbstractVerticle {
         EventBus eb = vertx.eventBus();
 
         eb.<JsonObject>localConsumer(Constants.EventBus.MBEP_POST_PROCESS, message -> {
-            ResponseParser requestData = ResponseParser.build(message.body());
+            ResponseParserForNextApi requestData = ResponseParserForNextApi.build(message.body());
             process(requestData);
         }).completionHandler(result -> {
             if (result.succeeded()) {
@@ -44,7 +44,7 @@ public class PostProcessVerticle extends AbstractVerticle {
         });
     }
 
-    private void process(ResponseParser requestData) {
+    private void process(ResponseParserForNextApi requestData) {
         vertx.<Void>executeBlocking(future -> {
             requestData.getSuggestions().forEach(suggestionObj -> {
                 if (suggestionObj instanceof JsonObject) {

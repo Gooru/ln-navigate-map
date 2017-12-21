@@ -11,6 +11,7 @@ public final class Constants {
         public static final String MBEP_NAVIGATE = "org.gooru.navigate-map.eventbus.navigate";
         public static final String MBEP_USER_CONTEXT = "org.gooru.navigate-map.eventbus.user.context";
         public static final String MBEP_POST_PROCESS = "org.gooru.navigate-map.eventbus.post.process";
+        public static final String MBEP_CONTENT = "org.gooru.navigate-map.eventbus.content";
 
         public static final String MBUS_TIMEOUT = "event.bus.send.timeout.seconds";
 
@@ -39,6 +40,8 @@ public final class Constants {
         public static final String MSG_OP_NEXT = "navigate.next";
         public static final String MSG_OP_CONTEXT_GET = "context.get";
         public static final String MSG_OP_CONTEXT_SET = "context.set";
+        public static final String MSG_OP_TEACHER_SUGGESTION_ADD = "teacher.suggestion.add";
+        public static final String MSG_OP_SYSTEM_SUGGESTION_ADD = "system.suggestion.add";
 
         public static final String MSG_MESSAGE = "message";
         public static final String PROCESSING_AUTH_TIME = "auth.processing.time";
@@ -74,6 +77,8 @@ public final class Constants {
         private static final String API_BASE_ROUTE = "/api/navigate-map/:version/";
         public static final String API_NAVIGATE_NEXT = API_BASE_ROUTE + "next";
         public static final String API_NAVIGATE_CONTEXT = API_BASE_ROUTE + "context";
+        public static final String API_TEACHER_SUGGESTIONS_ADD = API_BASE_ROUTE + "teacher/suggestions";
+        public static final String API_SYSTEM_SUGGESTIONS_ADD = API_BASE_ROUTE + "system/suggestions";
         public static final String API_INTERNAL_BANNER = "/api/internal/banner";
         public static final String API_INTERNAL_METRICS = "/api/internal/metrics";
 

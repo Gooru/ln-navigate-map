@@ -118,5 +118,13 @@ public final class MessageResponse {
             return new MessageResponse(result);
         }
 
+        public static MessageResponse buildPlaceHolderResponse() {
+            JsonObject result =
+                new JsonObject().put(Constants.Message.MSG_HTTP_STATUS, HttpConstants.HttpStatus.SUCCESS.getCode())
+                    .put(Constants.Message.MSG_HTTP_HEADERS, new JsonObject())
+                    .put(Constants.Message.MSG_HTTP_BODY, new JsonObject());
+            return new MessageResponse(result);
+        }
+
     }
 }
