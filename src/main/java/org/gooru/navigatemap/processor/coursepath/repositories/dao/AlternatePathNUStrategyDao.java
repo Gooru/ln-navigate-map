@@ -17,30 +17,28 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
  */
 public interface AlternatePathNUStrategyDao {
 
-    @SqlQuery("select count(*) from user_navigation_paths where id = :pathId and target_resource_id = "
-                  + ":resourceId::uuid and target_content_type = 'resource' ")
+    @SqlQuery("select count(*) from user_navigation_paths where id = :pathId and suggested_content_id = "
+                  + ":resourceId::uuid and suggested_content_type = 'resource' ")
     long validatePath(@Bind("pathId") Long pathId, @Bind("resourceId") String resource);
 
     @Mapper(AlternatePathMapper.class)
-    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, "
-                  + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
-                  + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype, "
-                  + "target_resource_id from user_navigation_paths where ctx_course_id = :courseId::uuid and "
-                  + "ctx_unit_id = :unitId::uuid and ctx_lesson_id = :lessonId::uuid and ctx_collection_id = "
-                  + ":collectionId::uuid and ctx_user_id = :userId::uuid and ctx_class_id = :classId::uuid and "
-                  + "target_content_type = 'resource' order by created_at desc")
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_collection_id, "
+                  + "parent_path_id,  suggested_content_id, suggested_content_type, suggested_content_subtype  from "
+                  + "user_navigation_paths where ctx_course_id = :courseId::uuid and ctx_unit_id = :unitId::uuid and "
+                  + "ctx_lesson_id = :lessonId::uuid and ctx_collection_id = :collectionId::uuid and ctx_user_id = "
+                  + ":userId::uuid and ctx_class_id = :classId::uuid and suggested_content_type = 'resource' order by"
+                  + " created_at desc")
     List<AlternatePath> findResourceAlternatePathsForCULAndUserInClass(@Bind("courseId") String course,
         @Bind("unitId") String unit, @Bind("lessonId") String lesson, @Bind("collectionId") String collection,
         @Bind("userId") String user, @Bind("classId") String classId);
 
     @Mapper(AlternatePathMapper.class)
-    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, "
-                  + "ctx_collection_id, parent_path_id, parent_path_type, target_course_id, target_unit_id, "
-                  + "target_lesson_id, target_collection_id, target_content_type, target_content_subtype, "
-                  + "target_resource_id from user_navigation_paths where ctx_course_id = :courseId::uuid and "
-                  + "ctx_unit_id = :unitId::uuid and ctx_lesson_id = :lessonId::uuid and ctx_collection_id = "
-                  + ":collectionId::uuid and ctx_user_id = :userId::uuid and ctx_class_id is null and "
-                  + "target_content_type = 'resource' order by created_at desc")
+    @SqlQuery("select id, ctx_user_id, ctx_class_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_collection_id, "
+                  + "parent_path_id,   suggested_content_id, suggested_content_type, suggested_content_subtype  from "
+                  + "user_navigation_paths where ctx_course_id = :courseId::uuid and ctx_unit_id = :unitId::uuid and "
+                  + "ctx_lesson_id = :lessonId::uuid and ctx_collection_id = :collectionId::uuid and ctx_user_id = "
+                  + ":userId::uuid and ctx_class_id is null and suggested_content_type = 'resource' order by "
+                  + "created_at desc")
     List<AlternatePath> findResourceAlternatePathsForCULAndUser(@Bind("courseId") String course,
         @Bind("unitId") String unit, @Bind("lessonId") String lesson, @Bind("collectionId") String collection,
         @Bind("userId") String user);
@@ -53,16 +51,16 @@ public interface AlternatePathNUStrategyDao {
     List<SignatureResource> findResourceSuggestionsBasedOnCompetencyAndScoreRange(
         @Bind("competencyList") PGArray<String> competencyList, @Bind("scoreRange") String scoreRange);
 
-    @SqlQuery(" select target_resource_id from user_navigation_paths where ctx_user_id = :user::uuid and "
-                  + "ctx_course_id = :course::uuid and ctx_class_id = :userClass::uuid and target_resource_id = any"
-                  + "(:resourceList)")
+    @SqlQuery(" select suggested_content_id from user_navigation_paths where ctx_user_id = :user::uuid and "
+                  + "ctx_course_id = :course::uuid and ctx_class_id = :userClass::uuid and suggested_content_id = any"
+                  + "(:resourceList) and suggested_content_type = 'resource'")
     List<String> findResourceAlreadyAddedFromListInCourseClass(@Bind("user") String user,
         @Bind("resourceList") PGArray<UUID> resourceList, @Bind("course") String course,
         @Bind("userClass") String userClass);
 
-    @SqlQuery(" select target_resource_id from user_navigation_paths where ctx_user_id = :user::uuid and "
-                  + "ctx_course_id = :course::uuid and ctx_class_id is null and target_resource_id = any"
-                  + "(:resourceList)")
+    @SqlQuery(" select suggested_content_id from user_navigation_paths where ctx_user_id = :user::uuid and "
+                  + "ctx_course_id = :course::uuid and ctx_class_id is null and suggested_content_id = any"
+                  + "(:resourceList) and suggested_content_type = 'resource'")
     List<String> findResourceAlreadyAddedFromListInCourseNoClass(@Bind("user") String user,
         @Bind("resourceList") PGArray<UUID> resourceList, @Bind("course") String course);
 }

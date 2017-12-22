@@ -15,14 +15,9 @@ public final class AlternatePath {
     private UUID ctxLesson;
     private UUID ctxCollection;
     private Long parentPathId;
-    private String parentPathType;
-    private UUID targetCourse;
-    private UUID targetUnit;
-    private UUID targetLesson;
-    private UUID targetCollection;
-    private String targetContentType;
-    private String targetContentSubtype;
-    private UUID targetResourceId;
+    private UUID suggestedContentId;
+    private String suggestedContentType;
+    private String suggestedContentSubtype;
 
     public Long getId() {
         return id;
@@ -80,86 +75,6 @@ public final class AlternatePath {
         this.parentPathId = parentPathId;
     }
 
-    public String getParentPathType() {
-        return parentPathType;
-    }
-
-    public void setParentPathType(String parentPathType) {
-        this.parentPathType = parentPathType;
-    }
-
-    public UUID getTargetCourse() {
-        return targetCourse;
-    }
-
-    public void setTargetCourse(UUID targetCourse) {
-        this.targetCourse = targetCourse;
-    }
-
-    public UUID getTargetUnit() {
-        return targetUnit;
-    }
-
-    public void setTargetUnit(UUID targetUnit) {
-        this.targetUnit = targetUnit;
-    }
-
-    public UUID getTargetLesson() {
-        return targetLesson;
-    }
-
-    public void setTargetLesson(UUID targetLesson) {
-        this.targetLesson = targetLesson;
-    }
-
-    public UUID getTargetCollection() {
-        return targetCollection;
-    }
-
-    public void setTargetCollection(UUID targetCollection) {
-        this.targetCollection = targetCollection;
-    }
-
-    public String getTargetContentType() {
-        return targetContentType;
-    }
-
-    public boolean isTargetContentTypeLesson() {
-        return Objects.equals(targetContentType, "lesson");
-    }
-
-    public boolean isTargetContentTypeCollection() {
-        return Objects.equals(targetContentType, "collection");
-    }
-
-    public boolean isTargetContentTypeAssessment() {
-        return Objects.equals(targetContentType, "assessment");
-    }
-
-    public void setTargetContentType(String targetContentType) {
-        this.targetContentType = targetContentType;
-    }
-
-    public String getTargetContentSubtype() {
-        return targetContentSubtype;
-    }
-
-    public boolean isTargetContentSubtypePreTest() {
-        return Objects.equals(targetContentSubtype, "pre-test");
-    }
-
-    public boolean isTargetContentSubtypePostTest() {
-        return Objects.equals(targetContentSubtype, "post-test");
-    }
-
-    public boolean isTargetContentSubtypeBenchmark() {
-        return Objects.equals(targetContentSubtype, "benchmark");
-    }
-
-    public void setTargetContentSubtype(String targetContentSubtype) {
-        this.targetContentSubtype = targetContentSubtype;
-    }
-
     public UUID getClassId() {
         return classId;
     }
@@ -168,11 +83,52 @@ public final class AlternatePath {
         this.classId = classId;
     }
 
-    public UUID getTargetResourceId() {
-        return targetResourceId;
+    public UUID getSuggestedContentId() {
+        return suggestedContentId;
     }
 
-    public void setTargetResourceId(UUID targetResourceId) {
-        this.targetResourceId = targetResourceId;
+    public void setSuggestedContentId(UUID suggestedContentId) {
+        this.suggestedContentId = suggestedContentId;
     }
+
+    public String getSuggestedContentType() {
+        return suggestedContentType;
+    }
+
+    public void setSuggestedContentType(String suggestedContentType) {
+        this.suggestedContentType = suggestedContentType;
+    }
+
+    public String getSuggestedContentSubtype() {
+        return suggestedContentSubtype;
+    }
+
+    public void setSuggestedContentSubtype(String suggestedContentSubtype) {
+        this.suggestedContentSubtype = suggestedContentSubtype;
+    }
+
+    public boolean isSuggestedContentLesson() {
+        return Objects.equals(suggestedContentType, "lesson");
+    }
+
+    public boolean isSuggestedContentCollection() {
+        return Objects.equals(suggestedContentType, "collection");
+    }
+
+    public boolean isSuggestedContentAssessment() {
+        return Objects.equals(suggestedContentType, "assessment");
+    }
+
+    public boolean isSuggestedContentPreTest() {
+        return Objects.equals(suggestedContentSubtype, "pre-test");
+    }
+
+    public boolean isSuggestedContentPostTest() {
+        return Objects.equals(suggestedContentSubtype, "post-test");
+    }
+
+    public boolean isSuggestedContentBenchmark() {
+        return Objects.equals(suggestedContentSubtype, "benchmark");
+    }
+
 }
