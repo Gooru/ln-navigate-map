@@ -23,7 +23,6 @@ class AddTeacherSuggestionsCommand {
     private UUID ctxUnitId;
     private UUID ctxLessonId;
     private UUID ctxCollectionId;
-    private Long pathId;
     private UUID suggestedContentId;
     private SuggestedContentType suggestedContentType;
     private SuggestedContentSubType suggestedContentSubType;
@@ -41,7 +40,6 @@ class AddTeacherSuggestionsCommand {
         result.ctxUnitId = ctxUnitId;
         result.ctxLessonId = ctxLessonId;
         result.ctxCollectionId = ctxCollectionId;
-        result.pathId = pathId;
         result.suggestedContentId = suggestedContentId;
         result.suggestedContentType = suggestedContentType != null ? suggestedContentType.getName() : null;
         result.suggestedContentSubType = suggestedContentSubType != null ? suggestedContentSubType.getName() : null;
@@ -71,10 +69,6 @@ class AddTeacherSuggestionsCommand {
 
     public UUID getCtxCollectionId() {
         return ctxCollectionId;
-    }
-
-    public Long getPathId() {
-        return pathId;
     }
 
     public UUID getSuggestedContentId() {
@@ -118,7 +112,6 @@ class AddTeacherSuggestionsCommand {
             command.ctxLessonId = toUuid(input, CommandAttributes.LESSON_ID);
             command.ctxCollectionId = toUuid(input, CommandAttributes.COLLECTION_ID);
             command.suggestedContentId = toUuid(input, CommandAttributes.SUGGESTED_CONTENT_ID);
-            command.pathId = input.getLong(CommandAttributes.PATH_ID);
             String value = input.getString(CommandAttributes.SUGGESTED_CONTENT_TYPE);
             command.suggestedContentType =
                 (value != null && !value.isEmpty()) ? SuggestedContentType.builder(value) : null;
@@ -171,7 +164,6 @@ class AddTeacherSuggestionsCommand {
         static final String SUGGESTED_CONTENT_ID = "suggested_content_id";
         static final String SUGGESTED_CONTENT_TYPE = "suggested_content_type";
         static final String SUGGESTED_CONTENT_SUBTYPE = "suggested_content_subtype";
-        static final String PATH_ID = "path_id";
 
         private CommandAttributes() {
             throw new AssertionError();
