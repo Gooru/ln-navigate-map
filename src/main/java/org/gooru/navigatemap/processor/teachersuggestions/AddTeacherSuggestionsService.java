@@ -25,6 +25,7 @@ class AddTeacherSuggestionsService {
 
     void addTeacherSuggestion(AddTeacherSuggestionsCommand command) {
         this.command = command;
+        new ContextInformationVerifier(command, addTeacherSuggestionsDao).validateContextInformation();
         List<UUID> usersNotHavingSpecifiedSuggestions = findUsersNotHavingSpecifiedSuggestion();
         if (usersNotHavingSpecifiedSuggestions != null && !usersNotHavingSpecifiedSuggestions.isEmpty()) {
             addTeacherSuggestionsDao.addTeacherSuggestion(command.getBean(), usersNotHavingSpecifiedSuggestions);

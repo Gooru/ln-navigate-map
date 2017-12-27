@@ -77,7 +77,7 @@ interface AddSystemSuggestionDao {
 
     @SqlQuery("select exists (select 1 from collection l, class c where l.course_id = :ctxCourseId and l.unit_id = "
                   + ":ctxUnitId and l.lesson_id = :ctxLessonId and l.id = :ctxCollectionId and l.is_deleted = false "
-                  + "and c.id = :ctxClassId and c.course_id = l.course_id and c.is_deleted = " + "false)")
+                  + "and c.id = :ctxClassId and c.course_id = l.course_id and c.is_deleted = false)")
     Boolean validateContextInformationForClassRootedAtCollection(
         @BindBean AddSystemSuggestionCommand.AddSystemSuggestionsBean bean);
 
