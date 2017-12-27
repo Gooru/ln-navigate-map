@@ -59,4 +59,9 @@ public final class MessageResponseFactory {
         return new MessageResponse.Builder().setStatusHttpCode(HttpConstants.HttpStatus.GONE).setContentTypeJson()
             .setResponseBody(new JsonObject().put(Constants.Message.MSG_MESSAGE, API_VERSION_DEPRECATED)).build();
     }
+
+    public static MessageResponse createCreatedResponse(String location) {
+        return new MessageResponse.Builder().setHeader("Location", location).setStatusCreated().build();
+    }
+
 }

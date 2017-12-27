@@ -44,8 +44,7 @@ public class ContentVerticle extends AbstractVerticle {
             future = AsyncMessageProcessor.buildAddTeacherSuggestionsProcessor(vertx, message).process();
             break;
         case Constants.Message.MSG_OP_SYSTEM_SUGGESTION_ADD:
-            // TODO: Provide implementation
-            future = AsyncMessageProcessor.buildPlaceHolderSuccessProcessor(vertx, message).process();
+            future = AsyncMessageProcessor.buildAddSystemSuggestionsProcessor(vertx, message).process();
             break;
         default:
             LOGGER.warn("Invalid operation type");

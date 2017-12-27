@@ -28,7 +28,7 @@ public class RouteContentConfigurator implements RouteConfigurator {
         eb = vertx.eventBus();
         mbusTimeout = config.getLong(Constants.EventBus.MBUS_TIMEOUT, 30L) * 1000;
         router.post(Constants.Route.API_TEACHER_SUGGESTIONS_ADD).handler(this::addTeacherSuggestions);
-        router.get(Constants.Route.API_SYSTEM_SUGGESTIONS_ADD).handler(this::addSystemSuggestions);
+        router.post(Constants.Route.API_SYSTEM_SUGGESTIONS_ADD).handler(this::addSystemSuggestions);
     }
 
     private void addTeacherSuggestions(RoutingContext routingContext) {

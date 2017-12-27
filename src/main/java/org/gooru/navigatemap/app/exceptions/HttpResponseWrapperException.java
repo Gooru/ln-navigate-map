@@ -18,6 +18,7 @@ public final class HttpResponseWrapperException extends RuntimeException {
     }
 
     public HttpResponseWrapperException(HttpConstants.HttpStatus status, String message) {
+        super(message);
         this.status = status;
         this.payload = new JsonObject().put(Constants.Message.MSG_MESSAGE, message);
     }

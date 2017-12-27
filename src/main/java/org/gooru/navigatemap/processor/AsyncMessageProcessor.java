@@ -1,5 +1,6 @@
 package org.gooru.navigatemap.processor;
 
+import org.gooru.navigatemap.processor.systemsuggestions.AddSystemSuggestionProcessor;
 import org.gooru.navigatemap.processor.teachersuggestions.AddTeacherSuggestionsProcessor;
 import org.gooru.navigatemap.responses.MessageResponse;
 
@@ -17,6 +18,10 @@ public interface AsyncMessageProcessor {
 
     static AsyncMessageProcessor buildAddTeacherSuggestionsProcessor(Vertx vertx, Message<JsonObject> message) {
         return new AddTeacherSuggestionsProcessor(vertx, message);
+    }
+
+    static AsyncMessageProcessor buildAddSystemSuggestionsProcessor(Vertx vertx, Message<JsonObject> message) {
+        return new AddSystemSuggestionProcessor(vertx, message);
     }
 
     static AsyncMessageProcessor buildPlaceHolderSuccessProcessor(Vertx vertx, Message<JsonObject> message) {
