@@ -73,9 +73,6 @@ public final class DatasourceHelper {
             case "poolName":
                 config.setPoolName((String) entry.getValue());
                 break;
-            case "initializationFailFast":
-                config.setInitializationFailFast((Boolean) entry.getValue());
-                break;
             case "isolationInternalQueries":
                 config.setIsolateInternalQueries((Boolean) entry.getValue());
                 break;
