@@ -1,7 +1,7 @@
-package org.gooru.navigatemap.exceptions;
+package org.gooru.navigatemap.app.exceptions;
 
-import org.gooru.navigatemap.constants.Constants;
-import org.gooru.navigatemap.constants.HttpConstants;
+import org.gooru.navigatemap.app.constants.Constants;
+import org.gooru.navigatemap.app.constants.HttpConstants;
 
 import io.vertx.core.json.JsonObject;
 
@@ -18,6 +18,7 @@ public final class HttpResponseWrapperException extends RuntimeException {
     }
 
     public HttpResponseWrapperException(HttpConstants.HttpStatus status, String message) {
+        super(message);
         this.status = status;
         this.payload = new JsonObject().put(Constants.Message.MSG_MESSAGE, message);
     }

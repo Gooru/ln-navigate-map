@@ -1,7 +1,7 @@
 package org.gooru.navigatemap.routes;
 
-import org.gooru.navigatemap.constants.HttpConstants;
-import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.app.constants.HttpConstants;
+import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.responses.transformers.ResponseTransformerBuilder;
 import org.gooru.navigatemap.responses.writers.ResponseWriterBuilder;
 import org.slf4j.Logger;

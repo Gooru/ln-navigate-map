@@ -6,6 +6,7 @@
       "username": "nucleus",
       "password": "nucleus",
       "autoCommit": true,
+      "jdbcUrlDev": "jdbc:postgresql://projectnile-30-dev-postgres-db.cqlbqx0elkud.us-west-1.rds.amazonaws.com:5432/nucleus",
       "jdbcUrl": "jdbc:postgresql://localhost:5432/nucleus",
       "maximumPoolSize": 5
     },
@@ -59,6 +60,12 @@
       }
     },
     "org.gooru.navigatemap.bootstrap.verticles.PostProcessVerticle": {
+      "instances": 1,
+      "worker": false,
+      "config": {
+      }
+    },
+    "org.gooru.navigatemap.bootstrap.verticles.ContentVerticle": {
       "instances": 1,
       "worker": false,
       "config": {

@@ -2,12 +2,17 @@ package org.gooru.navigatemap.processor.coursepath.repositories.nu;
 
 import java.util.List;
 
-import org.gooru.navigatemap.constants.HttpConstants;
-import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.app.constants.HttpConstants;
+import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.AlternatePathNUStrategyDao;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.ContentFinderDao;
 import org.gooru.navigatemap.processor.coursepath.repositories.dao.UserCompetencyCompletionDao;
-import org.gooru.navigatemap.processor.data.*;
+import org.gooru.navigatemap.processor.data.AlternatePath;
+import org.gooru.navigatemap.processor.data.ContentAddress;
+import org.gooru.navigatemap.processor.data.CurrentItemSubtype;
+import org.gooru.navigatemap.processor.data.CurrentItemType;
+import org.gooru.navigatemap.processor.data.FinderContext;
+import org.gooru.navigatemap.processor.data.State;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,10 +106,10 @@ final class ContentFinderDelegate {
 
     private ContentAddress getContentAddressFromAlternatePath(ContentAddress address, AlternatePath targetPath) {
         ContentAddress resultAddress = new ContentAddress(address);
-        resultAddress.setCurrentItem(targetPath.getTargetResourceId().toString());
-        resultAddress.setCurrentItemType(CurrentItemType.builder(targetPath.getTargetContentType()));
-        if (targetPath.getTargetContentSubtype() != null) {
-            resultAddress.setCurrentItemSubtype(CurrentItemSubtype.builder(targetPath.getTargetContentSubtype()));
+        resultAddress.setCurrentItem(targetPath.getSuggestedContentId().toString());
+        resultAddress.setCurrentItemType(CurrentItemType.builder(targetPath.getSuggestedContentType()));
+        if (targetPath.getSuggestedContentSubtype() != null) {
+            resultAddress.setCurrentItemSubtype(CurrentItemSubtype.builder(targetPath.getSuggestedContentSubtype()));
         }
         resultAddress.setPathId(targetPath.getId());
         return resultAddress;

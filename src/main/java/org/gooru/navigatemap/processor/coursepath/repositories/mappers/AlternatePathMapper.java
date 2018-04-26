@@ -29,14 +29,9 @@ public class AlternatePathMapper implements ResultSetMapper<AlternatePath> {
         result.setCtxLesson(safeStringToUUID(r.getString("ctx_lesson_id")));
         result.setCtxCollection(safeStringToUUID(r.getString("ctx_collection_id")));
         result.setParentPathId(r.getLong("parent_path_id"));
-        result.setParentPathType(r.getString("parent_path_type"));
-        result.setTargetCourse(safeStringToUUID(r.getString("target_course_id")));
-        result.setTargetUnit(safeStringToUUID(r.getString("target_unit_id")));
-        result.setTargetLesson(safeStringToUUID(r.getString("target_lesson_id")));
-        result.setTargetCollection(safeStringToUUID(r.getString("target_collection_id")));
-        result.setTargetContentType(r.getString("target_content_type"));
-        result.setTargetContentSubtype(r.getString("target_content_subtype"));
-        result.setTargetResourceId(safeStringToUUID(r.getString("target_resource_id")));
+        result.setSuggestedContentId(safeStringToUUID(r.getString("suggested_content_id")));
+        result.setSuggestedContentType(r.getString("suggested_content_type"));
+        result.setSuggestedContentSubtype(r.getString("suggested_content_subtype"));
 
         return result;
     }

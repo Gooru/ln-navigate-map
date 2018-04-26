@@ -1,4 +1,4 @@
-package org.gooru.navigatemap.exceptions;
+package org.gooru.navigatemap.app.exceptions;
 
 import org.gooru.navigatemap.responses.MessageResponse;
 

@@ -3,8 +3,8 @@ package org.gooru.navigatemap.processor.data;
 import java.util.Objects;
 import java.util.UUID;
 
-import org.gooru.navigatemap.constants.HttpConstants;
-import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.app.constants.HttpConstants;
+import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.processor.context.ContextAttributes;
 
 import io.vertx.core.json.JsonObject;

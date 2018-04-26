@@ -2,7 +2,7 @@ package org.gooru.navigatemap.routes.utils;
 
 import java.util.Objects;
 
-import org.gooru.navigatemap.constants.Constants;
+import org.gooru.navigatemap.app.constants.Constants;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;

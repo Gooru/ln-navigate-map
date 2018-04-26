@@ -1,6 +1,6 @@
 package org.gooru.navigatemap.bootstrap.verticles;
 
-import org.gooru.navigatemap.constants.Constants;
+import org.gooru.navigatemap.app.constants.Constants;
 import org.gooru.navigatemap.responses.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

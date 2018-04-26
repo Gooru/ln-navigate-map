@@ -3,7 +3,7 @@ package org.gooru.navigatemap.processor.contentserver;
 import java.util.Objects;
 
 import org.gooru.navigatemap.app.components.AppConfiguration;
-import org.gooru.navigatemap.constants.Constants;
+import org.gooru.navigatemap.app.constants.Constants;
 import org.gooru.navigatemap.processor.coursepath.repositories.SuggestionServiceBuilder;
 import org.gooru.navigatemap.processor.data.CurrentItemType;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;

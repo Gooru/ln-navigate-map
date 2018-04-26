@@ -3,7 +3,11 @@ package org.gooru.navigatemap.processor.coursepath.repositories.global;
 import java.util.List;
 import java.util.Objects;
 
-import org.gooru.navigatemap.processor.data.*;
+import org.gooru.navigatemap.processor.data.AlternatePath;
+import org.gooru.navigatemap.processor.data.CollectionSubtype;
+import org.gooru.navigatemap.processor.data.CollectionType;
+import org.gooru.navigatemap.processor.data.ContentAddress;
+import org.gooru.navigatemap.processor.data.FinderContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,9 +97,9 @@ final class NavigateServiceImpl implements NavigateService {
         List<AlternatePath> childPaths = null;
         // Find any child paths for this path for this user and Course (optionally class construct). The child path
         // could either be a backfill or a BA based on if current path is PostT or PreT
-        if (currentPath.isTargetContentSubtypePostTest()) {
+        if (currentPath.isSuggestedContentPostTest()) {
             childPaths = finderRepository.findChildPathsOfTypeBA(currentPath);
-        } else if (currentPath.isTargetContentSubtypePreTest()) {
+        } else if (currentPath.isSuggestedContentPreTest()) {
             childPaths = finderRepository.findChildPathsOfTypeBackfill(currentPath);
         } else {
             LOGGER.warn("Invalid current path obtained.");
@@ -109,10 +113,10 @@ final class NavigateServiceImpl implements NavigateService {
             // circuit
             if (filteredChildPaths != null && !filteredChildPaths.isEmpty()) {
                 AlternatePath targetPath = findATargetAlternatePath(filteredChildPaths);
-                finderContext.setCurrentItem(targetPath.getTargetCollection(),
-                    CollectionType.builder(targetPath.getTargetContentType()),
-                    targetPath.getTargetContentSubtype() != null ?
-                        CollectionSubtype.builder(targetPath.getTargetContentSubtype()) : null);
+                finderContext.setCurrentItem(targetPath.getSuggestedContentId(),
+                    CollectionType.builder(targetPath.getSuggestedContentType()),
+                    targetPath.getSuggestedContentSubtype() != null ?
+                        CollectionSubtype.builder(targetPath.getSuggestedContentSubtype()) : null);
                 finderContext.getCurrentAddress().setPathId(targetPath.getId());
                 return finderContext.getCurrentAddress();
             }
@@ -145,9 +149,9 @@ final class NavigateServiceImpl implements NavigateService {
             // circuit
             if (filteredChildPaths != null && !filteredChildPaths.isEmpty()) {
                 AlternatePath targetPath = findATargetAlternatePath(filteredChildPaths);
-                finderContext.setCurrentItem(targetPath.getTargetCollection(),
-                    CollectionType.builder(targetPath.getTargetContentType()),
-                    CollectionSubtype.builder(targetPath.getTargetContentSubtype()));
+                finderContext.setCurrentItem(targetPath.getSuggestedContentId(),
+                    CollectionType.builder(targetPath.getSuggestedContentType()),
+                    CollectionSubtype.builder(targetPath.getSuggestedContentSubtype()));
                 finderContext.getCurrentAddress().setPathId(targetPath.getId());
                 return finderContext.getCurrentAddress();
             }
@@ -178,9 +182,9 @@ final class NavigateServiceImpl implements NavigateService {
             // circuit
             if (filteredChildPaths != null && !filteredChildPaths.isEmpty()) {
                 AlternatePath targetPath = findATargetAlternatePath(filteredChildPaths);
-                finderContext.setCurrentItem(targetPath.getTargetCollection(),
-                    CollectionType.builder(targetPath.getTargetContentType()),
-                    CollectionSubtype.builder(targetPath.getTargetContentSubtype()));
+                finderContext.setCurrentItem(targetPath.getSuggestedContentId(),
+                    CollectionType.builder(targetPath.getSuggestedContentType()),
+                    CollectionSubtype.builder(targetPath.getSuggestedContentSubtype()));
                 finderContext.getCurrentAddress().setPathId(targetPath.getId());
                 return finderContext.getCurrentAddress();
             }

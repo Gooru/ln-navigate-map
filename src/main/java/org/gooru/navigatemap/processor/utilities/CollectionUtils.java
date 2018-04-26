@@ -1,6 +1,11 @@
 package org.gooru.navigatemap.processor.utilities;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
@@ -52,4 +57,9 @@ public final class CollectionUtils {
         List<UUID> uuids = convertList(input, UUID::fromString);
         return PGArray.arrayOf(UUID.class, uuids);
     }
+
+    public static PGArray<UUID> convertFromListUUIDToSqlArrayOfUUID(List<UUID> input) {
+        return PGArray.arrayOf(UUID.class, input);
+    }
+
 }

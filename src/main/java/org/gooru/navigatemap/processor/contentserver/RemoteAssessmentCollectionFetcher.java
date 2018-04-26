@@ -1,6 +1,6 @@
 package org.gooru.navigatemap.processor.contentserver;
 
-import org.gooru.navigatemap.constants.HttpConstants;
+import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.processor.data.ResponseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
