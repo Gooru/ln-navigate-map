@@ -85,6 +85,8 @@
   "app.configuration": {
     "context.mbus.timeout.seconds": 60,
     "suggestions.advise": true,
+    "suggestions.prelesson.off": true,
+    "suggestions.postlesson.off": true,
     "serve.content.details": false,
     "non.global.strategy.apply.visibility": false,
     "suggestions.limit": 1

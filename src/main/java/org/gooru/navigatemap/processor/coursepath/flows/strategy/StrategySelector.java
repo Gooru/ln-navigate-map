@@ -35,8 +35,7 @@ public final class StrategySelector {
     }
 
     private boolean nuStrategyApplicable() {
-        UUID courseId = npc.requestContext().getCourseId();
-        String version = ContentRepositoryBuilder.buildContentFinderRepository().findCourseVersion(courseId);
-        return Objects.equals(NU_VERSION, version);
+        // NU strategy is deprecated. We always apply global one now
+        return false;
     }
 }

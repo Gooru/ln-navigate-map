@@ -28,7 +28,8 @@ final class PostLessonSuggestionsFlow implements Flow<NavigateProcessorContext> 
         npc = input.result();
         output = input;
         LOGGER.debug("Applying post lesson suggestions flow");
-        if (input.isCompleted() || npc.suggestionsTurnedOff()) {
+        if (input.isCompleted() || npc.suggestionsTurnedOff() || npc.arePostLessonSuggestionsOff()) {
+            LOGGER.debug("Post lesson suggestion flow not applicable");
             return input;
         }
         /*

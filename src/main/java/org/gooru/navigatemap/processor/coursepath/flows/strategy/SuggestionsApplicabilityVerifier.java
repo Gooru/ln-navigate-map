@@ -27,6 +27,14 @@ public final class SuggestionsApplicabilityVerifier {
         return decideSuggestionsApplicability();
     }
 
+    public boolean arePreLessonSuggestionsOff() {
+        return AppConfiguration.getInstance().suggestionsPreLessonOff();
+    }
+
+    public boolean arePostLessonSuggestionsOff() {
+        return AppConfiguration.getInstance().suggestionsPostLessonOff();
+    }
+
     private boolean decideSuggestionsApplicability() {
         // We need to know what kind of applicability is to be used and apply it here
         return decideSuggestionsApplicabilityBasedOnCourseVersion();

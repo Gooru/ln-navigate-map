@@ -40,6 +40,15 @@ public final class NavigateProcessorContext {
         return !suggestionsFlagInitialized;
     }
 
+    public boolean arePreLessonSuggestionsOff() {
+        return new SuggestionsApplicabilityVerifier(this).arePreLessonSuggestionsOff();
+    }
+
+    public boolean arePostLessonSuggestionsOff() {
+        return new SuggestionsApplicabilityVerifier(this).arePostLessonSuggestionsOff();
+    }
+
+
     public NavigateMessageContext navigateMessageContext() {
         return nmc;
     }

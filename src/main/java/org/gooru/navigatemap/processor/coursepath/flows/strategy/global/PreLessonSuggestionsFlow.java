@@ -31,7 +31,7 @@ final class PreLessonSuggestionsFlow implements Flow<NavigateProcessorContext> {
         npc = input.result();
         output = input;
         LOGGER.debug("Applying pre lesson suggestions flow");
-        if (input.isCompleted() || npc.suggestionsTurnedOff()) {
+        if (input.isCompleted() || npc.suggestionsTurnedOff() || npc.arePreLessonSuggestionsOff()) {
             LOGGER.debug("Returning w/o applying pre lesson suggestions");
             return input;
         }
