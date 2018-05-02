@@ -10,8 +10,6 @@ public final class ContentAddress {
     private String collection;
     private String visibility;
     private Long pathId;
-    private CollectionType collectionType;
-    private CollectionSubtype collectionSubtype;
     private String currentItem;
     private CurrentItemType currentItemType;
     private CurrentItemSubtype currentItemSubtype;
@@ -25,8 +23,6 @@ public final class ContentAddress {
         this.lesson = address.lesson;
         this.collection = address.collection;
         this.pathId = address.pathId;
-        this.collectionType = address.collectionType;
-        this.collectionSubtype = address.collectionSubtype;
         this.currentItem = address.currentItem;
         this.currentItemType = address.currentItemType;
         this.currentItemSubtype = address.currentItemSubtype;
@@ -62,22 +58,6 @@ public final class ContentAddress {
 
     public void setCollection(String collection) {
         this.collection = collection;
-    }
-
-    public CollectionType getCollectionType() {
-        return collectionType;
-    }
-
-    public void setCollectionType(CollectionType collectionType) {
-        this.collectionType = collectionType;
-    }
-
-    public CollectionSubtype getCollectionSubtype() {
-        return collectionSubtype;
-    }
-
-    public void setCollectionSubtype(CollectionSubtype collectionSubtype) {
-        this.collectionSubtype = collectionSubtype;
     }
 
     public Long getPathId() {
@@ -128,16 +108,4 @@ public final class ContentAddress {
         return course != null && unit != null && lesson != null && collection != null;
     }
 
-    public boolean isOnAlternatePathAtLessonEnd() {
-        return isOnAlternatePath() && currentItemSubtype != null && (CurrentItemSubtype.BenchMark == currentItemSubtype
-            || CurrentItemSubtype.PostTest == currentItemSubtype);
-    }
-
-    public void populateCurrentItemsFromCollections() {
-        this.currentItem = collection;
-        this.currentItemType = collectionType == null ? null : CurrentItemType.builder(collectionType.getName());
-        this.currentItemSubtype =
-            collectionSubtype == null ? null : CurrentItemSubtype.builder(collectionSubtype.getName());
-
-    }
 }

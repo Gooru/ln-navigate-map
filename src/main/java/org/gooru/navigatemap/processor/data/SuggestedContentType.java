@@ -7,6 +7,9 @@ import java.util.Map;
  * @author ashish on 17/11/17.
  */
 public enum SuggestedContentType {
+    Course("course"),
+    Unit("unit"),
+    Lesson("lesson"),
     Collection("collection"),
     Assessment("assessment"),
     Resource("resource");

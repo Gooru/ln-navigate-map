@@ -1,4 +1,4 @@
-package org.gooru.navigatemap.processor.coursepath.repositories.dao;
+package org.gooru.navigatemap.processor.postprocessor.repositories;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;

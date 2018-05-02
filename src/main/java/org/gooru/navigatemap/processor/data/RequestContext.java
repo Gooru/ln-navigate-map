@@ -1,6 +1,5 @@
 package org.gooru.navigatemap.processor.data;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import org.gooru.navigatemap.app.constants.HttpConstants;
@@ -18,8 +17,6 @@ public final class RequestContext {
     private UUID unitId;
     private UUID lessonId;
     private UUID collectionId;
-    private CollectionType collectionType;
-    private CollectionSubtype collectionSubType;
 
     private UUID currentItemId;
     private CurrentItemType currentItemType;
@@ -47,14 +44,6 @@ public final class RequestContext {
 
     public UUID getCollectionId() {
         return collectionId;
-    }
-
-    public CollectionType getCollectionType() {
-        return collectionType;
-    }
-
-    public CollectionSubtype getCollectionSubType() {
-        return collectionSubType;
     }
 
     public State getState() {
@@ -97,27 +86,6 @@ public final class RequestContext {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                 "Invalid context for Start flow");
         }
-
-        if (onMainPath() && state == State.Start) {
-            if (!Objects.equals(collectionId, currentItemId) || !collectionAndCurrentItemTypeAreSame()
-                || !collectionAndCurrentSubtypeAreSame()) {
-                throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
-                    "Collection fields should be same as current item fields on main path");
-
-            }
-        }
-    }
-
-    private boolean collectionAndCurrentItemTypeAreSame() {
-        return currentItemType == null && collectionType == null
-            || currentItemType != null && collectionType != null && Objects
-            .equals(currentItemType.getName(), collectionType.getName());
-    }
-
-    private boolean collectionAndCurrentSubtypeAreSame() {
-        return currentItemSubtype == null && collectionSubType == null
-            || currentItemSubtype != null && collectionSubType != null && Objects
-            .equals(currentItemSubtype.getName(), collectionSubType.getName());
     }
 
     private boolean onMainPath() {
@@ -142,12 +110,9 @@ public final class RequestContext {
             context.currentItemId = toUuid(input, ContextAttributes.CURRENT_ITEM_ID);
             context.pathId = input.getLong(ContextAttributes.PATH_ID);
             context.scorePercent = input.getDouble(ContextAttributes.SCORE_PERCENT);
-            String value = input.getString(ContextAttributes.COLLECTION_TYPE);
-            context.collectionType = (value != null && !value.isEmpty()) ? CollectionType.builder(value) : null;
+            String value;
             value = input.getString(ContextAttributes.CURRENT_ITEM_TYPE);
             context.currentItemType = (value != null && !value.isEmpty()) ? CurrentItemType.builder(value) : null;
-            value = input.getString(ContextAttributes.COLLECTION_SUBTYPE);
-            context.collectionSubType = (value != null && !value.isEmpty()) ? CollectionSubtype.builder(value) : null;
             value = input.getString(ContextAttributes.CURRENT_ITEM_SUBTYPE);
             context.currentItemSubtype = (value != null && !value.isEmpty()) ? CurrentItemSubtype.builder(value) : null;
             value = input.getString(ContextAttributes.STATE);

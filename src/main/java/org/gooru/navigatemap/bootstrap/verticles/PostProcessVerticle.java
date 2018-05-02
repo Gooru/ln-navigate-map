@@ -52,9 +52,7 @@ public class PostProcessVerticle extends AbstractVerticle {
                         SuggestionCard suggestion =
                             new ObjectMapper().readValue(suggestionObj.toString(), SuggestionCard.class);
                         PostProcessorRepository repository = PostProcessorRespositoryBuilder.build();
-                        if (CurrentItemType.Resource.getName().equalsIgnoreCase(suggestion.getFormat())) {
-                            repository.incrementResourceSuggestedCount(suggestion.getId());
-                        }
+                        // TODO: Do the serve count increment here
                         future.complete();
                     } catch (IOException e) {
                         LOGGER.warn("Suggestion Json failed to convert to suggestion card, will skip count update. "

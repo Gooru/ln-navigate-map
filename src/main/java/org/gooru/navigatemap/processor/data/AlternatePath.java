@@ -10,11 +10,14 @@ public final class AlternatePath {
     private Long id;
     private UUID userId;
     private UUID classId;
-    private UUID ctxCourse;
-    private UUID ctxUnit;
-    private UUID ctxLesson;
-    private UUID ctxCollection;
-    private Long parentPathId;
+    private UUID courseId;
+    private UUID unitId;
+    private UUID lessonId;
+    private UUID collectionId;
+    private int pathIndex;
+    private String suggestionType;
+    private long serveCount;
+
     private UUID suggestedContentId;
     private String suggestedContentType;
     private String suggestedContentSubtype;
@@ -35,44 +38,36 @@ public final class AlternatePath {
         this.userId = userId;
     }
 
-    public UUID getCtxCourse() {
-        return ctxCourse;
+    public UUID getCourseId() {
+        return courseId;
     }
 
-    public void setCtxCourse(UUID ctxCourse) {
-        this.ctxCourse = ctxCourse;
+    public void setCourseId(UUID courseId) {
+        this.courseId = courseId;
     }
 
-    public UUID getCtxUnit() {
-        return ctxUnit;
+    public UUID getUnitId() {
+        return unitId;
     }
 
-    public void setCtxUnit(UUID ctxUnit) {
-        this.ctxUnit = ctxUnit;
+    public void setUnitId(UUID unitId) {
+        this.unitId = unitId;
     }
 
-    public UUID getCtxLesson() {
-        return ctxLesson;
+    public UUID getLessonId() {
+        return lessonId;
     }
 
-    public void setCtxLesson(UUID ctxLesson) {
-        this.ctxLesson = ctxLesson;
+    public void setLessonId(UUID lessonId) {
+        this.lessonId = lessonId;
     }
 
-    public UUID getCtxCollection() {
-        return ctxCollection;
+    public UUID getCollectionId() {
+        return collectionId;
     }
 
-    public void setCtxCollection(UUID ctxCollection) {
-        this.ctxCollection = ctxCollection;
-    }
-
-    public Long getParentPathId() {
-        return parentPathId;
-    }
-
-    public void setParentPathId(Long parentPathId) {
-        this.parentPathId = parentPathId;
+    public void setCollectionId(UUID collectionId) {
+        this.collectionId = collectionId;
     }
 
     public UUID getClassId() {
@@ -105,6 +100,30 @@ public final class AlternatePath {
 
     public void setSuggestedContentSubtype(String suggestedContentSubtype) {
         this.suggestedContentSubtype = suggestedContentSubtype;
+    }
+
+    public int getPathIndex() {
+        return pathIndex;
+    }
+
+    public void setPathIndex(int pathIndex) {
+        this.pathIndex = pathIndex;
+    }
+
+    public String getSuggestionType() {
+        return suggestionType;
+    }
+
+    public void setSuggestionType(String suggestionType) {
+        this.suggestionType = suggestionType;
+    }
+
+    public long getServeCount() {
+        return serveCount;
+    }
+
+    public void setServeCount(long serveCount) {
+        this.serveCount = serveCount;
     }
 
     public boolean isSuggestedContentLesson() {

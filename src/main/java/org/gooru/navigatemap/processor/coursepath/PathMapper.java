@@ -1,6 +1,5 @@
 package org.gooru.navigatemap.processor.coursepath;
 
-import org.gooru.navigatemap.processor.coursepath.flows.Workflow;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,8 @@ public class PathMapper {
 
     private Future<NavigateProcessorContext> startPathMapping() {
         Future<NavigateProcessorContext> resultFuture = Future.future();
-        Workflow.submit(navigateProcessorContext);
+        // TODO: Provide implementation
+
         resultFuture.complete(navigateProcessorContext);
         return resultFuture;
     }

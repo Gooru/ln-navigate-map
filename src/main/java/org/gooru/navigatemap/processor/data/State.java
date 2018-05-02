@@ -10,10 +10,8 @@ public enum State {
 
     Start("start"),
     Continue("continue"),
-    LessonStartSuggested("lesson-start-suggested"),
     ContentServed("content-served"),
     ContentEndSuggested("content-end-suggested"),
-    LessonEndSuggested("lesson-end-suggested"),
     Done("done");
 
     State(String name) {

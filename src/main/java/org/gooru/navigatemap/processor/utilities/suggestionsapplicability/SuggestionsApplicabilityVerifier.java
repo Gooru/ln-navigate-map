@@ -1,10 +1,10 @@
-package org.gooru.navigatemap.processor.coursepath.flows.strategy;
+package org.gooru.navigatemap.processor.utilities.suggestionsapplicability;
 
 import java.util.UUID;
 
 import org.gooru.navigatemap.app.components.AppConfiguration;
-import org.gooru.navigatemap.processor.coursepath.repositories.global.ContentRepositoryBuilder;
 import org.gooru.navigatemap.processor.data.NavigateProcessorContext;
+import org.gooru.navigatemap.processor.utilities.jdbi.DBICreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ public final class SuggestionsApplicabilityVerifier {
 
     private boolean decideSuggestionsApplicabilityBasedOnCourseVersion() {
         UUID courseId = npc.requestContext().getCourseId();
-        String version = ContentRepositoryBuilder.buildContentFinderRepository().findCourseVersion(courseId);
+        String version = new CourseVersionService(DBICreator.getDbiForDefaultDS()).findCourseVersion(courseId);
         return (version != null);
     }
 }

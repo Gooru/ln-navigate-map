@@ -16,8 +16,6 @@ public final class ResponseContext {
     private UUID unitId;
     private UUID lessonId;
     private UUID collectionId;
-    private CollectionType collectionType;
-    private CollectionSubtype collectionSubType;
     private UUID currentItemId;
     private CurrentItemType currentItemType;
     private CurrentItemSubtype currentItemSubtype;
@@ -32,8 +30,6 @@ public final class ResponseContext {
         this.unitId = context.getUnitId();
         this.lessonId = context.getLessonId();
         this.collectionId = context.getCollectionId();
-        this.collectionType = context.getCollectionType();
-        this.collectionSubType = context.getCollectionSubType();
         this.state = context.getState();
         this.pathId = context.getPathId();
         this.scorePercent = 0D;
@@ -50,9 +46,6 @@ public final class ResponseContext {
         context.put(ContextAttributes.UNIT_ID, Objects.toString(unitId, null));
         context.put(ContextAttributes.LESSON_ID, Objects.toString(lessonId, null));
         context.put(ContextAttributes.COLLECTION_ID, Objects.toString(collectionId, null));
-        context.put(ContextAttributes.COLLECTION_TYPE, collectionType != null ? collectionType.getName() : null);
-        context
-            .put(ContextAttributes.COLLECTION_SUBTYPE, collectionSubType != null ? collectionSubType.getName() : null);
         context.put(ContextAttributes.STATE, state.getName());
         context.put(ContextAttributes.PATH_ID, pathId);
         context.put(ContextAttributes.SCORE_PERCENT, scorePercent);
@@ -64,56 +57,18 @@ public final class ResponseContext {
         return context;
     }
 
-    public void setContentAddressWithItemFromCollection(ContentAddress contentAddress) {
-        this.unitId = UUID.fromString(contentAddress.getUnit());
-        this.lessonId = UUID.fromString(contentAddress.getLesson());
-        this.collectionId =
-            contentAddress.getCollection() == null ? null : UUID.fromString(contentAddress.getCollection());
-        this.currentItemId =
-            contentAddress.getCollection() == null ? null : UUID.fromString(contentAddress.getCollection());
-        this.currentItemType = contentAddress.getCollectionType() == null ? null :
-            CurrentItemType.builder(contentAddress.getCollectionType().getName());
-        this.collectionType = contentAddress.getCollectionType();
-        this.currentItemSubtype = contentAddress.getCollectionSubtype() == null ? null :
-            CurrentItemSubtype.builder(contentAddress.getCollectionSubtype().getName());
-        this.collectionSubType = contentAddress.getCollectionSubtype();
-        this.pathId = contentAddress.getPathId();
-    }
-
     public void setContentAddress(ContentAddress contentAddress) {
         this.unitId = UUID.fromString(contentAddress.getUnit());
         this.lessonId = UUID.fromString(contentAddress.getLesson());
 
         this.collectionId =
             contentAddress.getCollection() == null ? null : UUID.fromString(contentAddress.getCollection());
-        this.collectionType = contentAddress.getCollectionType();
-        this.collectionSubType = contentAddress.getCollectionSubtype();
-
         this.currentItemId =
             contentAddress.getCurrentItem() == null ? null : UUID.fromString(contentAddress.getCurrentItem());
         this.currentItemType = contentAddress.getCurrentItemType();
         this.currentItemSubtype = contentAddress.getCurrentItemSubtype();
 
         this.pathId = contentAddress.getPathId();
-    }
-
-    public void setContentAddressWithoutItem(ContentAddress contentAddress) {
-        this.unitId = UUID.fromString(contentAddress.getUnit());
-        this.lessonId = UUID.fromString(contentAddress.getLesson());
-        this.collectionId =
-            contentAddress.getCollection() == null ? null : UUID.fromString(contentAddress.getCollection());
-        this.currentItemId = null;
-        this.currentItemType = null;
-        this.collectionType = contentAddress.getCollectionType();
-        this.currentItemSubtype = null;
-        this.collectionSubType = contentAddress.getCollectionSubtype();
-        this.pathId = contentAddress.getPathId();
-    }
-
-    public void setCurrentItemAddress(UUID itemId, CollectionType itemType, CollectionSubtype itemSubtype) {
-        this.currentItemId = itemId;
-        this.currentItemType = itemType == null ? null : CurrentItemType.builder(itemType.getName());
-        this.currentItemSubtype = itemSubtype == null ? null : CurrentItemSubtype.builder(itemSubtype.getName());
     }
 
     public void setCurrentItemAddress(UUID itemId, CurrentItemType itemType, CurrentItemSubtype itemSubtype) {
@@ -154,22 +109,6 @@ public final class ResponseContext {
         this.collectionId = collectionId;
     }
 
-    public CollectionType getCollectionType() {
-        return collectionType;
-    }
-
-    public void setCollectionType(CollectionType collectionType) {
-        this.collectionType = collectionType;
-    }
-
-    public CollectionSubtype getCollectionSubType() {
-        return collectionSubType;
-    }
-
-    public void setCollectionSubType(CollectionSubtype collectionSubType) {
-        this.collectionSubType = collectionSubType;
-    }
-
     public State getState() {
         return state;
     }
@@ -202,21 +141,12 @@ public final class ResponseContext {
         return currentItemType;
     }
 
-    public void setCurrentItemType(CollectionType currentItemType) {
-        this.currentItemType = currentItemType == null ? null : CurrentItemType.builder(currentItemType.getName());
-    }
-
     public void setCurrentItemType(CurrentItemType currentItemType) {
         this.currentItemType = currentItemType;
     }
 
     public CurrentItemSubtype getCurrentItemSubtype() {
         return currentItemSubtype;
-    }
-
-    public void setCurrentItemSubtype(CollectionSubtype currentItemSubtype) {
-        this.currentItemSubtype =
-            currentItemSubtype == null ? null : CurrentItemSubtype.builder(currentItemSubtype.getName());
     }
 
     public void setCurrentItemSubtype(CurrentItemSubtype currentItemSubtype) {

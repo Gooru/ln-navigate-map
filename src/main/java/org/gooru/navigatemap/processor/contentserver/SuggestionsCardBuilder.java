@@ -2,11 +2,8 @@ package org.gooru.navigatemap.processor.contentserver;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.gooru.navigatemap.app.components.AppConfiguration;
-import org.gooru.navigatemap.processor.coursepath.repositories.SuggestionCardService;
-import org.gooru.navigatemap.processor.data.SignatureResource;
 import org.gooru.navigatemap.processor.data.SuggestionCard;
 import org.gooru.navigatemap.processor.data.SuggestionContext;
 import org.slf4j.Logger;
@@ -23,14 +20,12 @@ import io.vertx.core.json.JsonArray;
 class SuggestionsCardBuilder {
     private static final Integer DEFAULT_LIMIT = 1;
     private final SuggestionContext suggestionContext;
-    private final SuggestionCardService suggestionCardService;
     private List<String> suggestions;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SuggestionsCardBuilder.class);
 
-    SuggestionsCardBuilder(SuggestionContext ctxSuggestions, SuggestionCardService suggestionCardService) {
+    SuggestionsCardBuilder(SuggestionContext ctxSuggestions) {
         suggestionContext = ctxSuggestions;
-        this.suggestionCardService = suggestionCardService;
     }
 
     JsonArray createSuggestionCards() {
@@ -46,11 +41,9 @@ class SuggestionsCardBuilder {
     }
 
     private List<SuggestionCard> getSuggestionCards() {
-        if (suggestionContext.hasResourcesSuggested()) {
-            return suggestionCardService.suggestionCardForResources(suggestions);
-        } else {
-            return suggestionCardService.suggestionCardForCollections(suggestions);
-        }
+        // TODO : Provide implementation
+        // return suggestionCardService.suggestionCardForCollections(suggestions);
+        return null;
     }
 
     private void applySuggestionsLimit() {
@@ -74,19 +67,14 @@ class SuggestionsCardBuilder {
     }
 
     private void initializeSuggestionsList() {
-        if (suggestionContext.hasResourcesSuggested()) {
-            suggestions = suggestionContext.getResources().stream().map(SignatureResource::getResourceId)
-                .collect(Collectors.toList());
-        } else {
-            suggestions = new ArrayList<>();
-            if (suggestionContext.hasAssessmentsSuggested()) {
-                LOGGER.debug("Will add assessments suggested to suggestions list");
-                suggestions.addAll(suggestionContext.getAssessments());
-            }
-            if (suggestionContext.hasCollectionsSuggested()) {
-                LOGGER.debug("Will add suggestions suggested to suggestions list");
-                suggestions.addAll(suggestionContext.getCollections());
-            }
+        suggestions = new ArrayList<>();
+        if (suggestionContext.hasAssessmentsSuggested()) {
+            LOGGER.debug("Will add assessments suggested to suggestions list");
+            suggestions.addAll(suggestionContext.getAssessments());
+        }
+        if (suggestionContext.hasCollectionsSuggested()) {
+            LOGGER.debug("Will add suggestions suggested to suggestions list");
+            suggestions.addAll(suggestionContext.getCollections());
         }
     }
 

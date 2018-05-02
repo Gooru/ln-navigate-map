@@ -8,7 +8,6 @@ import java.util.*;
 public final class SuggestionContext {
     private final Set<String> assessments = new HashSet<>();
     private final Set<String> collections = new HashSet<>();
-    private final List<SignatureResource> resources = new ArrayList<>();
 
     public void addAssessment(String id) {
         assessments.add(id);
@@ -41,7 +40,7 @@ public final class SuggestionContext {
     }
 
     public boolean hasSuggestions() {
-        return (!assessments.isEmpty() || !collections.isEmpty() || !resources.isEmpty());
+        return (!assessments.isEmpty() || !collections.isEmpty());
     }
 
     public boolean hasAssessmentsSuggested() {
@@ -58,25 +57,6 @@ public final class SuggestionContext {
 
     public Set<String> getCollections() {
         return Collections.unmodifiableSet(collections);
-    }
-
-    public boolean hasResourcesSuggested() {
-        return !resources.isEmpty();
-    }
-
-    public List<SignatureResource> getResources() {
-        return Collections.unmodifiableList(resources);
-    }
-
-    public void addResources(List<SignatureResource> resourcesToSuggest) {
-        if (resourcesToSuggest.isEmpty()) {
-            return;
-        }
-        resources.addAll(resourcesToSuggest);
-    }
-
-    public void addResource(SignatureResource resource) {
-        resources.add(resource);
     }
 
     public static SuggestionContext buildSuggestionContextWithAssessments(List<String> suggestedAssessments) {

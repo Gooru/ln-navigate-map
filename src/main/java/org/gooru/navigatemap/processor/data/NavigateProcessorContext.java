@@ -2,7 +2,7 @@ package org.gooru.navigatemap.processor.data;
 
 import java.util.Objects;
 
-import org.gooru.navigatemap.processor.coursepath.flows.strategy.SuggestionsApplicabilityVerifier;
+import org.gooru.navigatemap.processor.utilities.suggestionsapplicability.SuggestionsApplicabilityVerifier;
 
 /**
  * @author ashish on 27/2/17.
@@ -40,15 +40,6 @@ public final class NavigateProcessorContext {
         return !suggestionsFlagInitialized;
     }
 
-    public boolean arePreLessonSuggestionsOff() {
-        return new SuggestionsApplicabilityVerifier(this).arePreLessonSuggestionsOff();
-    }
-
-    public boolean arePostLessonSuggestionsOff() {
-        return new SuggestionsApplicabilityVerifier(this).arePostLessonSuggestionsOff();
-    }
-
-
     public NavigateMessageContext navigateMessageContext() {
         return nmc;
     }
@@ -77,8 +68,6 @@ public final class NavigateProcessorContext {
         nextContentAddress.setUnit(address.getUnit());
         nextContentAddress.setLesson(address.getLesson());
         nextContentAddress.setCollection(address.getCollection());
-        nextContentAddress.setCollectionType(address.getCollectionType());
-        nextContentAddress.setCollectionSubtype(address.getCollectionSubtype());
         nextContentAddress.setPathId(address.getPathId());
         nextContentAddress.setCurrentItem(address.getCurrentItem());
         nextContentAddress.setCurrentItemType(address.getCurrentItemType());
@@ -88,17 +77,6 @@ public final class NavigateProcessorContext {
 
     public ContentAddress getCurrentContentAddress() {
         if (!currentAddressSet) {
-            if (currentItemIsResource()) {
-                currentContentAddress.setCollectionSubtype(requestContext().getCollectionSubType() == null ? null :
-                    CollectionSubtype.builder(requestContext().getCollectionSubType().getName()));
-                currentContentAddress.setCollectionType(requestContext().getCollectionType() == null ? null :
-                    CollectionType.builder(requestContext().getCollectionType().getName()));
-            } else {
-                currentContentAddress.setCollectionSubtype(requestContext().getCurrentItemSubtype() == null ? null :
-                    CollectionSubtype.builder(requestContext().getCurrentItemSubtype().getName()));
-                currentContentAddress.setCollectionType(requestContext().getCurrentItemType() == null ? null :
-                    CollectionType.builder(requestContext().getCurrentItemType().getName()));
-            }
             currentContentAddress.setCollection(Objects.toString(requestContext().getCurrentItemId(), null));
             currentContentAddress.setCourse(requestContext().getCourseId().toString());
             currentContentAddress.setUnit(Objects.toString(requestContext().getUnitId(), null));
@@ -110,15 +88,8 @@ public final class NavigateProcessorContext {
         return currentContentAddress;
     }
 
-    public boolean currentItemIsResource() {
-        return requestContext().getCurrentItemType() != null && Objects
-            .equals(CurrentItemType.Resource.getName(), requestContext().getCurrentItemType().getName());
-    }
-
     public ContentAddress getCurrentContentAddressQualified() {
         if (!qualifiedCurrentAddressSet) {
-            currentQualifiedContentAddress.setCollectionSubtype(requestContext().getCollectionSubType());
-            currentQualifiedContentAddress.setCollectionType(requestContext().getCollectionType());
             currentQualifiedContentAddress.setCollection(Objects.toString(requestContext().getCollectionId(), null));
 
             currentQualifiedContentAddress.setCurrentItemSubtype(requestContext().getCurrentItemSubtype());

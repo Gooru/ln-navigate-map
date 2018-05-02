@@ -13,8 +13,8 @@ public final class FinderContext {
     private final String user;
     private boolean statusDone;
     private UUID currentItemId;
-    private CollectionType currentItemType;
-    private CollectionSubtype currentItemSubtype;
+    private CurrentItemType currentItemType;
+    private CurrentItemSubtype currentItemSubtype;
     private String scoreRange;
 
     public State getState() {
@@ -37,11 +37,11 @@ public final class FinderContext {
         return currentItemId;
     }
 
-    public CollectionType getCurrentItemType() {
+    public CurrentItemType getCurrentItemType() {
         return currentItemType;
     }
 
-    public CollectionSubtype getCurrentItemSubtype() {
+    public CurrentItemSubtype getCurrentItemSubtype() {
         return currentItemSubtype;
     }
 
@@ -49,7 +49,7 @@ public final class FinderContext {
         return requestContext.getClassId() == null ? null : requestContext.getClassId().toString();
     }
 
-    public void setCurrentItem(UUID itemId, CollectionType itemType, CollectionSubtype itemSubtype) {
+    public void setCurrentItem(UUID itemId, CurrentItemType itemType, CurrentItemSubtype itemSubtype) {
         Objects.requireNonNull(itemId);
         Objects.requireNonNull(itemType);
 

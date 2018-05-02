@@ -8,15 +8,8 @@ import java.util.Map;
  */
 public enum CurrentItemSubtype {
 
-    PreTest("pre-test"),
-    PostTest("post-test"),
-    BenchMark("benchmark"),
-    Video("video_resource"),
-    Webpage("webpage_resource"),
-    Interactive("interactive_resource"),
-    Image("image_resource"),
-    Text("text_resource"),
-    Audio("audio_resource");
+    SignatureAssessment("signature-assessment"),
+    SignatureCollection("signature-collection");
 
     private final String name;
     private static final Map<String, CurrentItemSubtype> LOOKUP = new HashMap<>(values().length);
