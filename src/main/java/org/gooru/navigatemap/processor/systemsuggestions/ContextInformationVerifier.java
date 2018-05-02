@@ -2,6 +2,7 @@ package org.gooru.navigatemap.processor.systemsuggestions;
 
 import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.processor.data.SuggestionType;
 
 /**
  * @author ashish on 27/12/17.
@@ -16,34 +17,46 @@ class ContextInformationVerifier {
     }
 
     void validateContextInformation() {
-        if (command.getCtxClassId() == null) {
+        if (command.getSuggestionType() == SuggestionType.Route0) {
+            validateContextInformationForRoute0();
+        } else if (command.getCtxClassId() == null) {
             validateContextInformationForCourse();
         } else {
             validateContextInformationForClass();
         }
     }
 
-    private void validateContextInformationForClass() {
-        boolean result = false;
-        if (command.getCtxCollectionId() == null) {
-            result = addSystemSuggestionDao.validateContextInformationForClassRootedAtLesson(command.getBean());
+    private void validateContextInformationForRoute0() {
+        if (command.getCtxClassId() != null) {
+            validateContextInformationForRoute0WithClass();
         } else {
-            result = addSystemSuggestionDao.validateContextInformationForClassRootedAtCollection(command.getBean());
+            validateContextInformationForRoute0WithoutClass();
         }
-        if (!result) {
+    }
+
+    private void validateContextInformationForRoute0WithoutClass() {
+        if (!addSystemSuggestionDao.validateContextInformationForRoute0WithoutClass(command.getBean())) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
+                "Incorrect context information");
+        }
+    }
+
+    private void validateContextInformationForRoute0WithClass() {
+        if (!addSystemSuggestionDao.validateContextInformationForRoute0WithClass(command.getBean())) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
+                "Incorrect context information");
+        }
+    }
+
+    private void validateContextInformationForClass() {
+        if (!addSystemSuggestionDao.validateContextInformationForClassRootedAtCollection(command.getBean())) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                 "Incorrect context information");
         }
     }
 
     private void validateContextInformationForCourse() {
-        boolean result = false;
-        if (command.getCtxCollectionId() == null) {
-            result = addSystemSuggestionDao.validateContextInformationForCourseRootedAtLesson(command.getBean());
-        } else {
-            result = addSystemSuggestionDao.validateContextInformationForCourseRootedAtCollection(command.getBean());
-        }
-        if (!result) {
+        if (!addSystemSuggestionDao.validateContextInformationForCourseRootedAtCollection(command.getBean())) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                 "Incorrect context information");
         }

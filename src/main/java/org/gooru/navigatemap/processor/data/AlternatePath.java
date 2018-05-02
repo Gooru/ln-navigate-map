@@ -14,7 +14,6 @@ public final class AlternatePath {
     private UUID unitId;
     private UUID lessonId;
     private UUID collectionId;
-    private int pathIndex;
     private String suggestionType;
     private long serveCount;
 
@@ -100,14 +99,6 @@ public final class AlternatePath {
 
     public void setSuggestedContentSubtype(String suggestedContentSubtype) {
         this.suggestedContentSubtype = suggestedContentSubtype;
-    }
-
-    public int getPathIndex() {
-        return pathIndex;
-    }
-
-    public void setPathIndex(int pathIndex) {
-        this.pathIndex = pathIndex;
     }
 
     public String getSuggestionType() {

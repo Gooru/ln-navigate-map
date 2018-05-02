@@ -6,6 +6,7 @@ import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.processor.data.SuggestedContentSubType;
 import org.gooru.navigatemap.processor.data.SuggestedContentType;
+import org.gooru.navigatemap.processor.data.SuggestionType;
 
 import io.vertx.core.json.JsonObject;
 
@@ -19,10 +20,10 @@ class AddSystemSuggestionCommand {
     private UUID ctxUnitId;
     private UUID ctxLessonId;
     private UUID ctxCollectionId;
-    private Long pathId;
     private UUID suggestedContentId;
     private SuggestedContentType suggestedContentType;
     private SuggestedContentSubType suggestedContentSubType;
+    private SuggestionType suggestionType;
 
     static AddSystemSuggestionCommand builder(JsonObject input) {
         AddSystemSuggestionCommand result = buildFromJsonObject(input);
@@ -38,12 +39,16 @@ class AddSystemSuggestionCommand {
         result.ctxUnitId = ctxUnitId;
         result.ctxLessonId = ctxLessonId;
         result.ctxCollectionId = ctxCollectionId;
-        result.pathId = pathId;
         result.suggestedContentId = suggestedContentId;
         result.suggestedContentType = suggestedContentType != null ? suggestedContentType.getName() : null;
         result.suggestedContentSubType = suggestedContentSubType != null ? suggestedContentSubType.getName() : null;
+        result.suggestionType = suggestionType.getName();
 
         return result;
+    }
+
+    public SuggestionType getSuggestionType() {
+        return suggestionType;
     }
 
     public UUID getCtxUserId() {
@@ -70,10 +75,6 @@ class AddSystemSuggestionCommand {
         return ctxCollectionId;
     }
 
-    public Long getPathId() {
-        return pathId;
-    }
-
     public UUID getSuggestedContentId() {
         return suggestedContentId;
     }
@@ -92,9 +93,13 @@ class AddSystemSuggestionCommand {
         } else if (ctxClassId == null && ctxCourseId == null) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                 "Course or class should be provided");
-        } else if ((ctxUnitId == null || ctxLessonId == null)) {
+        } else if ((ctxUnitId == null || ctxLessonId == null) && suggestionType != SuggestionType.Route0) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
-                "Invalid unit or lesson for suggestion");
+                "Invalid unit or lesson for suggestion which is not Route0 suggestion");
+        } else if (suggestionType == SuggestionType.Route0 && (ctxUnitId != null || ctxLessonId != null
+            || ctxCollectionId != null)) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
+                "Route0 suggestion is applicable at course level only");
         } else if (suggestedContentId == null) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                 "Invalid content id for suggestion");
@@ -115,13 +120,15 @@ class AddSystemSuggestionCommand {
             command.ctxLessonId = toUuid(input, CommandAttributes.LESSON_ID);
             command.ctxCollectionId = toUuid(input, CommandAttributes.COLLECTION_ID);
             command.suggestedContentId = toUuid(input, CommandAttributes.SUGGESTED_CONTENT_ID);
-            command.pathId = input.getLong(CommandAttributes.PATH_ID);
             String value = input.getString(CommandAttributes.SUGGESTED_CONTENT_TYPE);
             command.suggestedContentType =
                 (value != null && !value.isEmpty()) ? SuggestedContentType.builder(value) : null;
             value = input.getString(CommandAttributes.SUGGESTED_CONTENT_SUBTYPE);
             command.suggestedContentSubType =
                 (value != null && !value.isEmpty()) ? SuggestedContentSubType.builder(value) : null;
+            value = input.getString(CommandAttributes.SUGGESTION_TYPE);
+            command.suggestionType =
+                (value != null && !value.isEmpty()) ? SuggestionType.builder(value) : SuggestionType.System;
         } catch (IllegalArgumentException e) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -152,7 +159,7 @@ class AddSystemSuggestionCommand {
         static final String SUGGESTED_CONTENT_ID = "suggested_content_id";
         static final String SUGGESTED_CONTENT_TYPE = "suggested_content_type";
         static final String SUGGESTED_CONTENT_SUBTYPE = "suggested_content_subtype";
-        static final String PATH_ID = "path_id";
+        public static final String SUGGESTION_TYPE = "suggestion_type";
 
         private CommandAttributes() {
             throw new AssertionError();
@@ -170,6 +177,15 @@ class AddSystemSuggestionCommand {
         private UUID suggestedContentId;
         private String suggestedContentType;
         private String suggestedContentSubType;
+        private String suggestionType;
+
+        public String getSuggestionType() {
+            return suggestionType;
+        }
+
+        public void setSuggestionType(String suggestionType) {
+            this.suggestionType = suggestionType;
+        }
 
         public UUID getCtxUserId() {
             return ctxUserId;

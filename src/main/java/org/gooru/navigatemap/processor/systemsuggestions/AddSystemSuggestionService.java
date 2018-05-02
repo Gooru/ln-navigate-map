@@ -28,8 +28,7 @@ class AddSystemSuggestionService {
             new UserAlreadyHasSuggestionVerifier(command, addSystemSuggestionDao).findUserPathForCurrentSuggestion();
 
         if (userHasSuggestionAsPath == null) {
-            Long parentPathId = new ParentPathFinder(command, addSystemSuggestionDao).findParentPath();
-            result = addSystemSuggestionDao.addSystemSuggestion(command.getBean(), parentPathId);
+            result = addSystemSuggestionDao.addSystemSuggestion(command.getBean());
         } else {
             LOGGER.info("User already has specified suggestion");
             result = userHasSuggestionAsPath;
