@@ -2,7 +2,6 @@ package org.gooru.navigatemap.processor.utilities.suggestionsapplicability;
 
 import java.util.UUID;
 
-import org.gooru.navigatemap.processor.utilities.jdbi.DBICreator;
 import org.skife.jdbi.v2.DBI;
 
 /**

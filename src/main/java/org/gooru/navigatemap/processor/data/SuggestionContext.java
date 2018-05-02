@@ -1,6 +1,9 @@
 package org.gooru.navigatemap.processor.data;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author ashish on 28/2/17.

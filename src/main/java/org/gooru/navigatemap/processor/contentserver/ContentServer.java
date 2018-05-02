@@ -67,27 +67,6 @@ public class ContentServer {
         }
     }
 
-    private void serveResources() {
-        if (AppConfiguration.getInstance().serveContentDetails()) {
-            LOGGER.debug("Will fetch content details from remote servers");
-
-            fetcher.fetch(navigateProcessorContext.responseContext(),
-                navigateProcessorContext.navigateMessageContext().getSessionToken())
-                .setHandler(ar -> completionFuture.complete(ar.result()));
-        } else {
-            LOGGER.debug("Will serve content without details");
-            JsonObject result = ResponseBuilder.createSuccessResponseBuilder(navigateProcessorContext.responseContext(),
-                new JsonObject()
-                    .put("id", Objects.toString(navigateProcessorContext.responseContext().getCurrentItemId(), null))
-                    .put("type", Objects
-                        .toString(navigateProcessorContext.responseContext().getCurrentItemType().getName(), null))
-                    .put("subtype",
-                        Objects.toString(navigateProcessorContext.responseContext().getCurrentItemSubtype(), null)))
-                .buildResponse();
-            completionFuture.complete(result);
-        }
-    }
-
     private void serveAssessment() {
         serveAssessmentCollection();
     }
@@ -122,9 +101,8 @@ public class ContentServer {
     }
 
     private JsonObject serveSuggestions() {
-        // TODO : Provide complete implementation
-        JsonArray suggestions =
-            new SuggestionsCardBuilder(navigateProcessorContext.getCtxSuggestions()).createSuggestionCards();
+        JsonArray suggestions = new SuggestionsCardBuilder(navigateProcessorContext.getCtxSuggestions(),
+            SuggestionServiceBuilder.buildContentSuggestionsService()).createSuggestionCards();
         return new SuccessResponseBuilder(navigateProcessorContext.responseContext(), suggestions).buildResponse();
     }
 

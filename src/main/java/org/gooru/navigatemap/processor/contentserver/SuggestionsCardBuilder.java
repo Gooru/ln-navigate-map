@@ -21,11 +21,13 @@ class SuggestionsCardBuilder {
     private static final Integer DEFAULT_LIMIT = 1;
     private final SuggestionContext suggestionContext;
     private List<String> suggestions;
+    private final SuggestionCardService suggestionCardService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SuggestionsCardBuilder.class);
 
-    SuggestionsCardBuilder(SuggestionContext ctxSuggestions) {
-        suggestionContext = ctxSuggestions;
+    SuggestionsCardBuilder(SuggestionContext ctxSuggestions, SuggestionCardService suggestionCardService) {
+        this.suggestionContext = ctxSuggestions;
+        this.suggestionCardService = suggestionCardService;
     }
 
     JsonArray createSuggestionCards() {
@@ -41,9 +43,7 @@ class SuggestionsCardBuilder {
     }
 
     private List<SuggestionCard> getSuggestionCards() {
-        // TODO : Provide implementation
-        // return suggestionCardService.suggestionCardForCollections(suggestions);
-        return null;
+        return suggestionCardService.suggestionCardForCollections(suggestions);
     }
 
     private void applySuggestionsLimit() {
