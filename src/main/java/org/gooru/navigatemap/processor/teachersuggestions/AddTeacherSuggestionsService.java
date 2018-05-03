@@ -46,13 +46,7 @@ class AddTeacherSuggestionsService {
     }
 
     private List<UUID> findUsersHavingSpecifiedSuggestionForClass() {
-        if (command.getCtxCollectionId() == null) {
-            return addTeacherSuggestionsDao.findUsersHavingSpecifiedSuggestionForClassRootedAtLesson(command.getBean(),
-                CollectionUtils.convertFromListUUIDToSqlArrayOfUUID(command.getCtxUserIds()));
-        } else {
-            return addTeacherSuggestionsDao
-                .findUsersHavingSpecifiedSuggestionForClassRootedAtCollection(command.getBean(),
-                    CollectionUtils.convertFromListUUIDToSqlArrayOfUUID(command.getCtxUserIds()));
-        }
+        return addTeacherSuggestionsDao.findUsersHavingSpecifiedSuggestionForClassRootedAtCollection(command.getBean(),
+            CollectionUtils.convertFromListUUIDToSqlArrayOfUUID(command.getCtxUserIds()));
     }
 }

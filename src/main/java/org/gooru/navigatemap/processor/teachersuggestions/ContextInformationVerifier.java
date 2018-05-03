@@ -17,13 +17,8 @@ class ContextInformationVerifier {
     }
 
     void validateContextInformation() {
-        boolean result = false;
-        if (command.getCtxCollectionId() == null) {
-            result = addTeacherSuggestionsDao.validateContextInformationForClassRootedAtLesson(command.getBean());
-        } else {
-            result = addTeacherSuggestionsDao.validateContextInformationForClassRootedAtCollection(command.getBean());
-        }
-        if (!result) {
+        // We do not support suggestions at lesson level any more
+        if (!addTeacherSuggestionsDao.validateContextInformationForClassRootedAtCollection(command.getBean())) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                 "Incorrect context information");
         }

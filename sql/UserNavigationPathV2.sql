@@ -4,8 +4,8 @@ CREATE TABLE user_navigation_paths (
     id bigserial NOT NULL,
     ctx_user_id uuid NOT NULL,
     ctx_course_id uuid NOT NULL,
-    ctx_unit_id uuid NOT NULL,
-    ctx_lesson_id uuid NOT NULL,
+    ctx_unit_id uuid,
+    ctx_lesson_id uuid,
     ctx_class_id uuid,
     ctx_collection_id uuid,
     suggested_content_id uuid NOT NULL,
@@ -19,6 +19,8 @@ CREATE TABLE user_navigation_paths (
 );
 
 ALTER TABLE user_navigation_paths OWNER TO nucleus;
+
+ALTER TABLE user_navigation_paths ADD CONSTRAINT ulc_st_null CHECK ((ctx_unit_id is null AND ctx_lesson_id is null AND ctx_collection_id is null AND suggestion_type = 'route0') OR (ctx_unit_id is not null AND ctx_lesson_id is not null AND ctx_collection_id is not null and suggestion_type <> 'route0'));
 
 CREATE INDEX unp_uculc_idx ON user_navigation_paths using btree(ctx_user_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_collection_id);
 
