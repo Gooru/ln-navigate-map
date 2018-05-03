@@ -9,18 +9,18 @@ import java.util.UUID;
 public final class ContextUtil {
 
     private static final String ABSENT_PLACEHOLDER = "NONE";
+    private static final String VERSION_STR = "v2:";
 
     private ContextUtil() {
         throw new AssertionError();
     }
 
     public static String createUserContextKey(String userId, UUID courseId, UUID classId) {
-        return userId + ':' + Objects.toString(courseId, ABSENT_PLACEHOLDER) + ':' + Objects
-            .toString(classId, ABSENT_PLACEHOLDER);
+        return VERSION_STR + userId + ':' + courseId.toString() + ':' + Objects.toString(classId, ABSENT_PLACEHOLDER);
     }
 
     public static String createUserContextKey(String userId, String courseId, String classId) {
-        return userId + ':' + Objects.toString(trimEmptyStringAsNull(courseId), ABSENT_PLACEHOLDER) + ':' + Objects
+        return VERSION_STR + userId + ':' + trimEmptyStringAsNull(courseId) + ':' + Objects
             .toString(trimEmptyStringAsNull(classId), ABSENT_PLACEHOLDER);
     }
 
