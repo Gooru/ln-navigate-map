@@ -1,4 +1,4 @@
-package org.gooru.navigatemap.processor.context;
+package org.gooru.navigatemap.processor.data.context;
 
 import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.gooru.navigatemap.app.constants.Constants;

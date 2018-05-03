@@ -1,4 +1,4 @@
-package org.gooru.navigatemap.processor.context;
+package org.gooru.navigatemap.processor.data.context;
 
 /**
  * @author ashish on 8/3/17.

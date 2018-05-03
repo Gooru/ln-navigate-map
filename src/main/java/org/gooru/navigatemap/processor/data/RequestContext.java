@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
-import org.gooru.navigatemap.processor.context.ContextAttributes;
+import org.gooru.navigatemap.processor.data.context.ContextAttributes;
 
 import io.vertx.core.json.JsonObject;
 

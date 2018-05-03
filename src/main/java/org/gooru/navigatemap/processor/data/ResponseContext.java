@@ -3,7 +3,7 @@ package org.gooru.navigatemap.processor.data;
 import java.util.Objects;
 import java.util.UUID;
 
-import org.gooru.navigatemap.processor.context.ContextAttributes;
+import org.gooru.navigatemap.processor.data.context.ContextAttributes;
 
 import io.vertx.core.json.JsonObject;
 

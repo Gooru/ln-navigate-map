@@ -1,4 +1,4 @@
-package org.gooru.navigatemap.processor.context;
+package org.gooru.navigatemap.processor.data.context;
 
 import java.util.Objects;
 import java.util.UUID;
