@@ -4,9 +4,9 @@ import java.util.UUID;
 
 import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
-import org.gooru.navigatemap.processor.data.SuggestedContentSubType;
-import org.gooru.navigatemap.processor.data.SuggestedContentType;
-import org.gooru.navigatemap.processor.data.SuggestionType;
+import org.gooru.navigatemap.infra.data.SuggestedContentSubType;
+import org.gooru.navigatemap.infra.data.SuggestedContentType;
+import org.gooru.navigatemap.infra.data.SuggestionType;
 
 import io.vertx.core.json.JsonObject;
 

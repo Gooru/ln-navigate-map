@@ -1,6 +1,6 @@
 package org.gooru.navigatemap.processor.postprocessor.repositories;
 
-import org.gooru.navigatemap.processor.utilities.jdbi.DBICreator;
+import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
 import org.skife.jdbi.v2.DBI;
 
 /**

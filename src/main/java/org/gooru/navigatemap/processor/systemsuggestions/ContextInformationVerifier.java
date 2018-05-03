@@ -2,7 +2,7 @@ package org.gooru.navigatemap.processor.systemsuggestions;
 
 import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
-import org.gooru.navigatemap.processor.data.SuggestionType;
+import org.gooru.navigatemap.infra.data.SuggestionType;
 
 /**
  * @author ashish on 27/12/17.

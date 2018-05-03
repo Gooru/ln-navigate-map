@@ -1,7 +1,7 @@
 package org.gooru.navigatemap.processor.systemsuggestions;
 
-import org.gooru.navigatemap.processor.data.AlternatePath;
-import org.gooru.navigatemap.processor.utilities.jdbi.AlternatePathMapper;
+import org.gooru.navigatemap.infra.data.AlternatePath;
+import org.gooru.navigatemap.infra.utilities.jdbi.AlternatePathMapper;
 import org.skife.jdbi.v2.sqlobject.BindBean;
 import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;

@@ -3,8 +3,8 @@ package org.gooru.navigatemap.processor.teachersuggestions;
 import java.util.List;
 import java.util.UUID;
 
-import org.gooru.navigatemap.processor.utilities.jdbi.PGArray;
-import org.gooru.navigatemap.processor.utilities.jdbi.UUIDMapper;
+import org.gooru.navigatemap.infra.utilities.jdbi.PGArray;
+import org.gooru.navigatemap.infra.utilities.jdbi.UUIDMapper;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
 import org.skife.jdbi.v2.sqlobject.SqlBatch;
