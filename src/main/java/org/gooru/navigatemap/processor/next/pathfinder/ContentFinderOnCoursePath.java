@@ -7,17 +7,16 @@ import org.gooru.navigatemap.infra.data.ContentAddress;
 /**
  * @author ashish on 5/4/17.
  */
-class ContentFinderNoSuggestionsDelegate {
+class ContentFinderOnCoursePath {
     private final ContentFinderDao finderDao;
-    private final ContentFinderVisibilityVerifierDelegate visibilityVerifierDelegate;
+    private final ContentFinderVisibilityVerifier visibilityVerifier;
 
-    ContentFinderNoSuggestionsDelegate(ContentFinderDao finderDao,
-        ContentFinderVisibilityVerifierDelegate visibilityVerifierDelegate) {
+    ContentFinderOnCoursePath(ContentFinderDao finderDao, ContentFinderVisibilityVerifier visibilityVerifier) {
         this.finderDao = finderDao;
-        this.visibilityVerifierDelegate = visibilityVerifierDelegate;
+        this.visibilityVerifier = visibilityVerifier;
     }
 
-    ContentAddress findNextContentFromCULWithoutAlternatePaths(ContentAddress address) {
+    ContentAddress findNextContentOnCoursePath(ContentAddress address) {
         ContentAddress result = findNextValidContent(address);
         if (result != null) {
             return result;
@@ -61,10 +60,10 @@ class ContentFinderNoSuggestionsDelegate {
                 && address.getCollection() != null) {
                 contentAddresses =
                     finderDao.findNextCollectionsInCUL(address.getCourse(), unit, lesson, address.getCollection());
-                result = visibilityVerifierDelegate.findContentAddressBasedOnVisibility(contentAddresses);
+                result = visibilityVerifier.findFirstVisibleContentAddress(contentAddresses);
             } else {
                 contentAddresses = finderDao.findCollectionsInCUL(address.getCourse(), unit, lesson);
-                result = visibilityVerifierDelegate.findContentAddressBasedOnVisibility(contentAddresses);
+                result = visibilityVerifier.findFirstVisibleContentAddress(contentAddresses);
             }
             if (result != null) {
                 return result;

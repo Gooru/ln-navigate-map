@@ -28,10 +28,10 @@ public class AlternatePathMapper implements ResultSetMapper<AlternatePath> {
         result.setUnitId(safeStringToUUID(r.getString("ctx_unit_id")));
         result.setLessonId(safeStringToUUID(r.getString("ctx_lesson_id")));
         result.setCollectionId(safeStringToUUID(r.getString("ctx_collection_id")));
+        result.setSuggestionType(r.getString("suggestion_type"));
         result.setSuggestedContentId(safeStringToUUID(r.getString("suggested_content_id")));
         result.setSuggestedContentType(r.getString("suggested_content_type"));
         result.setSuggestedContentSubtype(r.getString("suggested_content_subtype"));
-        result.setServeCount(r.getLong("serve_count"));
 
         return result;
     }

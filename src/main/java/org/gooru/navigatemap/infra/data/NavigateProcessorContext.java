@@ -17,8 +17,6 @@ public final class NavigateProcessorContext {
     private final ContentAddress currentContentAddress;
     private boolean nextAddressSet = false;
     private boolean currentAddressSet = false;
-    private boolean qualifiedCurrentAddressSet = false;
-    private final ContentAddress currentQualifiedContentAddress;
     private Boolean suggestionsFlagInitialized;
 
     public NavigateProcessorContext(RequestContext requestContext, NavigateMessageContext navigateMessageContext) {
@@ -28,9 +26,7 @@ public final class NavigateProcessorContext {
         ctxSuggestions = new SuggestionContext();
         nextContentAddress = new ContentAddress();
         currentContentAddress = new ContentAddress();
-        currentQualifiedContentAddress = new ContentAddress();
         getCurrentContentAddress();
-        getCurrentContentAddressQualified();
     }
 
     public boolean suggestionsApplicable() {
@@ -51,6 +47,14 @@ public final class NavigateProcessorContext {
 
     public boolean userExplicitlyAskedToStartHere() {
         return ctxIn.getState() == State.Start;
+    }
+
+    public boolean userExplicitlyAskedToStartLesson() {
+        return userExplicitlyAskedToStartHere() && ctxIn.getCollectionId() == null;
+    }
+
+    public boolean userExplicitlyAskedToStartCollection() {
+        return userExplicitlyAskedToStartHere() && ctxIn.getCollectionId() != null;
     }
 
     public boolean onMainPath() {
@@ -94,10 +98,13 @@ public final class NavigateProcessorContext {
 
     public ContentAddress getCurrentContentAddress() {
         if (!currentAddressSet) {
-            currentContentAddress.setCollection(Objects.toString(requestContext().getCurrentItemId(), null));
             currentContentAddress.setCourse(requestContext().getCourseId().toString());
             currentContentAddress.setUnit(Objects.toString(requestContext().getUnitId(), null));
             currentContentAddress.setLesson(Objects.toString(requestContext().getLessonId(), null));
+            currentContentAddress.setCollection(Objects.toString(requestContext().getCollectionId(), null));
+            currentContentAddress.setCurrentItem(Objects.toString(requestContext().getCurrentItemId(), null));
+            currentContentAddress.setCurrentItemType(requestContext().getCurrentItemType());
+            currentContentAddress.setCurrentItemSubtype(requestContext().getCurrentItemSubtype());
             currentContentAddress.setPathId(requestContext().getPathId());
             currentAddressSet = true;
             return currentContentAddress;
@@ -105,26 +112,8 @@ public final class NavigateProcessorContext {
         return currentContentAddress;
     }
 
-    public ContentAddress getCurrentContentAddressQualified() {
-        if (!qualifiedCurrentAddressSet) {
-            currentQualifiedContentAddress.setCollection(Objects.toString(requestContext().getCollectionId(), null));
-
-            currentQualifiedContentAddress.setCurrentItemSubtype(requestContext().getCurrentItemSubtype());
-            currentQualifiedContentAddress.setCurrentItemType(requestContext().getCurrentItemType());
-            currentQualifiedContentAddress.setCurrentItem(Objects.toString(requestContext().getCurrentItemId(), null));
-
-            currentQualifiedContentAddress.setCourse(requestContext().getCourseId().toString());
-            currentQualifiedContentAddress.setUnit(Objects.toString(requestContext().getUnitId(), null));
-            currentQualifiedContentAddress.setLesson(Objects.toString(requestContext().getLessonId(), null));
-            currentQualifiedContentAddress.setPathId(requestContext().getPathId());
-            qualifiedCurrentAddressSet = true;
-            return currentQualifiedContentAddress;
-        }
-        return currentQualifiedContentAddress;
-    }
-
     public FinderContext createFinderContext() {
-        return new FinderContext(requestContext().getState(), requestContext(), getCurrentContentAddressQualified(),
+        return new FinderContext(requestContext().getState(), requestContext(), getCurrentContentAddress(),
             navigateMessageContext().getUserId());
     }
 

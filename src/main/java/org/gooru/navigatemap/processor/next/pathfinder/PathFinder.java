@@ -10,6 +10,10 @@ import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 
 /**
+ * This is the main workhorse to find the content on path. This class triggers different kind of flows e.g. straight
+ * path flow, explicit start flow etc by calling and delegating different services. Based on the outcome of service,
+ * this class decides what needs to be done with respect to API response by modifying {@link NavigateProcessorContext}
+ *
  * @author ashish on 26/2/17.
  */
 public class PathFinder {
@@ -39,26 +43,43 @@ public class PathFinder {
     private Future<NavigateProcessorContext> doPathMapping() {
         Future<NavigateProcessorContext> resultFuture = Future.future();
         if (!npc.suggestionsApplicable()) {
-            ContentAddress targetAddress = PathFinderFactory.buildStraightPathFinderService()
-                .findNextContentFromCUL(npc.getCurrentContentAddress(), npc.requestContext().getClassId());
-            if (targetAddress != null) {
-                if (targetAddress.getCollection() != null) {
-                    npc.serveContent(targetAddress);
-                } else {
-                    npc.responseContext().setState(State.Done);
-                }
-            } else {
-                LOGGER.warn("Not able to locate valid content in course");
-                npc.responseContext().setState(State.Done);
-            }
+            handleNoSuggestionsRoute();
         } else {
-            // TODO: Provide implementation
             // Delegate it to Suggestion oriented path finder
-            npc.responseContext().setState(State.Done);
-
+            handleSuggestionsOrientedRoute();
         }
         resultFuture.complete(npc);
         return resultFuture;
+    }
+
+    private void handleSuggestionsOrientedRoute() {
+        if (npc.userExplicitlyAskedToStartHere()) {
+            ContentAddress targetAddress = PathFinderFactory.buildExplicitStartPathFinderService()
+                .explicitlyStartItem(PathFinderContext.buildContext(npc));
+            serveTheContent(targetAddress);
+        } else {
+            // TODO: Provide implementation
+            throw new AssertionError();
+        }
+    }
+
+    private void handleNoSuggestionsRoute() {
+        ContentAddress targetAddress = PathFinderFactory.buildStraightPathFinderService()
+            .findNextContentFromCourse(PathFinderContext.buildContext(npc));
+        serveTheContent(targetAddress);
+    }
+
+    private void serveTheContent(ContentAddress contentToServe) {
+        if (contentToServe != null) {
+            if (contentToServe.getCollection() != null) {
+                npc.serveContent(contentToServe);
+            } else {
+                npc.responseContext().setState(State.Done);
+            }
+        } else {
+            LOGGER.warn("Not able to locate valid content in course");
+            npc.responseContext().setState(State.Done);
+        }
     }
 
 }

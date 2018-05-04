@@ -14,18 +14,18 @@ import io.vertx.core.json.JsonObject;
 /**
  * @author ashish on 12/9/17.
  */
-final class ContentFinderVisibilityVerifierDelegate {
+final class ContentFinderVisibilityVerifier {
 
     private final UUID classId;
     private final CLASS_VISIBILITY visibility;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ContentFinderVisibilityVerifierDelegate.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContentFinderVisibilityVerifier.class);
 
-    private ContentFinderVisibilityVerifierDelegate(UUID classId, CLASS_VISIBILITY visibility) {
+    private ContentFinderVisibilityVerifier(UUID classId, CLASS_VISIBILITY visibility) {
         this.classId = classId;
         this.visibility = visibility;
     }
 
-    private boolean verifyVisibility(ContentAddress address) {
+    boolean isContentVisible(ContentAddress address) {
         if (this.visibility == CLASS_VISIBILITY.VISIBLE_NA) {
             return verifyVisibilityPlaceholder(address);
         } else {
@@ -33,10 +33,10 @@ final class ContentFinderVisibilityVerifierDelegate {
         }
     }
 
-    ContentAddress findContentAddressBasedOnVisibility(List<ContentAddress> contentAddresses) {
+    ContentAddress findFirstVisibleContentAddress(List<ContentAddress> contentAddresses) {
         if (contentAddresses != null && !contentAddresses.isEmpty()) {
             for (ContentAddress address : contentAddresses) {
-                if (verifyVisibility(address)) {
+                if (isContentVisible(address)) {
                     return address;
                 }
             }
@@ -99,18 +99,18 @@ final class ContentFinderVisibilityVerifierDelegate {
         return true;
     }
 
-    static ContentFinderVisibilityVerifierDelegate buildPlaceholderVerifier(UUID classId) {
-        return new ContentFinderVisibilityVerifierDelegate(classId, CLASS_VISIBILITY.VISIBLE_NA);
+    static ContentFinderVisibilityVerifier buildPlaceholderVerifier(UUID classId) {
+        return new ContentFinderVisibilityVerifier(classId, CLASS_VISIBILITY.VISIBLE_NA);
     }
 
-    static ContentFinderVisibilityVerifierDelegate build(UUID classId, DBI dbi) {
-        ContentFinderVisibilityVerifierDelegate result;
+    static ContentFinderVisibilityVerifier build(UUID classId, DBI dbi) {
+        ContentFinderVisibilityVerifier result;
         if (classId == null) {
-            result = new ContentFinderVisibilityVerifierDelegate(classId, CLASS_VISIBILITY.VISIBLE_NA);
+            result = new ContentFinderVisibilityVerifier(classId, CLASS_VISIBILITY.VISIBLE_NA);
         } else {
             ClassDao dao = dbi.onDemand(ClassDao.class);
             CLASS_VISIBILITY visibility = getVisibilityFromString(dao.getClassVisibility(classId.toString()));
-            result = new ContentFinderVisibilityVerifierDelegate(classId, visibility);
+            result = new ContentFinderVisibilityVerifier(classId, visibility);
         }
         return result;
     }

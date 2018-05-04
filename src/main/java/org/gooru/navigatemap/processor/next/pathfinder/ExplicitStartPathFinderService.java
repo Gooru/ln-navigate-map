@@ -1,0 +1,133 @@
+package org.gooru.navigatemap.processor.next.pathfinder;
+
+import java.util.List;
+import java.util.UUID;
+
+import org.gooru.navigatemap.app.constants.HttpConstants;
+import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.infra.data.AlternatePath;
+import org.gooru.navigatemap.infra.data.ContentAddress;
+import org.skife.jdbi.v2.DBI;
+
+/**
+ * If user has explicitly asked for collection either on main path or on alternate path, we serve it without
+ * considering skip logic.
+ * If user asks to start a lesson, then we assume that user wants to study this lesson (whatever is visible of this
+ * lesson). In this case also, we do not apply skip logic (based on competency), but we find the first visible
+ * content of this lesson. However, teacher suggestions are treated as pre for a content. So once we get the content,
+ * we check if any teacher suggestion exists for this content. If there is, we return first one. If there is none, we
+ * go ahead and serve the content that we originally fetched.
+ *
+ * @author ashish on 4/5/18.
+ */
+class ExplicitStartPathFinderService {
+
+    private final DBI dbi;
+    private final ContentFinderDao finderDao;
+    private PathFinderContext context;
+    private ContentAddress specifiedContentAddress;
+
+    ExplicitStartPathFinderService(DBI dbi) {
+        this.dbi = dbi;
+        finderDao = dbi.onDemand(ContentFinderDao.class);
+    }
+
+    ContentAddress explicitlyStartItem(PathFinderContext context) {
+        this.context = context;
+        specifiedContentAddress = context.getContentAddress();
+        validateCULValues(specifiedContentAddress);
+        if (specifiedContentAddress.getCollection() == null) {
+            // This is user asking to start a lesson
+            return fetchFirstItemFromLesson();
+        } else if (specifiedContentAddress.isOnAlternatePath()) {
+            // User is asking to play a content which was already added to alternate path
+            return fetchSpecifiedAlternatePath();
+        } else {
+            // User wanted to play something on course path
+            return fetchSpecifiedContentFromCoursePath();
+        }
+    }
+
+    private ContentAddress fetchFirstItemFromLesson() {
+        // TODO provide implementation
+        // Note that Teacher suggestions are pre to actual item. So this could be teacher suggestion on first visible
+        // item, or it could be first visible item. If there is no visible item in lesson, then it is an error.
+        ContentFinderVisibilityVerifier visibilityVerifier =
+            ContentFinderVisibilityVerifier.build(context.getClassId(), dbi);
+
+        ContentAddress firstVisibleItem = visibilityVerifier.findFirstVisibleContentAddress(finderDao
+            .findFirstCollectionInLesson(specifiedContentAddress.getCourse(), specifiedContentAddress.getUnit(),
+                specifiedContentAddress.getLesson()));
+
+        if (firstVisibleItem == null) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
+                "No visible content in lesson");
+        }
+
+        ContentAddress teacherSuggestedItemForContext =
+            findFirstTeacherSuggestedItemForSpecifiedContext(firstVisibleItem);
+        if (teacherSuggestedItemForContext != null) {
+            return teacherSuggestedItemForContext;
+        } else {
+            return firstVisibleItem;
+        }
+    }
+
+    private ContentAddress findFirstTeacherSuggestedItemForSpecifiedContext(ContentAddress firstVisibleItem) {
+        if (context.getClassId() == null) {
+            return null; // No teacher path for IL
+        }
+        AlternatePathDao alternatePathDao = dbi.onDemand(AlternatePathDao.class);
+        List<AlternatePath> teacherPathsForContext = alternatePathDao
+            .findTeacherPathsForSpecifiedContext(firstVisibleItem, context.getUserId(),
+                context.getClassId().toString());
+        if (teacherPathsForContext == null || teacherPathsForContext.isEmpty()) {
+            return null;
+        } else {
+            return teacherPathsForContext.get(0).toContentAddress();
+        }
+    }
+
+    private ContentAddress fetchSpecifiedAlternatePath() {
+        // Find the AlternatePath and map it to ContentAddress. No need to check visibility. Just return.
+        // In case of failure, throw.
+        AlternatePathDao alternatePathDao = dbi.onDemand(AlternatePathDao.class);
+        AlternatePath specifiedPath;
+        if (context.getClassId() == null) {
+            specifiedPath = alternatePathDao
+                .findAlternatePathByPathIdAndUserForIL(specifiedContentAddress.getPathId(), context.getUserId());
+        } else {
+            specifiedPath = alternatePathDao
+                .findAlternatePathByPathIdAndUserInClass(specifiedContentAddress.getPathId(), context.getUserId(),
+                    context.getClassId().toString());
+        }
+
+        if (specifiedPath == null) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid content");
+        }
+        return specifiedPath.toContentAddress();
+    }
+
+    private ContentAddress fetchSpecifiedContentFromCoursePath() {
+        ContentAddress result = finderDao
+            .findCULC(specifiedContentAddress.getCourse(), specifiedContentAddress.getUnit(),
+                specifiedContentAddress.getLesson(), specifiedContentAddress.getCollection());
+        validateVisibility(result, context.getClassId());
+        return result;
+    }
+
+    private void validateVisibility(ContentAddress result, UUID classId) {
+        ContentFinderVisibilityVerifier visibilityVerifier = ContentFinderVisibilityVerifier.build(classId, dbi);
+        if (result == null || !visibilityVerifier.isContentVisible(result)) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid content");
+        }
+    }
+
+    private void validateCULValues(ContentAddress contentAddress) {
+        if (contentAddress.getCourse() == null || contentAddress.getUnit() == null
+            || contentAddress.getLesson() == null) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid CUL info in context");
+        }
+    }
+
+}

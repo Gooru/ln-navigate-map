@@ -59,6 +59,13 @@ public interface ContentFinderDao {
 
     @SqlQuery("select course_id, unit_id, lesson_id, id, format, subformat, null as path_id, class_visibility as "
                   + "visibility from collection c where course_id = :courseId::uuid and unit_id = :unitId::uuid and  "
+                  + "lesson_id = :lessonId::uuid and id = :collectionId::uuid and is_deleted = false ")
+    @Mapper(ContentAddressMapper.class)
+    ContentAddress findCULC(@Bind("courseId") String courseId, @Bind("unitId") String unitId,
+        @Bind("lessonId") String lessonId, @Bind("collectionId") String collectionId);
+
+    @SqlQuery("select course_id, unit_id, lesson_id, id, format, subformat, null as path_id, class_visibility as "
+                  + "visibility from collection c where course_id = :courseId::uuid and unit_id = :unitId::uuid and  "
                   + "lesson_id = :lessonId::uuid and is_deleted = false order by sequence_id asc limit 1")
     @Mapper(ContentAddressMapper.class)
     List<ContentAddress> findFirstCollectionInLesson(@Bind("courseId") String courseId, @Bind("unitId") String unitId,
@@ -83,5 +90,9 @@ public interface ContentFinderDao {
                   + "lesson_id = :lessonId::uuid and is_deleted = false")
     long validateCUL(@Bind("courseId") String courseId, @Bind("unitId") String unitId,
         @Bind("lessonId") String lessonId);
+
+    @SqlQuery("select count(*) from user_navigation_paths where id = :pathId and suggested_content_id = "
+                  + ":collectionId::uuid and suggested_content_type = :contentType")
+    long validateAlternatePath(@Bind("pathId") Long pathId, @Bind("collectionId") String collection);
 
 }

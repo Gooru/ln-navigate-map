@@ -129,16 +129,30 @@ public final class AlternatePath {
         return Objects.equals(suggestedContentType, "assessment");
     }
 
-    public boolean isSuggestedContentPreTest() {
-        return Objects.equals(suggestedContentSubtype, "pre-test");
+    public boolean isSuggestionTeacherSuggestion() {
+        return Objects.equals(suggestionType, "teacher");
     }
 
-    public boolean isSuggestedContentPostTest() {
-        return Objects.equals(suggestedContentSubtype, "post-test");
+    public boolean isSuggestionSysemSuggestion() {
+        return Objects.equals(suggestionType, "system");
     }
 
-    public boolean isSuggestedContentBenchmark() {
-        return Objects.equals(suggestedContentSubtype, "benchmark");
+    public boolean isSuggestionRoute0Suggestion() {
+        return Objects.equals(suggestionType, "route0");
+    }
+
+    public ContentAddress toContentAddress() {
+        ContentAddress result = new ContentAddress();
+        result.setCourse(courseId.toString());
+        result.setUnit(Objects.toString(unitId, null));
+        result.setLesson(Objects.toString(lessonId, null));
+        result.setCollection(Objects.toString(collectionId, null));
+        result.setPathId(id);
+        result.setCurrentItem(Objects.toString(suggestedContentId, null));
+        result.setCurrentItemType(suggestedContentType != null ? CurrentItemType.builder(suggestedContentType) : null);
+        result.setCurrentItemSubtype(
+            suggestedContentSubtype != null ? CurrentItemSubtype.builder(suggestedContentSubtype) : null);
+        return result;
     }
 
 }
