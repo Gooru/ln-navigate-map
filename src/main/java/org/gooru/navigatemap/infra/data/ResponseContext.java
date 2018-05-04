@@ -53,7 +53,6 @@ public final class ResponseContext {
         context.put(ContextAttributes.CURRENT_ITEM_TYPE, currentItemType != null ? currentItemType.getName() : null);
         context.put(ContextAttributes.CURRENT_ITEM_SUBTYPE,
             currentItemSubtype != null ? currentItemSubtype.getName() : null);
-        context.put(ContextAttributes.VERSION, version);
         return context;
     }
 

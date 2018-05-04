@@ -33,11 +33,28 @@ public final class NavigateProcessorContext {
         getCurrentContentAddressQualified();
     }
 
-    public boolean suggestionsTurnedOff() {
+    public boolean suggestionsApplicable() {
         if (suggestionsFlagInitialized == null) {
             suggestionsFlagInitialized = new SuggestionsApplicabilityVerifier(this).areSuggestionApplicable();
         }
-        return !suggestionsFlagInitialized;
+        return suggestionsFlagInitialized;
+    }
+
+    public boolean needToStartCourse() {
+        // When NPC is created, it is initialized in one of following sequences:
+        // 1. Context fetched from Redis. We never store "Continue" there
+        // 2. If we don't find context in Redis, we initialize context with whatever is coming in. The client is
+        // supposed to send either "Continue" or "Start" state. While start would mean that user has provided start
+        // point, Continue now would mean that Course needs to be started.
+        return ctxIn.getState() == State.Continue;
+    }
+
+    public boolean userExplicitlyAskedToStartHere() {
+        return ctxIn.getState() == State.Start;
+    }
+
+    public boolean onMainPath() {
+        return ctxIn.getPathId() == null || ctxIn.getPathId() == 0;
     }
 
     public NavigateMessageContext navigateMessageContext() {
@@ -111,4 +128,9 @@ public final class NavigateProcessorContext {
             navigateMessageContext().getUserId());
     }
 
+    public void serveContent(ContentAddress targetAddress) {
+        setNextContextAddress(targetAddress);
+        responseContext().setContentAddress(targetAddress);
+        responseContext().setState(State.ContentServed);
+    }
 }

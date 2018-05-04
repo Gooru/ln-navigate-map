@@ -5,13 +5,13 @@ import java.util.Objects;
 import org.gooru.navigatemap.app.constants.Constants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.app.exceptions.MessageResponseWrapperException;
+import org.gooru.navigatemap.infra.data.context.ContextAttributes;
+import org.gooru.navigatemap.infra.data.context.ContextProcessor;
+import org.gooru.navigatemap.infra.data.context.ContextUtil;
 import org.gooru.navigatemap.processor.next.contentserver.ContentServer;
 import org.gooru.navigatemap.processor.next.contentserver.RemoteAssessmentCollectionFetcher;
 import org.gooru.navigatemap.processor.next.contentserver.RemoteUriLocator;
 import org.gooru.navigatemap.processor.next.contentserver.ResponseParserForNextApi;
-import org.gooru.navigatemap.infra.data.context.ContextAttributes;
-import org.gooru.navigatemap.infra.data.context.ContextProcessor;
-import org.gooru.navigatemap.infra.data.context.ContextUtil;
 import org.gooru.navigatemap.processor.next.pathfinder.PathFinder;
 import org.gooru.navigatemap.responses.ResponseUtil;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class NavigationVerticle extends AbstractVerticle {
     private RemoteUriLocator remoteUriLocator;
 
     @Override
-    public void start(Future<Void> startFuture) throws Exception {
+    public void start(Future<Void> startFuture) {
 
         EventBus eb = vertx.eventBus();
         eb.localConsumer(Constants.EventBus.MBEP_NAVIGATE, this::processMessage).completionHandler(result -> {

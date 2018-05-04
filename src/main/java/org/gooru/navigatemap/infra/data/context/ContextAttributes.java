@@ -18,7 +18,6 @@ public final class ContextAttributes {
 
     public static final String SCORE_PERCENT = "score_percent";
     public static final String STATE = "state";
-    public static final String VERSION = "version";
 
     private ContextAttributes() {
         throw new AssertionError();

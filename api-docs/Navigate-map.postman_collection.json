@@ -530,14 +530,14 @@
 			"data": [],
 			"dataMode": "raw",
 			"auth": null,
-			"time": 1525328793056,
+			"time": 1525425008433,
 			"name": "Next",
 			"description": "",
 			"collectionId": "d7f3a791-e59a-dfec-e2fe-3e6619782963",
 			"responses": [],
 			"currentHelper": null,
 			"helperAttributes": null,
-			"rawModeData": "{\n\"course_id\": \"c3c5a610-0c97-4ecc-852c-8586a7ba3b52\",\n\"path_id\": 0,\n\"class_id\": \"21d4dd82-5369-459b-9b2b-cd87734cdc5e\",\n\"current_item_id\": null,\n\"current_item_subtype\": null,\n\"lesson_id\": \"e64d98ec-8793-469e-940b-90761a605e0d\",\n\"collection_type\": null,\n\"collection_id\": null,\n\"collection_subtype\": null,\n\"state\": \"start\",\n\"score_percent\": null,\n\"unit_id\": \"bfb886d0-2755-4007-983a-710470af8581\",\n\"current_item_type\": null\n}"
+			"rawModeData": "{\n        \"class_id\": \"21d4dd82-5369-459b-9b2b-cd87734cdc5e\",\n        \"course_id\": \"c3c5a610-0c97-4ecc-852c-8586a7ba3b52\",\n        \"unit_id\": \"c7ed7287-e114-4a7b-9381-6af4513284d7\",\n        \"lesson_id\": \"bdd29d46-608a-41e4-a47e-e6a5ec052611\",\n        \"collection_id\": null,\n        \"state\": \"start\",\n        \"path_id\": 0,\n        \"score_percent\": 0,\n        \"current_item_id\": null,\n        \"current_item_type\": null,\n        \"current_item_subtype\": null\n    }"
 		},
 		{
 			"id": "e520c94a-94fc-3085-4ac7-aee03ee37f1c",

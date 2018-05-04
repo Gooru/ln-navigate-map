@@ -1,8 +1,8 @@
 package org.gooru.navigatemap.processor.teachersuggestions;
 
-import org.gooru.navigatemap.processor.AsyncMessageProcessor;
 import org.gooru.navigatemap.infra.data.EventBusMessage;
 import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
+import org.gooru.navigatemap.processor.AsyncMessageProcessor;
 import org.gooru.navigatemap.responses.MessageResponse;
 import org.gooru.navigatemap.responses.MessageResponseFactory;
 import org.slf4j.Logger;

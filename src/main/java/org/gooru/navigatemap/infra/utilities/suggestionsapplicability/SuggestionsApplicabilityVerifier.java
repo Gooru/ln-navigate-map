@@ -5,16 +5,19 @@ import java.util.UUID;
 import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.gooru.navigatemap.infra.data.NavigateProcessorContext;
 import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
+ * This class verifies that
+ * <li>if the user is anonymous OR</li>
+ * <li>if the suggestions are turned off at config level</li>
+ * Then advise not to apply suggestion. If both of above conditions are false, then look up in DB to find out
+ * course version for course in question.
+ *
  * @author ashish on 3/5/17.
  */
 public final class SuggestionsApplicabilityVerifier {
 
     private final NavigateProcessorContext npc;
-    private static final Logger LOGGER = LoggerFactory.getLogger(SuggestionsApplicabilityVerifier.class);
 
     public SuggestionsApplicabilityVerifier(NavigateProcessorContext npc) {
         this.npc = npc;
@@ -25,14 +28,6 @@ public final class SuggestionsApplicabilityVerifier {
             return false;
         }
         return decideSuggestionsApplicability();
-    }
-
-    public boolean arePreLessonSuggestionsOff() {
-        return AppConfiguration.getInstance().suggestionsPreLessonOff();
-    }
-
-    public boolean arePostLessonSuggestionsOff() {
-        return AppConfiguration.getInstance().suggestionsPostLessonOff();
     }
 
     private boolean decideSuggestionsApplicability() {

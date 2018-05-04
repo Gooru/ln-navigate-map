@@ -88,10 +88,6 @@ public final class RequestContext {
         }
     }
 
-    private boolean onMainPath() {
-        return pathId == null || pathId == 0;
-    }
-
     public static RequestContext builder(JsonObject input) {
         RequestContext result = buildFromJsonObject(input);
         result.validate();

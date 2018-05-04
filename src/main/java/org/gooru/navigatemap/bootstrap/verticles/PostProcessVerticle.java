@@ -3,8 +3,8 @@ package org.gooru.navigatemap.bootstrap.verticles;
 import java.io.IOException;
 
 import org.gooru.navigatemap.app.constants.Constants;
-import org.gooru.navigatemap.processor.next.contentserver.ResponseParserForNextApi;
 import org.gooru.navigatemap.infra.data.SuggestionCard;
+import org.gooru.navigatemap.processor.next.contentserver.ResponseParserForNextApi;
 import org.gooru.navigatemap.processor.postprocessor.repositories.PostProcessorRepository;
 import org.gooru.navigatemap.processor.postprocessor.repositories.PostProcessorRespositoryBuilder;
 import org.slf4j.Logger;
@@ -77,7 +77,7 @@ public class PostProcessVerticle extends AbstractVerticle {
     }
 
     @Override
-    public void stop(Future<Void> stopFuture) throws Exception {
+    public void stop(Future<Void> stopFuture) {
         stopFuture.complete();
     }
 

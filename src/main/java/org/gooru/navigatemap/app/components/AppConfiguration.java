@@ -60,14 +60,6 @@ public final class AppConfiguration implements Initializer {
         return configuration.getBoolean("suggestions.advise");
     }
 
-    public boolean suggestionsPreLessonOff() {
-        return configuration.getBoolean("suggestions.prelesson.off");
-    }
-
-    public boolean suggestionsPostLessonOff() {
-        return configuration.getBoolean("suggestions.postlesson.off");
-    }
-
     public Integer suggestionsLimit() {
         return configuration.getInteger("suggestions.limit");
     }
