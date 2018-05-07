@@ -20,7 +20,7 @@ import org.skife.jdbi.v2.DBI;
  *
  * @author ashish on 4/5/18.
  */
-class ExplicitStartPathFinderService {
+class ExplicitStartPathFinderService implements PathFinder {
 
     private final DBI dbi;
     private final ContentFinderDao finderDao;
@@ -32,30 +32,32 @@ class ExplicitStartPathFinderService {
         finderDao = dbi.onDemand(ContentFinderDao.class);
     }
 
-    ContentAddress explicitlyStartItem(PathFinderContext context) {
+    @Override
+    public PathFinderResult findPath(PathFinderContext context) {
         this.context = context;
         specifiedContentAddress = context.getContentAddress();
+        ContentAddress result;
         validateCULValues(specifiedContentAddress);
         if (specifiedContentAddress.getCollection() == null) {
             // This is user asking to start a lesson
-            return fetchFirstItemFromLesson();
+            result = fetchFirstItemFromLesson();
         } else if (specifiedContentAddress.isOnAlternatePath()) {
             // User is asking to play a content which was already added to alternate path
-            return fetchSpecifiedAlternatePath();
+            result = fetchSpecifiedAlternatePath();
         } else {
             // User wanted to play something on course path
-            return fetchSpecifiedContentFromCoursePath();
+            result = fetchSpecifiedContentFromCoursePath();
         }
+        return new PathFinderResult(result);
     }
 
     private ContentAddress fetchFirstItemFromLesson() {
-        // TODO provide implementation
         // Note that Teacher suggestions are pre to actual item. So this could be teacher suggestion on first visible
         // item, or it could be first visible item. If there is no visible item in lesson, then it is an error.
-        ContentFinderVisibilityVerifier visibilityVerifier =
-            ContentFinderVisibilityVerifier.build(context.getClassId(), dbi);
+        ContentVerifier visibilityVerifier =
+            ContentVerifierBuilder.buildContentVisibilityVerifier(context.getClassId(), dbi);
 
-        ContentAddress firstVisibleItem = visibilityVerifier.findFirstVisibleContentAddress(finderDao
+        ContentAddress firstVisibleItem = visibilityVerifier.findFirstVerifiedContent(finderDao
             .findFirstCollectionInLesson(specifiedContentAddress.getCourse(), specifiedContentAddress.getUnit(),
                 specifiedContentAddress.getLesson()));
 
@@ -117,8 +119,9 @@ class ExplicitStartPathFinderService {
     }
 
     private void validateVisibility(ContentAddress result, UUID classId) {
-        ContentFinderVisibilityVerifier visibilityVerifier = ContentFinderVisibilityVerifier.build(classId, dbi);
-        if (result == null || !visibilityVerifier.isContentVisible(result)) {
+        ContentVerifier visibilityVerifier =
+            ContentVerifierBuilder.buildContentVisibilityVerifier(context.getClassId(), dbi);
+        if (result == null || !visibilityVerifier.isContentVerified(result)) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid content");
         }
     }

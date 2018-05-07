@@ -12,7 +12,7 @@ import org.skife.jdbi.v2.DBI;
  *
  * @author ashish on 4/5/18.
  */
-class StraightPathFinderService {
+class StraightPathFinderService implements PathFinder {
     private final DBI dbi;
     private ContentFinderDao finderDao;
 
@@ -21,12 +21,11 @@ class StraightPathFinderService {
         finderDao = dbi.onDemand(ContentFinderDao.class);
     }
 
-    ContentAddress findNextContentFromCourse(PathFinderContext context) {
-        ContentFinderVisibilityVerifier visibilityVerifier =
-            ContentFinderVisibilityVerifier.build(context.getClassId(), dbi);
-
-        return new ContentFinderOnCoursePath(finderDao, visibilityVerifier)
-            .findNextContentOnCoursePath(context.getContentAddress());
+    @Override
+    public PathFinderResult findPath(PathFinderContext context) {
+        return new PathFinderResult(ContentFinderFactory
+            .buildAlternatePathUnawareMainPathContentFinder(dbi, ContentFinderCriteria.CRITERIA_VISIBLE)
+            .findContent(context));
     }
 
 }

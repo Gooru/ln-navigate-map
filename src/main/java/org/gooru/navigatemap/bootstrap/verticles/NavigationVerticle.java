@@ -12,7 +12,7 @@ import org.gooru.navigatemap.processor.next.contentserver.ContentServer;
 import org.gooru.navigatemap.processor.next.contentserver.RemoteAssessmentCollectionFetcher;
 import org.gooru.navigatemap.processor.next.contentserver.RemoteUriLocator;
 import org.gooru.navigatemap.processor.next.contentserver.ResponseParserForNextApi;
-import org.gooru.navigatemap.processor.next.pathfinder.PathFinder;
+import org.gooru.navigatemap.processor.next.pathfinder.PathFinderProcessor;
 import org.gooru.navigatemap.responses.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +86,7 @@ public class NavigationVerticle extends AbstractVerticle {
     private void processNextCommand(Message<JsonObject> message) {
         Future<JsonObject> future = Future.future();
         new ContextProcessor(vertx).fetchContext(message)
-            .compose(navigateProcessorContext -> new PathFinder(vertx).findNext(navigateProcessorContext)).compose(
+            .compose(navigateProcessorContext -> new PathFinderProcessor(vertx).findNext(navigateProcessorContext)).compose(
             ar -> new ContentServer(vertx, future, new RemoteAssessmentCollectionFetcher(client, remoteUriLocator))
                 .serveContent(ar), future);
 

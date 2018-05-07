@@ -11,11 +11,15 @@ final class PathFinderFactory {
         throw new AssertionError();
     }
 
-    static StraightPathFinderService buildStraightPathFinderService() {
+    static PathFinder buildStraightPathFinderService() {
         return new StraightPathFinderService(DBICreator.getDbiForDefaultDS());
     }
 
-    static ExplicitStartPathFinderService buildExplicitStartPathFinderService() {
+    static PathFinder buildExplicitStartPathFinderService() {
         return new ExplicitStartPathFinderService(DBICreator.getDbiForDefaultDS());
+    }
+
+    static PathFinder buildSuggestionsAwarePathFinderService() {
+        return new SuggestionsAwarePathFinderService(DBICreator.getDbiForDefaultDS());
     }
 }

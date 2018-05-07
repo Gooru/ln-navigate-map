@@ -1,5 +1,6 @@
 package org.gooru.navigatemap.processor.next.pathfinder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,18 +15,18 @@ import io.vertx.core.json.JsonObject;
 /**
  * @author ashish on 12/9/17.
  */
-final class ContentFinderVisibilityVerifier {
+final class ContentVisibilityVerifier implements ContentVerifier {
 
     private final UUID classId;
     private final CLASS_VISIBILITY visibility;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ContentFinderVisibilityVerifier.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContentVisibilityVerifier.class);
 
-    private ContentFinderVisibilityVerifier(UUID classId, CLASS_VISIBILITY visibility) {
+    private ContentVisibilityVerifier(UUID classId, CLASS_VISIBILITY visibility) {
         this.classId = classId;
         this.visibility = visibility;
     }
 
-    boolean isContentVisible(ContentAddress address) {
+    public boolean isContentVerified(ContentAddress address) {
         if (this.visibility == CLASS_VISIBILITY.VISIBLE_NA) {
             return verifyVisibilityPlaceholder(address);
         } else {
@@ -33,15 +34,27 @@ final class ContentFinderVisibilityVerifier {
         }
     }
 
-    ContentAddress findFirstVisibleContentAddress(List<ContentAddress> contentAddresses) {
+    public ContentAddress findFirstVerifiedContent(List<ContentAddress> contentAddresses) {
         if (contentAddresses != null && !contentAddresses.isEmpty()) {
             for (ContentAddress address : contentAddresses) {
-                if (isContentVisible(address)) {
+                if (isContentVerified(address)) {
                     return address;
                 }
             }
         }
         return null;
+    }
+
+    public List<ContentAddress> filterVerifiedContent(List<ContentAddress> contentAddresses) {
+        List<ContentAddress> result = new ArrayList<>();
+        if (contentAddresses != null && !contentAddresses.isEmpty()) {
+            for (ContentAddress address : contentAddresses) {
+                if (isContentVerified(address)) {
+                    result.add(address);
+                }
+            }
+        }
+        return result;
     }
 
     private boolean verifyVisibilityWithClass(ContentAddress address) {
@@ -99,18 +112,18 @@ final class ContentFinderVisibilityVerifier {
         return true;
     }
 
-    static ContentFinderVisibilityVerifier buildPlaceholderVerifier(UUID classId) {
-        return new ContentFinderVisibilityVerifier(classId, CLASS_VISIBILITY.VISIBLE_NA);
+    static ContentVisibilityVerifier buildPlaceholderVerifier(UUID classId) {
+        return new ContentVisibilityVerifier(classId, CLASS_VISIBILITY.VISIBLE_NA);
     }
 
-    static ContentFinderVisibilityVerifier build(UUID classId, DBI dbi) {
-        ContentFinderVisibilityVerifier result;
+    static ContentVisibilityVerifier build(UUID classId, DBI dbi) {
+        ContentVisibilityVerifier result;
         if (classId == null) {
-            result = new ContentFinderVisibilityVerifier(classId, CLASS_VISIBILITY.VISIBLE_NA);
+            result = new ContentVisibilityVerifier(classId, CLASS_VISIBILITY.VISIBLE_NA);
         } else {
             ClassDao dao = dbi.onDemand(ClassDao.class);
             CLASS_VISIBILITY visibility = getVisibilityFromString(dao.getClassVisibility(classId.toString()));
-            result = new ContentFinderVisibilityVerifier(classId, visibility);
+            result = new ContentVisibilityVerifier(classId, visibility);
         }
         return result;
     }
