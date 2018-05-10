@@ -55,8 +55,8 @@ class CompetencyCompletionHandler {
                     CollectionUtils.convertToSqlArrayOfString(competencyList), COMPETENCY_STATUS_MASTERED);
             competencyList.removeAll(masteredCompetenciesByUser);
             if (!competencyList.isEmpty()) {
-                userCompetencyCompletionDao.markCompetencyCompletedOrMastered(context.getUserId(), competencyList,
-                    COMPETENCY_STATUS_MASTERED);
+                userCompetencyCompletionDao
+                    .markCompetencyCompletedOrMastered(context.getUserId(), competencyList, COMPETENCY_STATUS_MASTERED);
             }
         }
 
@@ -66,10 +66,12 @@ class CompetencyCompletionHandler {
         // TODO: Do we fetch GUT codes or framework codes
         ContentFinderDao finderDao = dbi.onDemand(ContentFinderDao.class);
         if (!areCompetenciesFetched) {
-            String competenciesForCollection = finderDao.findCompetenciesForCollection(context.getContentAddress().getCourse(),
-                context.getContentAddress().getUnit(), context.getContentAddress().getLesson(),
-                context.getContentAddress().getCollection());
-            competencies = TaxonomyParserHelper.parseCollectionTaxonomy(context.getContentAddress(), competenciesForCollection);
+            String competenciesForCollection = finderDao
+                .findCompetenciesForCollection(context.getContentAddress().getCourse(),
+                    context.getContentAddress().getUnit(), context.getContentAddress().getLesson(),
+                    context.getContentAddress().getCollection());
+            competencies =
+                TaxonomyParserHelper.parseCollectionTaxonomy(context.getContentAddress(), competenciesForCollection);
             areCompetenciesFetched = true;
         }
         return competencies;

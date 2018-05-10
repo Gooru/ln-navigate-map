@@ -86,9 +86,10 @@ public class NavigationVerticle extends AbstractVerticle {
     private void processNextCommand(Message<JsonObject> message) {
         Future<JsonObject> future = Future.future();
         new ContextProcessor(vertx).fetchContext(message)
-            .compose(navigateProcessorContext -> new PathFinderProcessor(vertx).findNext(navigateProcessorContext)).compose(
-            ar -> new ContentServer(vertx, future, new RemoteAssessmentCollectionFetcher(client, remoteUriLocator))
-                .serveContent(ar), future);
+            .compose(navigateProcessorContext -> new PathFinderProcessor(vertx).findNext(navigateProcessorContext))
+            .compose(
+                ar -> new ContentServer(vertx, future, new RemoteAssessmentCollectionFetcher(client, remoteUriLocator))
+                    .serveContent(ar), future);
 
         future.setHandler(event -> {
             if (event.succeeded()) {

@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Provides a mechanism to search for suggestions related to specified competencies. The competencies would be GUT
  * codes and not FW codes. These suggestions are fetched considering user performance (which currently is score).
- *
+ * <p>
  * Once the suggestions are fetched in order of weight (calculated by backend jobs and
  * populated in our target table), the suggestions are filtered out based on user.
  *
