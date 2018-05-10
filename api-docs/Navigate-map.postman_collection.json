@@ -10,7 +10,12 @@
 		"376506fa-60db-7fcf-e01b-588a5e93a5dd",
 		"8b1b2a97-1080-b2b5-20c4-e9c465681b7b",
 		"9cc511d3-e1fd-50fb-7103-8cc6776347b2",
-		"b7f517de-287e-1b1f-dd3d-8a57a2b8770d"
+		"b7f517de-287e-1b1f-dd3d-8a57a2b8770d",
+		"42ce4858-d110-fd9e-098f-619bb7aefde5",
+		"4003794d-a272-fb04-4a95-1397703deead",
+		"b273a56e-a804-1627-7cf5-2481a7dceb6b",
+		"b3266750-43d0-36d7-96c3-6b2450876fc2",
+		"1a770a3d-6606-1536-f90d-b4910a3a8ba4"
 	],
 	"folders": [],
 	"folders_order": [],
@@ -21,6 +26,41 @@
 	"variables": [],
 	"auth": null,
 	"requests": [
+		{
+			"id": "1a770a3d-6606-1536-f90d-b4910a3a8ba4",
+			"headers": "Authorization: Token Njg0OTIwMzktMzcxMy00MmRlLTkwYWQtOTRkNTk0NWNkNDgyOlR1ZSBGZWIgMTYgMDQ6NTI6MTUgVVRDIDIwMTY6MTQ1NTU5ODMzNTExNQ==\nContent-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Token Njg0OTIwMzktMzcxMy00MmRlLTkwYWQtOTRkNTk0NWNkNDgyOlR1ZSBGZWIgMTYgMDQ6NTI6MTUgVVRDIDIwMTY6MTQ1NTU5ODMzNTExNQ==",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:8080/api/navigate-map/v1/next",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"auth": null,
+			"time": 1525679470834,
+			"name": "Next API start item on alternate path (system)",
+			"description": "",
+			"collectionId": "d7f3a791-e59a-dfec-e2fe-3e6619782963",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": "{\n    \"course_id\": \"c3c5a610-0c97-4ecc-852c-8586a7ba3b52\",\n    \"unit_id\": \"bfb886d0-2755-4007-983a-710470af8581\",\n    \"lesson_id\": \"8679e792-ed83-4c20-a504-ddc40952db12\",\n    \"collection_id\": \"eb5442a6-e16e-401a-b784-20e9d52140e7\",\n    \"class_id\": \"21d4dd82-5369-459b-9b2b-cd87734cdc5e\",\n    \"current_item_id\": null,\n    \"current_item_type\": null,\n    \"current_item_subtype\": null,\n    \"state\": \"start\",\n    \"score_percent\": null,\n    \"path_id\": 2\n}\n"
+		},
 		{
 			"id": "32006dbf-3e19-5b34-33fd-2ebb76b0f7fe",
 			"headers": "Authorization: Token Njg0OTIwMzktMzcxMy00MmRlLTkwYWQtOTRkNTk0NWNkNDgyOlR1ZSBGZWIgMTYgMDQ6NTI6MTUgVVRDIDIwMTY6MTQ1NTU5ODMzNTExNQ==\nContent-Type: application/json\n",
@@ -193,6 +233,76 @@
 			"currentHelper": null,
 			"helperAttributes": null,
 			"rawModeData": "{\n  \"ctx_user_id\": \"add37191-faa8-4330-821e-f351287d2713\",\n  \"ctx_class_id\": \"21d4dd82-5369-459b-9b2b-cd87734cdc5e\",\n  \"ctx_course_id\": \"c3c5a610-0c97-4ecc-852c-8586a7ba3b52\",\n  \"ctx_unit_id\": \"bfb886d0-2755-4007-983a-710470af8581\",\n  \"ctx_lesson_id\": null,\n  \"ctx_collection_id\": \"eb5442a6-e16e-401a-b784-20e9d52140e7\",\n  \"suggested_content_id\": \"3a6d829f-bb17-49b2-95ee-067db1d5c40b\",\n  \"suggested_content_type\": \"collection\"\n}"
+		},
+		{
+			"id": "4003794d-a272-fb04-4a95-1397703deead",
+			"headers": "Authorization: Token Njg0OTIwMzktMzcxMy00MmRlLTkwYWQtOTRkNTk0NWNkNDgyOlR1ZSBGZWIgMTYgMDQ6NTI6MTUgVVRDIDIwMTY6MTQ1NTU5ODMzNTExNQ==\nContent-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Token Njg0OTIwMzktMzcxMy00MmRlLTkwYWQtOTRkNTk0NWNkNDgyOlR1ZSBGZWIgMTYgMDQ6NTI6MTUgVVRDIDIwMTY6MTQ1NTU5ODMzNTExNQ==",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:8080/api/navigate-map/v1/next",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"auth": null,
+			"time": 1525682362287,
+			"name": "Next API start Lesson with first visible content having a teacher path",
+			"description": "",
+			"collectionId": "d7f3a791-e59a-dfec-e2fe-3e6619782963",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": "{\n    \"course_id\": \"c3c5a610-0c97-4ecc-852c-8586a7ba3b52\",\n    \"unit_id\": \"bfb886d0-2755-4007-983a-710470af8581\",\n    \"lesson_id\": \"8679e792-ed83-4c20-a504-ddc40952db12\",\n    \"collection_id\": null,\n    \"class_id\": \"21d4dd82-5369-459b-9b2b-cd87734cdc5e\",\n    \"current_item_id\": null,\n    \"current_item_type\": null,\n    \"current_item_subtype\": null,\n    \"state\": \"start\",\n    \"score_percent\": null,\n    \"path_id\": 0\n}\n"
+		},
+		{
+			"id": "42ce4858-d110-fd9e-098f-619bb7aefde5",
+			"headers": "Authorization: Token Njg0OTIwMzktMzcxMy00MmRlLTkwYWQtOTRkNTk0NWNkNDgyOlR1ZSBGZWIgMTYgMDQ6NTI6MTUgVVRDIDIwMTY6MTQ1NTU5ODMzNTExNQ==\nContent-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Token Njg0OTIwMzktMzcxMy00MmRlLTkwYWQtOTRkNTk0NWNkNDgyOlR1ZSBGZWIgMTYgMDQ6NTI6MTUgVVRDIDIwMTY6MTQ1NTU5ODMzNTExNQ==",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:8080/api/navigate-map/v1/next",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"auth": null,
+			"time": 1525685629498,
+			"name": "Next API start Lesson with first visible content not having teacher path",
+			"description": "",
+			"collectionId": "d7f3a791-e59a-dfec-e2fe-3e6619782963",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": "{\n    \"course_id\": \"c3c5a610-0c97-4ecc-852c-8586a7ba3b52\",\n    \"unit_id\": \"bfb886d0-2755-4007-983a-710470af8581\",\n    \"lesson_id\": \"e64d98ec-8793-469e-940b-90761a605e0d\",\n    \"collection_id\": null,\n    \"class_id\": \"21d4dd82-5369-459b-9b2b-cd87734cdc5e\",\n    \"current_item_id\": null,\n    \"current_item_type\": null,\n    \"current_item_subtype\": null,\n    \"state\": \"start\",\n    \"score_percent\": null,\n    \"path_id\": 0\n}\n"
 		},
 		{
 			"id": "62852f6a-4b26-a972-8623-1c0e481aec6d",
@@ -505,6 +615,76 @@
 			"rawModeData": "{\n  \"ctx_user_id\": \"add37191-faa8-4330-821e-f351287d2713\",\n  \"ctx_class_id\": null,\n  \"ctx_course_id\": \"c3c5a610-0c97-4ecc-852c-8586a7ba3b52\",\n  \"ctx_unit_id\": \"bfb886d0-2755-4007-983a-710470af8581\",\n  \"ctx_lesson_id\": null,\n  \"ctx_collection_id\": \"eb5442a6-e16e-401a-b784-20e9d52140e7\",\n  \"suggested_content_id\": \"3a6d829f-bb17-49b2-95ee-067db1d5c40b\",\n  \"suggested_content_type\": \"collection\"\n}"
 		},
 		{
+			"id": "b273a56e-a804-1627-7cf5-2481a7dceb6b",
+			"headers": "Authorization: Token Njg0OTIwMzktMzcxMy00MmRlLTkwYWQtOTRkNTk0NWNkNDgyOlR1ZSBGZWIgMTYgMDQ6NTI6MTUgVVRDIDIwMTY6MTQ1NTU5ODMzNTExNQ==\nContent-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Token Njg0OTIwMzktMzcxMy00MmRlLTkwYWQtOTRkNTk0NWNkNDgyOlR1ZSBGZWIgMTYgMDQ6NTI6MTUgVVRDIDIwMTY6MTQ1NTU5ODMzNTExNQ==",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:8080/api/navigate-map/v1/next",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"auth": null,
+			"time": 1525679539426,
+			"name": "Next API start item on main path",
+			"description": "",
+			"collectionId": "d7f3a791-e59a-dfec-e2fe-3e6619782963",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": "{\n    \"course_id\": \"c3c5a610-0c97-4ecc-852c-8586a7ba3b52\",\n    \"unit_id\": \"bfb886d0-2755-4007-983a-710470af8581\",\n    \"lesson_id\": \"8679e792-ed83-4c20-a504-ddc40952db12\",\n    \"collection_id\": \"eb5442a6-e16e-401a-b784-20e9d52140e7\",\n    \"class_id\": \"21d4dd82-5369-459b-9b2b-cd87734cdc5e\",\n    \"current_item_id\": null,\n    \"current_item_type\": null,\n    \"current_item_subtype\": null,\n    \"state\": \"start\",\n    \"score_percent\": null,\n    \"path_id\": 0\n}\n"
+		},
+		{
+			"id": "b3266750-43d0-36d7-96c3-6b2450876fc2",
+			"headers": "Authorization: Token Njg0OTIwMzktMzcxMy00MmRlLTkwYWQtOTRkNTk0NWNkNDgyOlR1ZSBGZWIgMTYgMDQ6NTI6MTUgVVRDIDIwMTY6MTQ1NTU5ODMzNTExNQ==\nContent-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "Token Njg0OTIwMzktMzcxMy00MmRlLTkwYWQtOTRkNTk0NWNkNDgyOlR1ZSBGZWIgMTYgMDQ6NTI6MTUgVVRDIDIwMTY6MTQ1NTU5ODMzNTExNQ==",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:8080/api/navigate-map/v1/next",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"auth": null,
+			"time": 1525679509291,
+			"name": "Next API start item on alternate path (teacher)",
+			"description": "",
+			"collectionId": "d7f3a791-e59a-dfec-e2fe-3e6619782963",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": "{\n    \"course_id\": \"c3c5a610-0c97-4ecc-852c-8586a7ba3b52\",\n    \"unit_id\": \"bfb886d0-2755-4007-983a-710470af8581\",\n    \"lesson_id\": \"8679e792-ed83-4c20-a504-ddc40952db12\",\n    \"collection_id\": \"eb5442a6-e16e-401a-b784-20e9d52140e7\",\n    \"class_id\": \"21d4dd82-5369-459b-9b2b-cd87734cdc5e\",\n    \"current_item_id\": null,\n    \"current_item_type\": null,\n    \"current_item_subtype\": null,\n    \"state\": \"start\",\n    \"score_percent\": null,\n    \"path_id\": 1\n}\n"
+		},
+		{
 			"id": "b7f517de-287e-1b1f-dd3d-8a57a2b8770d",
 			"headers": "Authorization: Token Njg0OTIwMzktMzcxMy00MmRlLTkwYWQtOTRkNTk0NWNkNDgyOlR1ZSBGZWIgMTYgMDQ6NTI6MTUgVVRDIDIwMTY6MTQ1NTU5ODMzNTExNQ==\nContent-Type: application/json\n",
 			"headerData": [
@@ -531,7 +711,7 @@
 			"dataMode": "raw",
 			"auth": null,
 			"time": 1525425008433,
-			"name": "Next",
+			"name": "Next API",
 			"description": "",
 			"collectionId": "d7f3a791-e59a-dfec-e2fe-3e6619782963",
 			"responses": [],
@@ -565,7 +745,7 @@
 			"data": [],
 			"dataMode": "raw",
 			"auth": null,
-			"time": 1525324166699,
+			"time": 1525960236764,
 			"name": "Add System Suggestion - In Class At collection",
 			"description": "",
 			"collectionId": "d7f3a791-e59a-dfec-e2fe-3e6619782963",
@@ -640,7 +820,7 @@
 			],
 			"currentHelper": null,
 			"helperAttributes": null,
-			"rawModeData": "{\n  \"ctx_user_id\": \"add37191-faa8-4330-821e-f351287d2713\",\n  \"ctx_class_id\": \"21d4dd82-5369-459b-9b2b-cd87734cdc5e\",\n  \"ctx_course_id\": \"c3c5a610-0c97-4ecc-852c-8586a7ba3b52\",\n  \"ctx_unit_id\": \"bfb886d0-2755-4007-983a-710470af8581\",\n  \"ctx_lesson_id\": \"8679e792-ed83-4c20-a504-ddc40952db12\",\n  \"ctx_collection_id\": \"eb5442a6-e16e-401a-b784-20e9d52140e7\",\n  \"suggested_content_id\": \"3a6d829f-bb17-49b2-95ee-067db1d5c40b\",\n  \"suggested_content_type\": \"collection\"\n}"
+			"rawModeData": "{\n  \"ctx_user_id\": \"add37191-faa8-4330-821e-f351287d2713\",\n  \"ctx_class_id\": \"21d4dd82-5369-459b-9b2b-cd87734cdc5e\",\n  \"ctx_course_id\": \"c3c5a610-0c97-4ecc-852c-8586a7ba3b52\",\n  \"ctx_unit_id\": \"bfb886d0-2755-4007-983a-710470af8581\",\n  \"ctx_lesson_id\": \"8679e792-ed83-4c20-a504-ddc40952db12\",\n  \"ctx_collection_id\": \"eb5442a6-e16e-401a-b784-20e9d52140e7\",\n  \"suggested_content_id\": \"3a6d829f-bb17-49b2-95ee-067db1d5c40b\",\n  \"suggested_content_type\": \"collection\",\n  \"suggested_content_subtype\": \"signature-collection/signature-assessment\"\n}"
 		}
 	]
 }

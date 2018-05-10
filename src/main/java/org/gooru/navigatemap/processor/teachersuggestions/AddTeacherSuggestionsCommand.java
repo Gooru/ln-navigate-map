@@ -115,9 +115,8 @@ class AddTeacherSuggestionsCommand {
             String value = input.getString(CommandAttributes.SUGGESTED_CONTENT_TYPE);
             command.suggestedContentType =
                 (value != null && !value.isEmpty()) ? SuggestedContentType.builder(value) : null;
-            value = input.getString(CommandAttributes.SUGGESTED_CONTENT_SUBTYPE);
-            command.suggestedContentSubType =
-                (value != null && !value.isEmpty()) ? SuggestedContentSubType.builder(value) : null;
+            /* Teachers are not allowed to set signature items as suggestions */
+            command.suggestedContentSubType = null;
         } catch (IllegalArgumentException e) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, e.getMessage());
         }
