@@ -11,6 +11,7 @@ public final class SuggestionCard {
     private String thumbnail;
     private String metadata;
     private String taxonomy;
+    private String suggestedContentSubType;
     private int resourceCount;
     private int questionCount;
 
@@ -84,5 +85,13 @@ public final class SuggestionCard {
 
     public void setQuestionCount(int questionCount) {
         this.questionCount = questionCount;
+    }
+
+    public String getSuggestedContentSubType() {
+        return suggestedContentSubType;
+    }
+
+    public void setSuggestedContentSubType(String suggestedContentSubType) {
+        this.suggestedContentSubType = suggestedContentSubType;
     }
 }

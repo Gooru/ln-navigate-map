@@ -103,6 +103,7 @@ public class PathFinderProcessor {
             throw new IllegalStateException(
                 "Suggestion type " + result.getSuggestedContentType().getName() + " not supported yet");
         }
+        npc.getCtxSuggestions().setSuggestedContentSubType(result.getSuggestedContentSubType().getName());
         npc.responseContext().setState(State.ContentEndSuggested);
     }
 

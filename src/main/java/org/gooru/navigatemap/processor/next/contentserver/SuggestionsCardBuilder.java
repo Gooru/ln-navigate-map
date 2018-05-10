@@ -43,7 +43,11 @@ class SuggestionsCardBuilder {
     }
 
     private List<SuggestionCard> getSuggestionCards() {
-        return suggestionCardService.suggestionCardForCollections(suggestions);
+        List<SuggestionCard> suggestionCards = suggestionCardService.suggestionCardForCollections(suggestions);
+        for (SuggestionCard suggestionCard : suggestionCards) {
+            suggestionCard.setSuggestedContentSubType(suggestionContext.getSuggestedContentSubType());
+        }
+        return suggestionCards;
     }
 
     private void applySuggestionsLimit() {

@@ -7,6 +7,7 @@ import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.infra.data.AlternatePath;
 import org.gooru.navigatemap.infra.data.ContentAddress;
 import org.gooru.navigatemap.infra.data.CurrentItemType;
+import org.gooru.navigatemap.infra.data.SuggestedContentSubType;
 import org.gooru.navigatemap.infra.data.SuggestedContentType;
 import org.skife.jdbi.v2.DBI;
 
@@ -89,7 +90,8 @@ class SuggestionsAwarePathFinderService implements PathFinder {
                     List<String> signatureItems = SuggestionFinderBuilder.buildSuggestionFinder(dbi)
                         .findSignatureAssessmentsForCompetencies(context, competencies);
                     if (signatureItems != null && !signatureItems.isEmpty()) {
-                        return new PathFinderResult(signatureItems, SuggestedContentType.Assessment);
+                        return new PathFinderResult(signatureItems, SuggestedContentType.Assessment,
+                            SuggestedContentSubType.SignatureAssessment);
                     } else {
                         return loadNextItemFromMainpath();
                     }
@@ -97,7 +99,8 @@ class SuggestionsAwarePathFinderService implements PathFinder {
                     List<String> signatureItems = SuggestionFinderBuilder.buildSuggestionFinder(dbi)
                         .findSignatureCollectionsForCompetencies(context, competencies);
                     if (signatureItems != null && !signatureItems.isEmpty()) {
-                        return new PathFinderResult(signatureItems, SuggestedContentType.Collection);
+                        return new PathFinderResult(signatureItems, SuggestedContentType.Collection,
+                            SuggestedContentSubType.SignatureCollection);
                     } else {
                         return loadNextItemFromMainpath();
                     }
@@ -126,7 +129,8 @@ class SuggestionsAwarePathFinderService implements PathFinder {
                             .findSignatureCollectionsForCompetencies(context,
                                 competencyCompletionHandler.fetchCompetenciesForCollection());
                         if (signatureItems != null && !signatureItems.isEmpty()) {
-                            return new PathFinderResult(signatureItems, SuggestedContentType.Collection);
+                            return new PathFinderResult(signatureItems, SuggestedContentType.Collection,
+                                SuggestedContentSubType.SignatureCollection);
                         } else {
                             return loadNextItemFromMainpath();
                         }

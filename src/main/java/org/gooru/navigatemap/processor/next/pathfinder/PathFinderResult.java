@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gooru.navigatemap.infra.data.ContentAddress;
+import org.gooru.navigatemap.infra.data.SuggestedContentSubType;
 import org.gooru.navigatemap.infra.data.SuggestedContentType;
 import org.gooru.navigatemap.infra.data.Trackable;
 import org.gooru.navigatemap.infra.data.Tracker;
@@ -16,6 +17,7 @@ class PathFinderResult implements Trackable {
     private ContentAddress contentAddress;
     private List<String> suggestions;
     private SuggestedContentType suggestedContentType;
+    private SuggestedContentSubType suggestedContentSubType;
     private List<Tracker> trackers;
 
     public ContentAddress getContentAddress() {
@@ -42,16 +44,27 @@ class PathFinderResult implements Trackable {
         this.suggestedContentType = suggestedContentType;
     }
 
+    public SuggestedContentSubType getSuggestedContentSubType() {
+        return suggestedContentSubType;
+    }
+
+    public void setSuggestedContentSubType(SuggestedContentSubType suggestedContentSubType) {
+        this.suggestedContentSubType = suggestedContentSubType;
+    }
+
     public PathFinderResult(ContentAddress contentAddress, List<String> suggestions,
-        SuggestedContentType suggestedContentType) {
+        SuggestedContentType suggestedContentType, SuggestedContentSubType suggestedContentSubType) {
         this.contentAddress = contentAddress;
         this.suggestions = suggestions;
         this.suggestedContentType = suggestedContentType;
+        this.suggestedContentSubType = suggestedContentSubType;
     }
 
-    public PathFinderResult(List<String> suggestions, SuggestedContentType suggestedContentType) {
+    public PathFinderResult(List<String> suggestions, SuggestedContentType suggestedContentType,
+        SuggestedContentSubType suggestedContentSubType) {
         this.suggestions = suggestions;
         this.suggestedContentType = suggestedContentType;
+        this.suggestedContentSubType = suggestedContentSubType;
     }
 
     public PathFinderResult(ContentAddress contentAddress) {

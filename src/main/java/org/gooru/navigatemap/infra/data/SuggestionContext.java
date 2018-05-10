@@ -11,6 +11,7 @@ import java.util.Set;
 public final class SuggestionContext {
     private final Set<String> assessments = new HashSet<>();
     private final Set<String> collections = new HashSet<>();
+    private String suggestedContentSubType;
 
     public void addAssessment(String id) {
         assessments.add(id);
@@ -60,6 +61,14 @@ public final class SuggestionContext {
 
     public Set<String> getCollections() {
         return Collections.unmodifiableSet(collections);
+    }
+
+    public String getSuggestedContentSubType() {
+        return suggestedContentSubType;
+    }
+
+    public void setSuggestedContentSubType(String suggestedContentSubType) {
+        this.suggestedContentSubType = suggestedContentSubType;
     }
 
     public static SuggestionContext buildSuggestionContextWithAssessments(List<String> suggestedAssessments) {
