@@ -72,7 +72,7 @@ class AlternatePathUnawareMainPathContentFinder extends AbstractContentFinder {
         case CRITERIA_ALL:
             return findNextContentInLessons(address, unit, lessons);
         case CRITERIA_VISIBLE_NON_SKIPPABLE:
-            throw new IllegalStateException("Not implemented");
+            return findNextVisibleAndNonSkippableContentInLessons(address, unit, lessons);
         default:
             throw new IllegalStateException("Invalid criteria for finding content");
         }
@@ -128,19 +128,28 @@ class AlternatePathUnawareMainPathContentFinder extends AbstractContentFinder {
     private ContentAddress findNextVisibleAndNonSkippableContentInLessons(ContentAddress address, String unit,
         List<String> lessons) {
         List<ContentAddress> contentAddresses;
-        ContentAddress result;
+        ContentAddress result = null;
         ContentVerifier visibilityVerifier = getVisibilityVerifier(context.getClassId());
+        ContentVerifier nonSkippabilityVerifier = getNonSkippabilityVerifier(context.getUserId());
 
         for (String lesson : lessons) {
             if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())
                 && address.getCollection() != null) {
                 contentAddresses =
                     finderDao.findNextCollectionsInCUL(address.getCourse(), unit, lesson, address.getCollection());
-                result = visibilityVerifier.findFirstVerifiedContent(contentAddresses);
             } else {
                 contentAddresses = finderDao.findCollectionsInCUL(address.getCourse(), unit, lesson);
-                result = visibilityVerifier.findFirstVerifiedContent(contentAddresses);
             }
+
+            for (ContentAddress contentAddress : contentAddresses) {
+                if (visibilityVerifier.isContentVerified(contentAddress)) {
+                    if (nonSkippabilityVerifier.isContentVerified(contentAddress)) {
+                        result = contentAddress;
+                        break;
+                    }
+                }
+            }
+
             if (result != null) {
                 return result;
             }

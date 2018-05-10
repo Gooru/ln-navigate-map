@@ -1,5 +1,5 @@
--- This is self referencing. We need validate if we should also store the hierarchy information
--- of parent trees here
+-- drop table user_navigation_paths
+
 CREATE TABLE user_navigation_paths (
     id bigserial NOT NULL,
     ctx_user_id uuid NOT NULL,
@@ -44,6 +44,24 @@ UPDATE collection set subformat = 'signature-assessment' where subformat = 'pre-
 
 -- Though there may not be any data here
 UPDATE collection set subformat = 'signature-collection' where subformat = 'backfill';
+
+-- There is another table user_competency_completion which may be dropped or renamed as this won't be used any more
+-- drop table user_competency_completion
+-- drop table user_competency_status
+
+CREATE TABLE user_competency_status (
+    user_id uuid NOT NULL,
+    comp_mcomp_id varchar(255) NOT NULL,
+    completion_status int NOT NULL CHECK (completion_status = ANY(ARRAY[4, 5])),
+    created_at timestamp without time zone DEFAULT timezone('UTC'::text, now()) NOT NULL,
+    updated_at timestamp without time zone DEFAULT timezone('UTC'::text, now()) NOT NULL,
+    CONSTRAINT ucc_pkey PRIMARY KEY (user_id, comp_mcomp_id)
+);
+
+COMMENT on column user_competency_status.completion_status IS 'Value of 4 is completed and 5 is mastered';
+COMMENT on column user_competency_status.completed_content_id IS 'This is NOT set to NOT NULL to avoid ingesting baseline data w/o evidence ';
+
+ALTER TABLE user_competency_status OWNER TO nucleus;
 
 -- drop table signature_items;
 

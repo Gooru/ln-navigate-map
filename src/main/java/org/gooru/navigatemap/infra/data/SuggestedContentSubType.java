@@ -7,9 +7,8 @@ import java.util.Map;
  * @author ashish on 17/11/17.
  */
 public enum SuggestedContentSubType {
-    PreTest("pre-test"),
-    PostTest("post-test"),
-    Benchmark("benchmark");
+    SignatureAssessment("signature-assessment"),
+    SignatureCollection("signature-collection");
 
     private final String name;
 

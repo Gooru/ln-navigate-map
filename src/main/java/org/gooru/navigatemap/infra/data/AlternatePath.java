@@ -97,6 +97,26 @@ public final class AlternatePath {
         return suggestedContentSubtype;
     }
 
+    public boolean isSuggestionSignatureAssessment() {
+        if (suggestedContentSubtype != null) {
+            if (SuggestedContentSubType.builder(suggestedContentSubtype)
+                == SuggestedContentSubType.SignatureAssessment) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isSuggestionSignatureCollection() {
+        if (suggestedContentSubtype != null) {
+            if (SuggestedContentSubType.builder(suggestedContentSubtype)
+                == SuggestedContentSubType.SignatureCollection) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void setSuggestedContentSubtype(String suggestedContentSubtype) {
         this.suggestedContentSubtype = suggestedContentSubtype;
     }

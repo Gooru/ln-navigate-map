@@ -16,4 +16,8 @@ final class ContentVerifierBuilder {
     static ContentVerifier buildContentVisibilityVerifier(UUID classId, DBI dbi) {
         return ContentVisibilityVerifier.build(classId, dbi);
     }
+
+    static ContentVerifier buildContentNonSkippabilityVerifier(DBI dbi, String user) {
+        return ContentNonSkippabilityVerifier.build(dbi, user);
+    }
 }

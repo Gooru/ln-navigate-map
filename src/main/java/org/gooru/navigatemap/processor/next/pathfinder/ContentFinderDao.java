@@ -12,15 +12,6 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
  */
 public interface ContentFinderDao {
 
-    @SqlQuery("select course_id, unit_id, lesson_id, id, format, subformat, null as path_id, class_visibility as "
-                  + "visibility from collection c where course_id = :courseId::uuid and unit_id = (select unit_id "
-                  + "from unit where course_id = :courseId::uuid and is_deleted = false order by sequence_id asc "
-                  + "limit 1) and lesson_id =   (select lesson_id from lesson where course_id = :courseId::uuid and "
-                  + "unit_id = c.unit_id  and is_deleted = false order by sequence_id asc limit 1)  order by "
-                  + "sequence_id limit 1;")
-    @Mapper(ContentAddressMapper.class)
-    ContentAddress findFirstContentInCourse(@Bind("courseId") String courseId);
-
     @SqlQuery("select unit_id from unit where course_id = :courseId::uuid and is_deleted = false order by sequence_id "
                   + "asc")
     List<String> findUnitsInCourse(@Bind("courseId") String courseId);
@@ -71,28 +62,9 @@ public interface ContentFinderDao {
     List<ContentAddress> findFirstCollectionInLesson(@Bind("courseId") String courseId, @Bind("unitId") String unitId,
         @Bind("lessonId") String lessonId);
 
-    @SqlQuery("select taxonomy from lesson where course_id = :courseId::uuid and unit_id = :unitId::uuid and "
-                  + "lesson_id = :lessonId::uuid and is_deleted = false")
-    String findCompetenciesForLesson(@Bind("courseId") String course, @Bind("unitId") String unit,
-        @Bind("lessonId") String lesson);
-
     @SqlQuery("select taxonomy from collection where course_id = :courseId::uuid and unit_id = :unitId::uuid and "
                   + "lesson_id = :lessonId::uuid and id = :collectionId::uuid and is_deleted = false")
     String findCompetenciesForCollection(@Bind("courseId") String course, @Bind("unitId") String unit,
         @Bind("lessonId") String lesson, @Bind("collectionId") String collectionId);
-
-    @SqlQuery("select count(*) from collection where course_id = :courseId::uuid and unit_id = :unitId::uuid and  "
-                  + "lesson_id = :lessonId::uuid and id = :collectionId::uuid and is_deleted = false")
-    long validateCULC(@Bind("courseId") String courseId, @Bind("unitId") String unitId,
-        @Bind("lessonId") String lessonId, @Bind("collectionId") String collectionId);
-
-    @SqlQuery("select count(*) from collection where course_id = :courseId::uuid and unit_id = :unitId::uuid and  "
-                  + "lesson_id = :lessonId::uuid and is_deleted = false")
-    long validateCUL(@Bind("courseId") String courseId, @Bind("unitId") String unitId,
-        @Bind("lessonId") String lessonId);
-
-    @SqlQuery("select count(*) from user_navigation_paths where id = :pathId and suggested_content_id = "
-                  + ":collectionId::uuid and suggested_content_type = :contentType")
-    long validateAlternatePath(@Bind("pathId") Long pathId, @Bind("collectionId") String collection);
 
 }

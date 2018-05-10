@@ -1,6 +1,13 @@
 package org.gooru.navigatemap.processor.next.pathfinder;
 
+import java.util.List;
+
+import org.gooru.navigatemap.app.constants.HttpConstants;
+import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.infra.data.AlternatePath;
+import org.gooru.navigatemap.infra.data.ContentAddress;
 import org.gooru.navigatemap.infra.data.CurrentItemType;
+import org.gooru.navigatemap.infra.data.SuggestedContentType;
 import org.skife.jdbi.v2.DBI;
 
 // @formatter:off
@@ -60,35 +67,125 @@ import org.skife.jdbi.v2.DBI;
 class SuggestionsAwarePathFinderService implements PathFinder {
 
     private final DBI dbi;
-    private ContentFinderDao finderDao;
     private PathFinderContext context;
 
     SuggestionsAwarePathFinderService(DBI dbi) {
         this.dbi = dbi;
-        finderDao = dbi.onDemand(ContentFinderDao.class);
     }
 
     @Override
     public PathFinderResult findPath(PathFinderContext context) {
         this.context = context;
-        // TODO provide implementation
-        throw new IllegalStateException("Not implemented");
+        return process();
     }
 
     private PathFinderResult process() {
-        if (!context.getContentAddress().isOnAlternatePath()) {
+        if (context.getContentAddress().isOnMainPath()) {
             if (context.getContentAddress().getCurrentItemType() == CurrentItemType.Assessment) {
-
+                CompetencyCompletionHandler competencyCompletionHandler = new CompetencyCompletionHandler(dbi, context);
+                competencyCompletionHandler.handleCompetencyCompletion();
+                List<String> competencies = competencyCompletionHandler.fetchCompetenciesForCollection();
+                if (competencyCompletionHandler.isCompetencyCompleted()) {
+                    List<String> signatureItems = SuggestionFinderBuilder.buildSuggestionFinder(dbi)
+                        .findSignatureAssessmentsForCompetencies(context, competencies);
+                    if (signatureItems != null && !signatureItems.isEmpty()) {
+                        return new PathFinderResult(signatureItems, SuggestedContentType.Assessment);
+                    } else {
+                        return loadNextItemFromMainpath();
+                    }
+                } else {
+                    List<String> signatureItems = SuggestionFinderBuilder.buildSuggestionFinder(dbi)
+                        .findSignatureCollectionsForCompetencies(context, competencies);
+                    if (signatureItems != null && !signatureItems.isEmpty()) {
+                        return new PathFinderResult(signatureItems, SuggestedContentType.Collection);
+                    } else {
+                        return loadNextItemFromMainpath();
+                    }
+                }
             } else {
                 return loadNextItemFromMainpath();
             }
         } else {
-
+            AlternatePath alternatePath = findAlternatePath();
+            if (alternatePath.isSuggestionTeacherSuggestion()) {
+                if (context.getContentAddress().getCurrentItemType() == CurrentItemType.Assessment) {
+                    CompetencyCompletionHandler competencyCompletionHandler =
+                        new CompetencyCompletionHandler(dbi, context);
+                    competencyCompletionHandler.handleCompetencyCompletion();
+                }
+                return loadNextItemFromTeacherpath();
+            } else if (alternatePath.isSuggestionSysemSuggestion()) {
+                if (context.getContentAddress().getCurrentItemType() == CurrentItemType.Assessment) {
+                    CompetencyCompletionHandler competencyCompletionHandler =
+                        new CompetencyCompletionHandler(dbi, context);
+                    competencyCompletionHandler.handleCompetencyMastery(alternatePath);
+                    if (competencyCompletionHandler.isCompetencyCompleted()) {
+                        return loadNextItemFromMainpath();
+                    } else {
+                        List<String> signatureItems = SuggestionFinderBuilder.buildSuggestionFinder(dbi)
+                            .findSignatureCollectionsForCompetencies(context,
+                                competencyCompletionHandler.fetchCompetenciesForCollection());
+                        if (signatureItems != null && !signatureItems.isEmpty()) {
+                            return new PathFinderResult(signatureItems, SuggestedContentType.Collection);
+                        } else {
+                            return loadNextItemFromMainpath();
+                        }
+                    }
+                } else {
+                    return loadNextItemFromSystemPath(alternatePath);
+                }
+            } else {
+                throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid path type");
+            }
         }
-        throw new IllegalStateException("Not implemented");
     }
 
+    /* Load item from teacher path, if not present delegate to finder for main path */
+    private PathFinderResult loadNextItemFromTeacherpath() {
+        ContentAddress teacherPathContentAddress =
+            ContentFinderFactory.buildTeacherPathContentFinder(dbi).findContent(context);
+        if (teacherPathContentAddress != null) {
+            return new PathFinderResult(teacherPathContentAddress);
+        } else {
+            return loadNextItemFromMainpath();
+        }
+    }
+
+    /* Load next item from system path. If such an item is not present then delegate to finder for main path */
+    private PathFinderResult loadNextItemFromSystemPath(AlternatePath currentAlternatePath) {
+        List<AlternatePath> nextAlternatePaths;
+        if (context.getClassId() != null) {
+            nextAlternatePaths = getAlternatePathDao()
+                .findNextSystemPathOfCollectionInClass(context.getContentAddress(), context.getUserId(),
+                    context.getClassId().toString(), currentAlternatePath.getId());
+        } else {
+            nextAlternatePaths = getAlternatePathDao()
+                .findNextSystemPathOfCollectionForIL(context.getContentAddress(), context.getUserId(),
+                    currentAlternatePath.getId());
+        }
+        if (nextAlternatePaths != null && !nextAlternatePaths.isEmpty()) {
+            return new PathFinderResult(nextAlternatePaths.get(0).toContentAddress());
+        }
+        return loadNextItemFromMainpath();
+    }
+
+    /* Load item from main path, and if there is teacher path on that item, return that else return the loaded path */
     private PathFinderResult loadNextItemFromMainpath() {
-        return null;
+        return new PathFinderResult(
+            ContentFinderFactory.buildTeacherPathAwareMainPathContentFinder(dbi).findContent(context));
+    }
+
+    private AlternatePath findAlternatePath() {
+        List<AlternatePath> teacherPathsForContext = getAlternatePathDao()
+            .findNextTeacherPathsForSpecifiedContext(context.getContentAddress(), context.getUserId(),
+                context.getClassId().toString());
+        if (teacherPathsForContext != null && !teacherPathsForContext.isEmpty()) {
+            return teacherPathsForContext.get(0);
+        }
+        throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid path id");
+    }
+
+    private AlternatePathDao getAlternatePathDao() {
+        return dbi.onDemand(AlternatePathDao.class);
     }
 }

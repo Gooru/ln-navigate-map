@@ -1,5 +1,8 @@
 package org.gooru.navigatemap.processor.next.pathfinder;
 
+import java.util.List;
+
+import org.gooru.navigatemap.infra.data.AlternatePath;
 import org.gooru.navigatemap.infra.data.ContentAddress;
 import org.skife.jdbi.v2.DBI;
 
@@ -19,6 +22,16 @@ class TeacherPathAwareMainPathContentFinder extends AbstractContentFinder {
 
     @Override
     public ContentAddress findContent(PathFinderContext context) {
-        return null;
+        ContentAddress result = ContentFinderFactory.buildAlternatePathUnawareMainPathContentFinder(getDbi(),
+            ContentFinderCriteria.CRITERIA_VISIBLE_NON_SKIPPABLE).findContent(context);
+
+        List<AlternatePath> teacherPathsForContext = getAlternatePathDao()
+            .findTeacherPathsForSpecifiedContext(context.getContentAddress(), context.getUserId(),
+                context.getClassId().toString());
+        if (teacherPathsForContext == null || teacherPathsForContext.isEmpty()) {
+            return result;
+        } else {
+            return teacherPathsForContext.get(0).toContentAddress();
+        }
     }
 }

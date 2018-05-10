@@ -26,4 +26,16 @@ abstract class AbstractContentFinder implements ContentFinder {
     protected ContentVerifier getVisibilityVerifier(UUID classId) {
         return ContentVerifierBuilder.buildContentVisibilityVerifier(classId, dbi);
     }
+
+    protected UserCompetencyCompletionDao getUserCompetencyCompletionDao() {
+        return dbi.onDemand(UserCompetencyCompletionDao.class);
+    }
+
+    protected ContentVerifier getNonSkippabilityVerifier(String user) {
+        return ContentVerifierBuilder.buildContentNonSkippabilityVerifier(dbi, user);
+    }
+
+    protected DBI getDbi() {
+        return dbi;
+    }
 }

@@ -104,6 +104,10 @@ public final class ContentAddress {
         return (pathId != null && pathId != 0);
     }
 
+    public boolean isOnMainPath() {
+        return !isOnAlternatePath();
+    }
+
     public boolean isValidAddress() {
         return course != null && unit != null && lesson != null && collection != null;
     }
