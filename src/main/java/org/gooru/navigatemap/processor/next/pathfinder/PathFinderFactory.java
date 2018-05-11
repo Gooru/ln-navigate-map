@@ -22,4 +22,8 @@ final class PathFinderFactory {
     static PathFinder buildSuggestionsAwarePathFinderService() {
         return new SuggestionsAwarePathFinderService(DBICreator.getDbiForDefaultDS());
     }
+
+    static PathFinder buildSpecifiedItemFinderService() {
+        return new SpecifiedItemFinderService(DBICreator.getDbiForDefaultDS());
+    }
 }

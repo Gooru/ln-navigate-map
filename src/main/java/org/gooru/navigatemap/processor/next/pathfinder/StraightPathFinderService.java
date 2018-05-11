@@ -1,5 +1,7 @@
 package org.gooru.navigatemap.processor.next.pathfinder;
 
+import org.gooru.navigatemap.app.constants.HttpConstants;
+import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.infra.data.ContentAddress;
 import org.skife.jdbi.v2.DBI;
 
@@ -14,15 +16,18 @@ import org.skife.jdbi.v2.DBI;
  */
 class StraightPathFinderService implements PathFinder {
     private final DBI dbi;
-    private final ContentFinderDao finderDao;
 
     StraightPathFinderService(DBI dbi) {
         this.dbi = dbi;
-        finderDao = dbi.onDemand(ContentFinderDao.class);
     }
 
     @Override
     public PathFinderResult findPath(PathFinderContext context) {
+        if (context.getContentAddress().isOnAlternatePath()) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
+                "Alternate path navigation is disabled");
+        }
+
         return new PathFinderResult(ContentFinderFactory
             .buildAlternatePathUnawareMainPathContentFinder(dbi, ContentFinderCriteria.CRITERIA_VISIBLE)
             .findContent(context));

@@ -114,11 +114,11 @@ class ExplicitStartPathFinderService implements PathFinder {
         ContentAddress result = finderDao
             .findCULC(specifiedContentAddress.getCourse(), specifiedContentAddress.getUnit(),
                 specifiedContentAddress.getLesson(), specifiedContentAddress.getCollection());
-        validateVisibility(result, context.getClassId());
+        validateVisibility(result);
         return result;
     }
 
-    private void validateVisibility(ContentAddress result, UUID classId) {
+    private void validateVisibility(ContentAddress result) {
         ContentVerifier visibilityVerifier =
             ContentVerifierBuilder.buildContentVisibilityVerifier(context.getClassId(), dbi);
         if (result == null || !visibilityVerifier.isContentVerified(result)) {

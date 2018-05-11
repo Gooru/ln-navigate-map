@@ -33,7 +33,7 @@ class PathFinderContext {
         return userId;
     }
 
-    public Double getScore() {
+    Double getScore() {
         return score;
     }
 

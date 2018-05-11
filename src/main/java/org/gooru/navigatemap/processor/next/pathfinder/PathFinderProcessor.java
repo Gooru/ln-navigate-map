@@ -108,9 +108,15 @@ public class PathFinderProcessor {
     }
 
     private void handleNoSuggestionsRoute() {
-        PathFinderResult result =
-            PathFinderFactory.buildStraightPathFinderService().findPath(PathFinderContext.buildContext(npc));
-        serveTheContent(result.getContentAddress());
+        if (npc.userExplicitlyAskedToStartCollection()) {
+            PathFinderResult result =
+                PathFinderFactory.buildSpecifiedItemFinderService().findPath(PathFinderContext.buildContext(npc));
+            serveTheContent(result.getContentAddress());
+        } else {
+            PathFinderResult result =
+                PathFinderFactory.buildStraightPathFinderService().findPath(PathFinderContext.buildContext(npc));
+            serveTheContent(result.getContentAddress());
+        }
     }
 
     private void serveTheContent(ContentAddress contentToServe) {

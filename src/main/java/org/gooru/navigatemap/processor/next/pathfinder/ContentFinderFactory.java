@@ -19,4 +19,8 @@ final class ContentFinderFactory {
         return new TeacherPathAwareMainPathContentFinder(dbi);
     }
 
+    static ContentFinder buildAlternatePathUnawareSpecifiedPathContentFinder(DBI dbi,
+        ContentFinderCriteria criteriaVisible) {
+        return new AlternatePathUnawareSpecifiedPathContentFinder(dbi);
+    }
 }
