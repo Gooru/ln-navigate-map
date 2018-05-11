@@ -63,15 +63,15 @@ class CompetencyCompletionHandler {
     }
 
     List<String> fetchCompetenciesForCollection() {
-        // TODO: Do we fetch GUT codes or framework codes
         ContentFinderDao finderDao = dbi.onDemand(ContentFinderDao.class);
         if (!areCompetenciesFetched) {
-            String competenciesForCollection = finderDao
+            List<List<String>> listOfListOfComps = finderDao
                 .findCompetenciesForCollection(context.getContentAddress().getCourse(),
                     context.getContentAddress().getUnit(), context.getContentAddress().getLesson(),
                     context.getContentAddress().getCollection());
-            competencies =
-                TaxonomyParserHelper.parseCollectionTaxonomy(context.getContentAddress(), competenciesForCollection);
+            if (listOfListOfComps != null && !listOfListOfComps.isEmpty()) {
+                competencies = listOfListOfComps.get(0);
+            }
             areCompetenciesFetched = true;
         }
         return competencies;

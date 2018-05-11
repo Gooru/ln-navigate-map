@@ -1,6 +1,7 @@
 package org.gooru.navigatemap.processor.next.pathfinder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.gooru.navigatemap.infra.data.ContentAddress;
@@ -28,11 +29,14 @@ class ContentNonSkippabilityVerifier implements ContentVerifier {
 
     @Override
     public boolean isContentVerified(ContentAddress contentAddress) {
-        String competencies = finderDao
+        List<List<String>> listOfListOfComps = finderDao
             .findCompetenciesForCollection(contentAddress.getCourse(), contentAddress.getUnit(),
                 contentAddress.getLesson(), contentAddress.getCollection());
 
-        List<String> competencyList = TaxonomyParserHelper.parseCollectionTaxonomy(contentAddress, competencies);
+        List<String> competencyList =
+            (listOfListOfComps != null && !listOfListOfComps.isEmpty()) ? listOfListOfComps.get(0) :
+                Collections.emptyList();
+
         if (competencyList.isEmpty()) {
             return true;
         } else {

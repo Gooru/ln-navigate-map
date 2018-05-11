@@ -1,8 +1,10 @@
 package org.gooru.navigatemap.processor.next.pathfinder;
 
+import java.sql.Array;
 import java.util.List;
 
 import org.gooru.navigatemap.infra.data.ContentAddress;
+import org.gooru.navigatemap.infra.utilities.jdbi.SqlArrayMapper;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
@@ -62,9 +64,10 @@ public interface ContentFinderDao {
     List<ContentAddress> findFirstCollectionInLesson(@Bind("courseId") String courseId, @Bind("unitId") String unitId,
         @Bind("lessonId") String lessonId);
 
-    @SqlQuery("select taxonomy from collection where course_id = :courseId::uuid and unit_id = :unitId::uuid and "
+    @Mapper(SqlArrayMapper.class)
+    @SqlQuery("select gut_codes from collection where course_id = :courseId::uuid and unit_id = :unitId::uuid and "
                   + "lesson_id = :lessonId::uuid and id = :collectionId::uuid and is_deleted = false")
-    String findCompetenciesForCollection(@Bind("courseId") String course, @Bind("unitId") String unit,
+    List<List<String>> findCompetenciesForCollection(@Bind("courseId") String course, @Bind("unitId") String unit,
         @Bind("lessonId") String lesson, @Bind("collectionId") String collectionId);
 
 }
