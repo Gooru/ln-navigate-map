@@ -25,24 +25,18 @@ public interface AsyncMessageProcessor {
     }
 
     static AsyncMessageProcessor buildPlaceHolderSuccessProcessor(Vertx vertx, Message<JsonObject> message) {
-        return new AsyncMessageProcessor() {
-            @Override
-            public Future<MessageResponse> process() {
-                Future<MessageResponse> future = Future.future();
-                future.complete(MessageResponse.Builder.buildPlaceHolderResponse());
-                return future;
-            }
+        return () -> {
+            Future<MessageResponse> future = Future.future();
+            future.complete(MessageResponse.Builder.buildPlaceHolderResponse());
+            return future;
         };
     }
 
     static AsyncMessageProcessor buildPlaceHolderExceptionProcessor(Vertx vertx, Message<JsonObject> message) {
-        return new AsyncMessageProcessor() {
-            @Override
-            public Future<MessageResponse> process() {
-                Future<MessageResponse> future = Future.future();
-                future.fail(new IllegalStateException("Illegal State for processing command"));
-                return future;
-            }
+        return () -> {
+            Future<MessageResponse> future = Future.future();
+            future.fail(new IllegalStateException("Illegal State for processing command"));
+            return future;
         };
     }
 

@@ -22,7 +22,7 @@ public class HttpVerticle extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpVerticle.class);
 
     @Override
-    public void start(Future<Void> startFuture) throws Exception {
+    public void start(Future<Void> startFuture) {
         LOGGER.info("Starting Http Verticle ...");
         final HttpServer httpServer = vertx.createHttpServer();
 

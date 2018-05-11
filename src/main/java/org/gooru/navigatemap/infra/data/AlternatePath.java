@@ -99,10 +99,8 @@ public final class AlternatePath {
 
     public boolean isSuggestionSignatureAssessment() {
         if (suggestedContentSubtype != null) {
-            if (SuggestedContentSubType.builder(suggestedContentSubtype)
-                == SuggestedContentSubType.SignatureAssessment) {
-                return true;
-            }
+            return SuggestedContentSubType.builder(suggestedContentSubtype)
+                == SuggestedContentSubType.SignatureAssessment;
         }
         return false;
     }

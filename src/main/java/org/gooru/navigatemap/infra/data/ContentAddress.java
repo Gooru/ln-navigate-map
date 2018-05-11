@@ -26,6 +26,7 @@ public final class ContentAddress {
         this.currentItem = address.currentItem;
         this.currentItemType = address.currentItemType;
         this.currentItemSubtype = address.currentItemSubtype;
+        this.visibility = address.visibility;
     }
 
     public String getCourse() {

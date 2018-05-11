@@ -25,7 +25,7 @@ public class PostProcessVerticle extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(PostProcessVerticle.class);
 
     @Override
-    public void start(Future<Void> startFuture) throws Exception {
+    public void start(Future<Void> startFuture) {
         EventBus eb = vertx.eventBus();
 
         eb.<JsonObject>localConsumer(Constants.EventBus.MBEP_POST_PROCESS, message -> {

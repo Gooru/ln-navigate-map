@@ -119,7 +119,7 @@ final class ContentVisibilityVerifier implements ContentVerifier {
     static ContentVisibilityVerifier build(UUID classId, DBI dbi) {
         ContentVisibilityVerifier result;
         if (classId == null) {
-            result = new ContentVisibilityVerifier(classId, CLASS_VISIBILITY.VISIBLE_NA);
+            result = new ContentVisibilityVerifier(null, CLASS_VISIBILITY.VISIBLE_NA);
         } else {
             ClassDao dao = dbi.onDemand(ClassDao.class);
             CLASS_VISIBILITY visibility = getVisibilityFromString(dao.getClassVisibility(classId.toString()));

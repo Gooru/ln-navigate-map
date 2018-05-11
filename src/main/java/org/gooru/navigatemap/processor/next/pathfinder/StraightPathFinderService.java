@@ -14,7 +14,7 @@ import org.skife.jdbi.v2.DBI;
  */
 class StraightPathFinderService implements PathFinder {
     private final DBI dbi;
-    private ContentFinderDao finderDao;
+    private final ContentFinderDao finderDao;
 
     StraightPathFinderService(DBI dbi) {
         this.dbi = dbi;

@@ -10,7 +10,7 @@ import org.skife.jdbi.v2.DBI;
 class CourseVersionService {
 
     private CourseVersionDao courseVersionDao;
-    private DBI dbi;
+    private final DBI dbi;
 
     CourseVersionService(DBI dbi) {
         this.dbi = dbi;

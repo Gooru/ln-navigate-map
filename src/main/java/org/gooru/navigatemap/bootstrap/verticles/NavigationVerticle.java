@@ -139,6 +139,6 @@ public class NavigationVerticle extends AbstractVerticle {
     }
 
     @Override
-    public void stop(Future<Void> stopFuture) throws Exception {
+    public void stop(Future<Void> stopFuture) {
     }
 }

@@ -40,11 +40,8 @@ class ContentNonSkippabilityVerifier implements ContentVerifier {
                 .findCompletedOrMasteredCompetenciesForUserInGivenList(user,
                     CollectionUtils.convertToSqlArrayOfString(competencyList));
             competencyList.removeAll(completedCompetenciesByUser);
-            if (!competencyList.isEmpty()) {
-                return true;
-            }
+            return !competencyList.isEmpty();
         }
-        return false;
     }
 
     @Override

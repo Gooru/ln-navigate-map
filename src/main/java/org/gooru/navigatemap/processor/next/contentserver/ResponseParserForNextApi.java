@@ -10,7 +10,7 @@ import io.vertx.core.json.JsonObject;
  */
 public final class ResponseParserForNextApi {
 
-    private JsonObject response;
+    private final JsonObject response;
 
     private ResponseParserForNextApi(JsonObject response) {
         this.response = response;
