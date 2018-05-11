@@ -12,7 +12,7 @@ import org.skife.jdbi.v2.tweak.ResultSetMapper;
 
 /**
  * Mapper to map the text[] column from Postgres to List<String>
- *
+ * <p>
  * Note that this mapper assumes that first column selected is text[] and thus is generic (instead of hard coding the
  * column name)
  *

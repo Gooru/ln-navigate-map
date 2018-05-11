@@ -12,6 +12,6 @@ final class SuggestionFinderBuilder {
     }
 
     static SuggestionFinder buildSuggestionFinder(DBI dbi) {
-        throw new IllegalStateException("Not implemented");
+        return new SuggestionFinderImpl(dbi);
     }
 }

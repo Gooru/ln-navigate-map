@@ -1,6 +1,5 @@
 package org.gooru.navigatemap.processor.next.pathfinder;
 
-import java.sql.Array;
 import java.util.List;
 
 import org.gooru.navigatemap.infra.data.ContentAddress;

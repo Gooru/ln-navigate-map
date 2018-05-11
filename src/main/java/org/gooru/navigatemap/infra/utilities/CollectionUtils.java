@@ -3,6 +3,7 @@ package org.gooru.navigatemap.infra.utilities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -36,6 +37,16 @@ public final class CollectionUtils {
             return input;
         }
         Set<T> resultSet = new HashSet<>(input);
+        final ArrayList<T> result = new ArrayList<>(input.size());
+        result.addAll(resultSet);
+        return result;
+    }
+
+    public static <T> List<T> uniqueMaintainOrder(List<T> input) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+        Set<T> resultSet = new LinkedHashSet<>(input);
         final ArrayList<T> result = new ArrayList<>(input.size());
         result.addAll(resultSet);
         return result;
