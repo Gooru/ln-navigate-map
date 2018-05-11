@@ -84,7 +84,7 @@
   },
   "app.configuration": {
     "context.mbus.timeout.seconds": 60,
-    "suggestions.advise": false,
+    "suggestions.advise": true,
     "serve.content.details": false,
     "suggestions.limit": 1
   },
