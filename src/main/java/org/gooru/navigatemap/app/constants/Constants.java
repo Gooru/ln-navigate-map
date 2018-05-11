@@ -46,6 +46,7 @@ public final class Constants {
         public static final String MSG_MESSAGE = "message";
         public static final String PROCESSING_AUTH_TIME = "auth.processing.time";
         public static final String PROCESSING_HANDLER_START_TIME = "handler.start.time";
+        public static final String ACCESS_TOKEN_VALIDITY = "access_token_validity";
 
         private Message() {
             throw new AssertionError();
