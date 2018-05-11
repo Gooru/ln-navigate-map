@@ -62,30 +62,3 @@ COMMENT on column user_competency_status.completion_status IS 'Value of 4 is com
 COMMENT on column user_competency_status.completed_content_id IS 'This is NOT set to NOT NULL to avoid ingesting baseline data w/o evidence ';
 
 ALTER TABLE user_competency_status OWNER TO nucleus;
-
--- drop table signature_items;
-
-CREATE TABLE signature_items (
-    id bigserial,
-    competency_internal_code character varying(512) NOT NULL,
-    competency_display_code character varying(512),
-    competency_gut_code character varying(512),
-    micro_competency_display_code character varying(512),
-    micro_competency_internal_code character varying(521),
-    micro_competency_gut_code character varying(512),
-    performance_range character varying(32) NOT NULL,
-    item_id character varying(36) NOT NULL,
-    item_format varchar(128) NOT NULL CHECK (item_format::text = ANY (ARRAY['collection'::text, 'assessment'::text])),
-    language character varying(256),
-    engagement real DEFAULT 0,
-    efficacy real DEFAULT 0,
-    weight real DEFAULT 0,
-    suggested_count bigint NOT NULL DEFAULT 0,
-    is_curated boolean NOT NULL DEFAULT false,
-    CONSTRAINT si_pkey PRIMARY KEY (id)
-);
-
-ALTER TABLE signature_items OWNER TO nucleus;
-CREATE INDEX si_cic_pr ON signature_items using btree(competency_internal_code, performance_range);
-CREATE INDEX si_cgc_pr ON signature_items using btree(competency_gut_code, performance_range);
-
