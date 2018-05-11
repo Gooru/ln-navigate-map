@@ -1,0 +1,138 @@
+System suggestion Add:
+==================================================================
+- Add system suggestion at lesson level : Should fail
+- Add system suggestion at unit level : Should fail
+- Add system suggestion at collection level in class when no other suggestion exists for that context : If info is valid then add 
+- Add system suggestion at collection level in class when other suggestion exists for that context : If info is valid then add 
+- Add system suggestion at collection level for IL when no other suggestion exists for that context : If info is valid then add 
+- Add system suggestion at collection level for IL when other suggestion exists for that context : If info is valid then add 
+- Add system suggestion at collection level in class when same suggestion exists for that context : Existing path id should be returned
+- Add system suggestion at collection level for IL when same suggestion exists for that context : Existing path id should be returned
+
+- Add Route0 Suggestion at Unit level: should fail
+- Add Route0 Suggestion at Lesson level: should fail
+- Add Route0 Suggestion at Collection level: should fail
+- Add Route0 Suggestion at Course level when no route0 suggestion already exists for IL: should pass and id should be returned
+- Add Route0 Suggestion at Course level when same suggestion id and type is already added for IL: should pass and existing id should be returned
+- Add Route0 Suggestion at Course level when other suggestion id and type is already added as route0 for IL : should fail
+- Add Route0 Suggestion at Course level when no route0 suggestion already exists for Class: should pass and id should be returned
+- Add Route0 Suggestion at Course level when same suggestion id and type is already added for Class: should pass and existing id should be returned
+- Add Route0 Suggestion at Course level when other suggestion id and type is already added as route0 for Class : should fail
+
+Teacher suggestion add:
+==================================================================
+
+- Add teacher suggestion at lesson level : Should fail
+- Add teacher suggestion at unit level : Should fail
+- Add teacher suggestion at collection level in class when no other suggestion exists for that context : If info is valid then add 
+- Add teacher suggestion at collection level in class when other suggestion exists for that context : If info is valid then add 
+- Add teacher suggestion at collection level for IL when no other suggestion exists for that context : Should fail
+- Add teacher suggestion at collection level for IL when other suggestion exists for that context : Should fail 
+- Add teacher suggestion at collection level in class when same suggestion exists for that context : Existing path id should be returned
+- Add teacher suggestion at collection level for IL when same suggestion exists for that context : Should fail
+- Do all above cases for multiple users in same packet
+
+
+Next API Straight Path, when suggestions are turned off(and no skip logic) at global level or course version is null:
+==================================================================
+
+- IL (No class id in context object implies there is no visibility check)
+    - Context does not exist in redis, Course is populated, state is continue : first unit, first lesson, first coll/ast should be returned
+    - Context does exist in redis, Course is populated, state is continue : unit, lesson and next coll/ast from context should be returned. If current context is pointing to last item in lesson, then next lesson first item should be loaded. If current lesson is last lesson, then unit should be switched as well. If the unit is also last, then state as DONE should be served
+    - Start unit flow: not supported
+    - Start lesson flow: If the CUL context is right, then first item in lesson should be returned
+    - Start coll/asmt: If the CULC context is right, then specified assessment/collection should be returned
+- In class (With class id in context object)
+    - Context does not exist in redis, Course is populated, state is continue : first unit, first lesson, first coll/ast which is visible should be returned
+    - Context does exist in redis, Course is populated, state is continue : unit, lesson and next visible coll/ast from context should be returned. If current context is pointing to last item in lesson, then next lesson first visible item should be loaded. If current lesson is last lesson, then unit should be switched as well. If the unit is also last, then state as DONE should be served
+    - Start unit flow: not supported
+    - Start lesson flow: If the CUL context is right, then first visible item in lesson should be returned
+    - Start coll/asmt: If the CULC context is right, and the specified content is visible then specified assessment/collection should be returned
+
+
+Next API Start Flows when suggestions are not turned off (in config value is set to true and course version is not null)
+==================================================================
+
+Start an item on Main path for Class flow:
+- If Context is right, content is visible, should play the content (w/o considering the skip logic). Else fail
+
+Start an item on Main path for IL flow:
+- If Context is right, should play the content (w/o considering the skip logic). Else fail
+
+Next API start an item on Alternate path of type System (for both class and IL):
+- Context is right, path id exists, belongs to user (with class part of context), should play content. Else fail
+
+Next API start an item on Alternate path of type Teacher (class context):
+- Context is right, path id exists, belongs to user (with class part of context), should play content. Else fail
+
+Next API start lesson in Class context:
+- Context is right, then
+    - if there is no visible item, then error
+    - if there is a visible item (irrespective of skip logic as user wants to start specified lesson so we do not skip)
+        - if that visible item has teacher path(s)
+            - play the fist teacher path
+        - Else
+            - play the first visible item
+
+Next API start lesson in IL:
+- Context is right, then
+    - play the first visible item
+
+
+Next API "Next" flow when suggestions are not turned off (in config value is set to true and course version is not null)
+==================================================================
+ 
+Note that we always enter here with content served state. The suggestions state demands that caller converts it to start.
+
+handler() { 
+    - if on main path
+        - if assessment
+            - if passed,
+                - update competency completion (track it)
+                - if signature item present for competency apply suggestion (track it)
+                - else loadNextItemFromMainPath
+            - else
+                - if signature coll present for competency apply suggestion (track it)
+                - else loadNextItemFromMainPath
+        - else
+            - loadNextItemFromMainPath
+    - if on teacher path
+        - if assessment
+            - if passed,
+                - update competency completion (track it)
+                - loadNextItemFromTeacherPath
+            - else
+                - loadNextItemFromTeacherPath
+        - else
+            - loadNextItemFromTeacherPath
+    - if on system path
+        - if assessment (note that assessment won't be loaded with start flow as they won't be present on course map)
+            - if passed,
+                - update competency mastery as it would be signature item (track it)
+                - loadNextItemFromMainPath
+            - else
+                - if signature coll present for competency apply suggestion (track it)
+                - else continue
+        - if collection
+            - if there is any other collection present on system path for that context, load that
+            - else loadNextItemFromMainPath
+}
+
+loadNextItemFromTeacherPath () {
+    - if there is next item on teacher path, load
+    - else loadNextItemFromMainPath
+}
+
+
+loadNextItemFromMainPath() {
+    - find next item on main path considering skip and visibility
+    - if there is an item found
+        - if there a teacher path, load first item from that teacher path
+        - else load the item itself
+    - else
+        - mark as done
+}
+
+
+
+
