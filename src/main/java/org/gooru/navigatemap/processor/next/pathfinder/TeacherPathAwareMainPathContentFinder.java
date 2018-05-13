@@ -25,13 +25,14 @@ class TeacherPathAwareMainPathContentFinder extends AbstractContentFinder {
         ContentAddress result = ContentFinderFactory.buildAlternatePathUnawareMainPathContentFinder(getDbi(),
             ContentFinderCriteria.CRITERIA_VISIBLE_NON_SKIPPABLE).findContent(context);
 
-        List<AlternatePath> teacherPathsForContext = getAlternatePathDao()
-            .findTeacherPathsForSpecifiedContext(context.getContentAddress(), context.getUserId(),
-                context.getClassId().toString());
-        if (teacherPathsForContext == null || teacherPathsForContext.isEmpty()) {
-            return result;
-        } else {
-            return teacherPathsForContext.get(0).toContentAddress();
+        if (context.getClassId() != null) {
+            List<AlternatePath> teacherPathsForContext = getAlternatePathDao()
+                .findTeacherPathsForSpecifiedContext(context.getContentAddress(), context.getUserId(),
+                    context.getClassId().toString());
+            if (teacherPathsForContext != null && !teacherPathsForContext.isEmpty()) {
+                return teacherPathsForContext.get(0).toContentAddress();
+            }
         }
+        return result;
     }
 }

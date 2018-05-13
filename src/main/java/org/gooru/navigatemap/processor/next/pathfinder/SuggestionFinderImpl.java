@@ -33,18 +33,18 @@ public class SuggestionFinderImpl implements SuggestionFinder {
                 CollectionUtils.convertToSqlArrayOfString(competencies),
                 DbLookupUtility.getInstance().scoreRangeNameByScore(context.getScore()));
 
-        if (signatureCollectionsForCompetency != null && !signatureCollectionsForCompetency.isEmpty()) {
+        if (signatureCollectionsForCompetency == null || signatureCollectionsForCompetency.isEmpty()) {
             // No collections found, may be because of score range. Find again without score range
             signatureCollectionsForCompetency = dao.findSignatureCollectionForSpecifiedCompetencies(
                 CollectionUtils.convertToSqlArrayOfString(competencies));
-            if (signatureCollectionsForCompetency != null && !signatureCollectionsForCompetency.isEmpty()) {
-                List<String> signatureItemsAlreadyAddedByUser =
-                    dao.findSignatureItemsAddedByUserFromList(context.getUserId(),
-                        CollectionUtils.convertToSqlArrayOfUUID(signatureCollectionsForCompetency));
-                List<String> signatureItemsNotAddedByUser =
-                    CollectionUtils.intersect(signatureCollectionsForCompetency, signatureItemsAlreadyAddedByUser);
-                return CollectionUtils.uniqueMaintainOrder(signatureItemsNotAddedByUser);
-            }
+        }
+        if (signatureCollectionsForCompetency != null && !signatureCollectionsForCompetency.isEmpty()) {
+            List<String> signatureItemsAlreadyAddedByUser =
+                dao.findSignatureItemsAddedByUserFromList(context.getUserId(),
+                    CollectionUtils.convertToSqlArrayOfUUID(signatureCollectionsForCompetency));
+            List<String> signatureItemsNotAddedByUser =
+                CollectionUtils.intersect(signatureCollectionsForCompetency, signatureItemsAlreadyAddedByUser);
+            return CollectionUtils.uniqueMaintainOrder(signatureItemsNotAddedByUser);
         }
         return Collections.emptyList();
     }

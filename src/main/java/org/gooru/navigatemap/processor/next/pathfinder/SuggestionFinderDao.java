@@ -17,17 +17,17 @@ interface SuggestionFinderDao {
     List<String> findSignatureItemsAddedByUserFromList(@Bind("userId") String userId,
         @Bind("itemList") PGArray<UUID> itemList);
 
-    @SqlQuery("select item_id from signature_items where item_format = 'signature-assessment' and "
+    @SqlQuery("select item_id from signature_items where item_format = 'assessment' and "
                   + "(competency_gut_code = any(:competencies) OR (micro_competency_gut_code = any(:competencies))) "
                   + " order by weight desc")
     List<String> findSignatureAssessmentsForSpecifiedCompetencies(@Bind("competencies") PGArray<String> competencies);
 
-    @SqlQuery("select item_id from signature_items where item_format = 'signature-collection' and "
+    @SqlQuery("select item_id from signature_items where item_format = 'collection' and "
                   + "(competency_gut_code = any(:competencies) OR (micro_competency_gut_code = any(:competencies))) "
                   + " order by weight desc")
     List<String> findSignatureCollectionForSpecifiedCompetencies(@Bind("competencies") PGArray<String> stringPGArray);
 
-    @SqlQuery("select item_id from signature_items where item_format = 'signature-collection' and "
+    @SqlQuery("select item_id from signature_items where item_format = 'collection' and "
                   + "(competency_gut_code = any(:competencies) OR (micro_competency_gut_code = any(:competencies))) "
                   + "  and performance_range = :scoreRangeName order by weight desc")
     List<String> findSignatureCollectionForSpecifiedCompetenciesAndScoreRange(
