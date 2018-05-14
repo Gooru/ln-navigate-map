@@ -117,7 +117,7 @@ class SuggestionsAwarePathFinderService implements PathFinder {
                     competencyCompletionHandler.handleCompetencyCompletion();
                 }
                 return loadNextItemFromTeacherpath();
-            } else if (alternatePath.isSuggestionSysemSuggestion()) {
+            } else if (alternatePath.isSuggestionSystemSuggestion()) {
                 if (context.getContentAddress().getCurrentItemType() == CurrentItemType.Assessment) {
                     CompetencyCompletionHandler competencyCompletionHandler =
                         new CompetencyCompletionHandler(dbi, context);
@@ -151,8 +151,14 @@ class SuggestionsAwarePathFinderService implements PathFinder {
         if (teacherPathContentAddress != null) {
             return new PathFinderResult(teacherPathContentAddress);
         } else {
-            return loadNextItemFromMainpath();
+            return loadCurrentItemFromMainpath();
         }
+    }
+
+    /* Teacher path is pre to current item. Once we have exhausted teacher path, we load current content */
+    private PathFinderResult loadCurrentItemFromMainpath() {
+        return new PathFinderResult(
+            ContentFinderFactory.buildAlternatePathUnawareSpecifiedPathContentFinder(dbi).findContent(context));
     }
 
     /* Load next item from system path. If such an item is not present then delegate to finder for main path */
@@ -180,13 +186,20 @@ class SuggestionsAwarePathFinderService implements PathFinder {
     }
 
     private AlternatePath findAlternatePath() {
-        List<AlternatePath> teacherPathsForContext = getAlternatePathDao()
-            .findNextTeacherPathsForSpecifiedContext(context.getContentAddress(), context.getUserId(),
-                context.getClassId().toString());
-        if (teacherPathsForContext != null && !teacherPathsForContext.isEmpty()) {
-            return teacherPathsForContext.get(0);
+        AlternatePath specifiedPath;
+        if (context.getClassId() == null) {
+            specifiedPath = getAlternatePathDao()
+                .findAlternatePathByPathIdAndUserForIL(context.getContentAddress().getPathId(), context.getUserId());
+        } else {
+            specifiedPath = getAlternatePathDao()
+                .findAlternatePathByPathIdAndUserInClass(context.getContentAddress().getPathId(), context.getUserId(),
+                    context.getClassId().toString());
         }
-        throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid path id");
+
+        if (specifiedPath == null) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid path");
+        }
+        return specifiedPath;
     }
 
     private AlternatePathDao getAlternatePathDao() {

@@ -2,7 +2,6 @@ package org.gooru.navigatemap.processor.next.pathfinder;
 
 import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
-import org.gooru.navigatemap.infra.data.ContentAddress;
 import org.skife.jdbi.v2.DBI;
 
 /**
@@ -26,8 +25,7 @@ class SpecifiedItemFinderService implements PathFinder {
                 "Alternate path navigation is disabled");
         }
 
-        return new PathFinderResult(ContentFinderFactory
-            .buildAlternatePathUnawareSpecifiedPathContentFinder(dbi, ContentFinderCriteria.CRITERIA_VISIBLE)
-            .findContent(context));
+        return new PathFinderResult(
+            ContentFinderFactory.buildAlternatePathUnawareSpecifiedPathContentFinder(dbi).findContent(context));
     }
 }

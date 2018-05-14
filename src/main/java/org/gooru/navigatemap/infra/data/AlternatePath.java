@@ -151,7 +151,7 @@ public final class AlternatePath {
         return Objects.equals(suggestionType, "teacher");
     }
 
-    public boolean isSuggestionSysemSuggestion() {
+    public boolean isSuggestionSystemSuggestion() {
         return Objects.equals(suggestionType, "system");
     }
 

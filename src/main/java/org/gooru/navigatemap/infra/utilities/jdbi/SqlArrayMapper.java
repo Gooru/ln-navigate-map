@@ -3,6 +3,7 @@ package org.gooru.navigatemap.infra.utilities.jdbi;
 import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +26,8 @@ public class SqlArrayMapper implements ResultSetMapper<List<String>> {
         throws SQLException {
         Array result = resultSet.getArray(1);
         if (result != null) {
-            return Arrays.asList((String[]) result.getArray());
+            List<String> originalList = Arrays.asList((String[]) result.getArray());
+            return new ArrayList<>(originalList);
         }
         return Collections.emptyList();
     }
