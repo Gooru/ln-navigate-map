@@ -52,13 +52,12 @@ UPDATE collection set subformat = 'signature-collection' where subformat = 'back
 CREATE TABLE user_competency_status (
     user_id uuid NOT NULL,
     comp_mcomp_id varchar(255) NOT NULL,
-    completion_status int NOT NULL CHECK (completion_status = ANY(ARRAY[4, 5])),
+    completion_status int NOT NULL CHECK (completion_status = ANY(ARRAY[2, 3, 4, 5])),
     created_at timestamp without time zone DEFAULT timezone('UTC'::text, now()) NOT NULL,
     updated_at timestamp without time zone DEFAULT timezone('UTC'::text, now()) NOT NULL,
-    CONSTRAINT ucc_pkey PRIMARY KEY (user_id, comp_mcomp_id)
+    CONSTRAINT ucs_pkey PRIMARY KEY (user_id, comp_mcomp_id)
 );
 
-COMMENT on column user_competency_status.completion_status IS 'Value of 4 is completed and 5 is mastered';
-COMMENT on column user_competency_status.completed_content_id IS 'This is NOT set to NOT NULL to avoid ingesting baseline data w/o evidence ';
+COMMENT on column user_competency_status.completion_status IS '2,3,4,5 means asserted, inferred, completed, mastered';
 
 ALTER TABLE user_competency_status OWNER TO nucleus;
