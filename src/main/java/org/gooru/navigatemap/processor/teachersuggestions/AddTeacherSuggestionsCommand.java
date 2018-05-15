@@ -7,8 +7,8 @@ import java.util.UUID;
 
 import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
-import org.gooru.navigatemap.processor.data.SuggestedContentSubType;
-import org.gooru.navigatemap.processor.data.SuggestedContentType;
+import org.gooru.navigatemap.infra.data.SuggestedContentSubType;
+import org.gooru.navigatemap.infra.data.SuggestedContentType;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -41,7 +41,7 @@ class AddTeacherSuggestionsCommand {
         result.ctxLessonId = ctxLessonId;
         result.ctxCollectionId = ctxCollectionId;
         result.suggestedContentId = suggestedContentId;
-        result.suggestedContentType = suggestedContentType != null ? suggestedContentType.getName() : null;
+        result.suggestedContentType = suggestedContentType.getName();
         result.suggestedContentSubType = suggestedContentSubType != null ? suggestedContentSubType.getName() : null;
 
         return result;
@@ -88,10 +88,10 @@ class AddTeacherSuggestionsCommand {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid user id");
         } else if (ctxClassId == null || ctxCourseId == null) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
-                "Course and class both should be provided");
-        } else if ((ctxUnitId == null || ctxLessonId == null)) {
+                "Course and class both should be provided for suggestion context");
+        } else if ((ctxUnitId == null || ctxLessonId == null || ctxCollectionId == null)) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
-                "Invalid unit or lesson for suggestion");
+                "Invalid unit or lesson or collection for suggestion context");
         } else if (suggestedContentId == null) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                 "Invalid content id for suggestion");
@@ -115,9 +115,8 @@ class AddTeacherSuggestionsCommand {
             String value = input.getString(CommandAttributes.SUGGESTED_CONTENT_TYPE);
             command.suggestedContentType =
                 (value != null && !value.isEmpty()) ? SuggestedContentType.builder(value) : null;
-            value = input.getString(CommandAttributes.SUGGESTED_CONTENT_SUBTYPE);
-            command.suggestedContentSubType =
-                (value != null && !value.isEmpty()) ? SuggestedContentSubType.builder(value) : null;
+            /* Teachers are not allowed to set signature items as suggestions */
+            command.suggestedContentSubType = null;
         } catch (IllegalArgumentException e) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -126,7 +125,13 @@ class AddTeacherSuggestionsCommand {
     }
 
     private static List<UUID> initializeUsers(JsonObject input) {
-        JsonArray userArray = input.getJsonArray(CommandAttributes.USER_ID);
+        JsonArray userArray = null;
+        try {
+            userArray = input.getJsonArray(CommandAttributes.USER_ID);
+        } catch (ClassCastException e) {
+            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
+                "Invalid format of users in payload");
+        }
         if (userArray != null) {
             List<UUID> result = new ArrayList<>(userArray.size());
             for (Object user : userArray) {
@@ -155,7 +160,7 @@ class AddTeacherSuggestionsCommand {
 
     public static final class CommandAttributes {
 
-        static final String USER_ID = "ctx_user_id";
+        static final String USER_ID = "ctx_user_ids";
         static final String CLASS_ID = "ctx_class_id";
         static final String COURSE_ID = "ctx_course_id";
         static final String LESSON_ID = "ctx_lesson_id";
@@ -176,7 +181,6 @@ class AddTeacherSuggestionsCommand {
         private UUID ctxUnitId;
         private UUID ctxLessonId;
         private UUID ctxCollectionId;
-        private Long pathId;
         private UUID suggestedContentId;
         private String suggestedContentType;
         private String suggestedContentSubType;
@@ -219,14 +223,6 @@ class AddTeacherSuggestionsCommand {
 
         public void setCtxCollectionId(UUID ctxCollectionId) {
             this.ctxCollectionId = ctxCollectionId;
-        }
-
-        public Long getPathId() {
-            return pathId;
-        }
-
-        public void setPathId(Long pathId) {
-            this.pathId = pathId;
         }
 
         public UUID getSuggestedContentId() {

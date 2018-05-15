@@ -3,9 +3,8 @@ package org.gooru.navigatemap.bootstrap.verticles;
 import java.io.IOException;
 
 import org.gooru.navigatemap.app.constants.Constants;
-import org.gooru.navigatemap.processor.contentserver.ResponseParserForNextApi;
-import org.gooru.navigatemap.processor.data.CurrentItemType;
-import org.gooru.navigatemap.processor.data.SuggestionCard;
+import org.gooru.navigatemap.infra.data.SuggestionCard;
+import org.gooru.navigatemap.processor.next.contentserver.ResponseParserForNextApi;
 import org.gooru.navigatemap.processor.postprocessor.repositories.PostProcessorRepository;
 import org.gooru.navigatemap.processor.postprocessor.repositories.PostProcessorRespositoryBuilder;
 import org.slf4j.Logger;
@@ -26,7 +25,7 @@ public class PostProcessVerticle extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(PostProcessVerticle.class);
 
     @Override
-    public void start(Future<Void> startFuture) throws Exception {
+    public void start(Future<Void> startFuture) {
         EventBus eb = vertx.eventBus();
 
         eb.<JsonObject>localConsumer(Constants.EventBus.MBEP_POST_PROCESS, message -> {
@@ -52,9 +51,7 @@ public class PostProcessVerticle extends AbstractVerticle {
                         SuggestionCard suggestion =
                             new ObjectMapper().readValue(suggestionObj.toString(), SuggestionCard.class);
                         PostProcessorRepository repository = PostProcessorRespositoryBuilder.build();
-                        if (CurrentItemType.Resource.getName().equalsIgnoreCase(suggestion.getFormat())) {
-                            repository.incrementResourceSuggestedCount(suggestion.getId());
-                        }
+                        // TODO: Do the serve count increment here
                         future.complete();
                     } catch (IOException e) {
                         LOGGER.warn("Suggestion Json failed to convert to suggestion card, will skip count update. "
@@ -80,7 +77,7 @@ public class PostProcessVerticle extends AbstractVerticle {
     }
 
     @Override
-    public void stop(Future<Void> stopFuture) throws Exception {
+    public void stop(Future<Void> stopFuture) {
         stopFuture.complete();
     }
 

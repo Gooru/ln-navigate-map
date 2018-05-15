@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.gooru.navigatemap.processor.utilities.CollectionUtils;
+import org.gooru.navigatemap.infra.utilities.CollectionUtils;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,13 +46,7 @@ class AddTeacherSuggestionsService {
     }
 
     private List<UUID> findUsersHavingSpecifiedSuggestionForClass() {
-        if (command.getCtxCollectionId() == null) {
-            return addTeacherSuggestionsDao.findUsersHavingSpecifiedSuggestionForClassRootedAtLesson(command.getBean(),
-                CollectionUtils.convertFromListUUIDToSqlArrayOfUUID(command.getCtxUserIds()));
-        } else {
-            return addTeacherSuggestionsDao
-                .findUsersHavingSpecifiedSuggestionForClassRootedAtCollection(command.getBean(),
-                    CollectionUtils.convertFromListUUIDToSqlArrayOfUUID(command.getCtxUserIds()));
-        }
+        return addTeacherSuggestionsDao.findUsersHavingSpecifiedSuggestionForClassRootedAtCollection(command.getBean(),
+            CollectionUtils.convertFromListUUIDToSqlArrayOfUUID(command.getCtxUserIds()));
     }
 }

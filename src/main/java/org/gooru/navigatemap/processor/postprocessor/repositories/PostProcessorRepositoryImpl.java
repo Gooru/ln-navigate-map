@@ -1,6 +1,5 @@
 package org.gooru.navigatemap.processor.postprocessor.repositories;
 
-import org.gooru.navigatemap.processor.coursepath.repositories.dao.PostProcessorDao;
 import org.skife.jdbi.v2.DBI;
 
 /**

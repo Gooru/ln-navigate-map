@@ -5,14 +5,14 @@ import java.util.Objects;
 import org.gooru.navigatemap.app.constants.Constants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.app.exceptions.MessageResponseWrapperException;
-import org.gooru.navigatemap.processor.contentserver.ContentServer;
-import org.gooru.navigatemap.processor.contentserver.RemoteAssessmentCollectionFetcher;
-import org.gooru.navigatemap.processor.contentserver.RemoteUriLocator;
-import org.gooru.navigatemap.processor.contentserver.ResponseParserForNextApi;
-import org.gooru.navigatemap.processor.context.ContextAttributes;
-import org.gooru.navigatemap.processor.context.ContextProcessor;
-import org.gooru.navigatemap.processor.context.ContextUtil;
-import org.gooru.navigatemap.processor.coursepath.PathMapper;
+import org.gooru.navigatemap.infra.data.context.ContextAttributes;
+import org.gooru.navigatemap.infra.data.context.ContextProcessor;
+import org.gooru.navigatemap.infra.data.context.ContextUtil;
+import org.gooru.navigatemap.processor.next.contentserver.ContentServer;
+import org.gooru.navigatemap.processor.next.contentserver.RemoteAssessmentCollectionFetcher;
+import org.gooru.navigatemap.processor.next.contentserver.RemoteUriLocator;
+import org.gooru.navigatemap.processor.next.contentserver.ResponseParserForNextApi;
+import org.gooru.navigatemap.processor.next.pathfinder.PathFinderProcessor;
 import org.gooru.navigatemap.responses.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ public class NavigationVerticle extends AbstractVerticle {
     private RemoteUriLocator remoteUriLocator;
 
     @Override
-    public void start(Future<Void> startFuture) throws Exception {
+    public void start(Future<Void> startFuture) {
 
         EventBus eb = vertx.eventBus();
         eb.localConsumer(Constants.EventBus.MBEP_NAVIGATE, this::processMessage).completionHandler(result -> {
@@ -66,7 +66,7 @@ public class NavigationVerticle extends AbstractVerticle {
         Objects.requireNonNull(resourceUri);
         String assessmentExternalUri = config().getString("assessment-external.fetch.uri");
         Objects.requireNonNull(assessmentExternalUri);
-        remoteUriLocator = new RemoteUriLocator(assessmentUri, collectionUri, resourceUri, assessmentExternalUri);
+        remoteUriLocator = new RemoteUriLocator(assessmentUri, collectionUri, assessmentExternalUri);
 
         client = vertx.createHttpClient(new HttpClientOptions().setConnectTimeout(timeout).setMaxPoolSize(poolSize));
     }
@@ -86,9 +86,10 @@ public class NavigationVerticle extends AbstractVerticle {
     private void processNextCommand(Message<JsonObject> message) {
         Future<JsonObject> future = Future.future();
         new ContextProcessor(vertx).fetchContext(message)
-            .compose(navigateProcessorContext -> new PathMapper(vertx).mapPath(navigateProcessorContext)).compose(
-            ar -> new ContentServer(vertx, future, new RemoteAssessmentCollectionFetcher(client, remoteUriLocator))
-                .serveContent(ar), future);
+            .compose(navigateProcessorContext -> new PathFinderProcessor(vertx).findNext(navigateProcessorContext))
+            .compose(
+                ar -> new ContentServer(vertx, future, new RemoteAssessmentCollectionFetcher(client, remoteUriLocator))
+                    .serveContent(ar), future);
 
         future.setHandler(event -> {
             if (event.succeeded()) {
@@ -138,6 +139,6 @@ public class NavigationVerticle extends AbstractVerticle {
     }
 
     @Override
-    public void stop(Future<Void> stopFuture) throws Exception {
+    public void stop(Future<Void> stopFuture) {
     }
 }
