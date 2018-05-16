@@ -27,8 +27,7 @@ class TeacherPathAwareMainPathContentFinder extends AbstractContentFinder {
 
         if (context.getClassId() != null) {
             List<AlternatePath> teacherPathsForContext = getAlternatePathDao()
-                .findTeacherPathsForSpecifiedContext(result, context.getUserId(),
-                    context.getClassId().toString());
+                .findTeacherPathsForSpecifiedContext(result, context.getUserId(), context.getClassId().toString());
             if (teacherPathsForContext != null && !teacherPathsForContext.isEmpty()) {
                 return teacherPathsForContext.get(0).toContentAddress();
             }
