@@ -43,9 +43,6 @@ import org.skife.jdbi.v2.DBI;
  *             - if passed,
  *                 - update competency mastery as it would be signature item (track it)
  *                 - loadNextItemFromMainPath
- *             - else
- *                 - if signature coll present for competency apply suggestion (track it)
- *                 - else continue
  *         - if collection
  *             - if there is any other collection present on system path for that context, load that
  *             - else loadNextItemFromMainPath
@@ -122,19 +119,7 @@ class SuggestionsAwarePathFinderService implements PathFinder {
                     CompetencyCompletionHandler competencyCompletionHandler =
                         new CompetencyCompletionHandler(dbi, context);
                     competencyCompletionHandler.handleCompetencyMastery(alternatePath);
-                    if (competencyCompletionHandler.isCompetencyCompleted()) {
-                        return loadNextItemFromMainpath();
-                    } else {
-                        List<String> signatureItems = SuggestionFinderBuilder.buildSuggestionFinder(dbi)
-                            .findSignatureCollectionsForCompetencies(context,
-                                competencyCompletionHandler.fetchCompetenciesForCollection());
-                        if (signatureItems != null && !signatureItems.isEmpty()) {
-                            return new PathFinderResult(signatureItems, SuggestedContentType.Collection,
-                                SuggestedContentSubType.SignatureCollection);
-                        } else {
-                            return loadNextItemFromMainpath();
-                        }
-                    }
+                    return loadNextItemFromMainpath();
                 } else {
                     return loadNextItemFromSystemPath(alternatePath);
                 }
