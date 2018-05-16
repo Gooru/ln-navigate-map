@@ -49,6 +49,10 @@ public final class NavigateProcessorContext {
         return ctxIn.getState() == State.Start;
     }
 
+    public boolean userWasSuggestedAnItem() {
+        return ctxIn.getState() == State.ContentEndSuggested;
+    }
+
     public boolean userExplicitlyAskedToStartLesson() {
         return userExplicitlyAskedToStartHere() && ctxIn.getCollectionId() == null;
     }

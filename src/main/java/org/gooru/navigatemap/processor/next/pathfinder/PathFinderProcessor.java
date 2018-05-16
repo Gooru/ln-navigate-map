@@ -76,7 +76,12 @@ public class PathFinderProcessor {
             PathFinderResult result =
                 PathFinderFactory.buildExplicitStartPathFinderService().findPath(PathFinderContext.buildContext(npc));
             serveTheContent(result.getContentAddress());
+        } else if (npc.userWasSuggestedAnItem()) {
+            PathFinderResult result =
+                PathFinderFactory.buildPostSuggestionItemFinderService().findPath(PathFinderContext.buildContext(npc));
+            serveTheContent(result.getContentAddress());
         } else {
+            // This is our default content served state
             PathFinderResult result = PathFinderFactory.buildSuggestionsAwarePathFinderService()
                 .findPath(PathFinderContext.buildContext(npc));
             if (result.hasSuggestions()) {
