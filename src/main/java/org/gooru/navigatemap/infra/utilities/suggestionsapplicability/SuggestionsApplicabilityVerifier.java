@@ -1,7 +1,5 @@
 package org.gooru.navigatemap.infra.utilities.suggestionsapplicability;
 
-import java.util.UUID;
-
 import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.gooru.navigatemap.infra.data.NavigateProcessorContext;
 import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
@@ -31,13 +29,7 @@ public final class SuggestionsApplicabilityVerifier {
     }
 
     private boolean decideSuggestionsApplicability() {
-        // We need to know what kind of applicability is to be used and apply it here
-        return decideSuggestionsApplicabilityBasedOnCourseVersion();
-    }
-
-    private boolean decideSuggestionsApplicabilityBasedOnCourseVersion() {
-        UUID courseId = npc.requestContext().getCourseId();
-        String version = new CourseVersionService(DBICreator.getDbiForDefaultDS()).findCourseVersion(courseId);
-        return (version != null);
+        return new SuggestionsApplicabilityService(DBICreator.getDbiForDefaultDS())
+            .areSuggestionsApplicable(npc.requestContext().getClassId(), npc.requestContext().getCourseId());
     }
 }
