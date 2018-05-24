@@ -1,6 +1,6 @@
 package org.gooru.navigatemap.bootstrap.verticles;
 
-import org.gooru.navigatemap.constants.Constants;
+import org.gooru.navigatemap.app.constants.Constants;
 import org.gooru.navigatemap.responses.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class AuthVerticle extends AbstractVerticle {
     private RedisClient redisClient;
 
     @Override
-    public void start(Future<Void> startFuture) throws Exception {
+    public void start(Future<Void> startFuture) {
         EventBus eb = vertx.eventBus();
 
         initializeVerticle(startFuture);
@@ -34,7 +34,7 @@ public class AuthVerticle extends AbstractVerticle {
             fetchSessionFuture.setHandler(sessionAsyncResult -> {
                 if (sessionAsyncResult.succeeded()) {
                     ResponseUtil.processSuccess(message, sessionAsyncResult.result());
-                    updateSessionExpiryInRedis(sessionToken);
+                    updateSessionExpiryInRedis(sessionToken, sessionAsyncResult.result());
                 } else {
                     ResponseUtil.processFailure(message);
                 }
@@ -77,14 +77,14 @@ public class AuthVerticle extends AbstractVerticle {
         return future;
     }
 
-    private Future<Void> updateSessionExpiryInRedis(String sessionToken) {
+    private Future<Void> updateSessionExpiryInRedis(String token, JsonObject session) {
         Future<Void> future = Future.future();
-        int sessionTimeout = config().getInteger("sessionTimeoutInSeconds");
-        redisClient.expire(sessionToken, sessionTimeout, updateHandler -> {
+        int sessionTimeout = getTokenExpiry(session);
+        redisClient.expire(token, sessionTimeout, updateHandler -> {
             if (updateHandler.succeeded()) {
-                LOGGER.debug("expiry time of session {} is updated", sessionToken);
+                LOGGER.debug("expiry time of session {} is updated", session);
             } else {
-                LOGGER.warn("Not able to update expiry for key {}", sessionToken, updateHandler.cause());
+                LOGGER.warn("Not able to update expiry for key {}", session, updateHandler.cause());
             }
             future.complete();
         });
@@ -126,6 +126,11 @@ public class AuthVerticle extends AbstractVerticle {
                 stopFuture.complete();
             });
         }
+    }
+
+    private int getTokenExpiry(JsonObject redisPacket) {
+        return redisPacket
+            .getInteger(Constants.Message.ACCESS_TOKEN_VALIDITY, config().getInteger("sessionTimeoutInSeconds"));
     }
 
 }

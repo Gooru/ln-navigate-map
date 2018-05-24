@@ -1,9 +1,9 @@
 package org.gooru.navigatemap.routes;
 
-import org.gooru.navigatemap.constants.Constants;
-import org.gooru.navigatemap.constants.HttpConstants;
-import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
-import org.gooru.navigatemap.processor.context.ContextUtil;
+import org.gooru.navigatemap.app.constants.Constants;
+import org.gooru.navigatemap.app.constants.HttpConstants;
+import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.infra.data.context.ContextUtil;
 import org.gooru.navigatemap.routes.utils.DeliveryOptionsBuilder;
 import org.gooru.navigatemap.routes.utils.RouteRequest;
 import org.gooru.navigatemap.routes.utils.RouteRequestUtility;

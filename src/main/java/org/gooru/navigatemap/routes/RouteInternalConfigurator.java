@@ -1,6 +1,6 @@
 package org.gooru.navigatemap.routes;
 
-import org.gooru.navigatemap.constants.Constants;
+import org.gooru.navigatemap.app.constants.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

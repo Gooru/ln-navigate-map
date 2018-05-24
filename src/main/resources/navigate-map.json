@@ -6,6 +6,7 @@
       "username": "nucleus",
       "password": "nucleus",
       "autoCommit": true,
+      "jdbcUrlDev": "jdbc:postgresql://projectnile-30-dev-postgres-db.cqlbqx0elkud.us-west-1.rds.amazonaws.com:5432/nucleus",
       "jdbcUrl": "jdbc:postgresql://localhost:5432/nucleus",
       "maximumPoolSize": 5
     },
@@ -64,6 +65,12 @@
       "config": {
       }
     },
+    "org.gooru.navigatemap.bootstrap.verticles.ContentVerticle": {
+      "instances": 1,
+      "worker": false,
+      "config": {
+      }
+    },
     "org.gooru.navigatemap.bootstrap.verticles.HttpVerticle": {
       "instances": 1,
       "worker": false,
@@ -79,7 +86,6 @@
     "context.mbus.timeout.seconds": 60,
     "suggestions.advise": true,
     "serve.content.details": false,
-    "non.global.strategy.apply.visibility": false,
     "suggestions.limit": 1
   },
   "vertxOptions": {

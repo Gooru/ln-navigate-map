@@ -7,9 +7,9 @@ import io.vertx.core.json.JsonObject;
 
 /**
  * @author ashish on 24/2/17.
- *         This is a manager class to initialize the utilities, Utilities initialized
- *         may depend on the DB or application state. Thus their initialization sequence
- *         may matter. It is advisable to keep the utility initialization for last.
+ * This is a manager class to initialize the utilities, Utilities initialized
+ * may depend on the DB or application state. Thus their initialization sequence
+ * may matter. It is advisable to keep the utility initialization for last.
  */
 public final class UtilityManager implements Initializer, Finalizer {
     private static final UtilityManager ourInstance = new UtilityManager();

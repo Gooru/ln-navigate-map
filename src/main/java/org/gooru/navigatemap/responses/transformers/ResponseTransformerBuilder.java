@@ -1,6 +1,6 @@
 package org.gooru.navigatemap.responses.transformers;
 
-import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;

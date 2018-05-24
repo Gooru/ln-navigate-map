@@ -2,17 +2,17 @@ package org.gooru.navigatemap.bootstrap.verticles;
 
 import java.util.Objects;
 
-import org.gooru.navigatemap.constants.Constants;
-import org.gooru.navigatemap.exceptions.HttpResponseWrapperException;
-import org.gooru.navigatemap.exceptions.MessageResponseWrapperException;
-import org.gooru.navigatemap.processor.contentserver.ContentServer;
-import org.gooru.navigatemap.processor.contentserver.RemoteAssessmentCollectionFetcher;
-import org.gooru.navigatemap.processor.contentserver.RemoteUriLocator;
-import org.gooru.navigatemap.processor.contentserver.ResponseParser;
-import org.gooru.navigatemap.processor.context.ContextAttributes;
-import org.gooru.navigatemap.processor.context.ContextProcessor;
-import org.gooru.navigatemap.processor.context.ContextUtil;
-import org.gooru.navigatemap.processor.coursepath.PathMapper;
+import org.gooru.navigatemap.app.constants.Constants;
+import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
+import org.gooru.navigatemap.app.exceptions.MessageResponseWrapperException;
+import org.gooru.navigatemap.infra.data.context.ContextAttributes;
+import org.gooru.navigatemap.infra.data.context.ContextProcessor;
+import org.gooru.navigatemap.infra.data.context.ContextUtil;
+import org.gooru.navigatemap.processor.next.contentserver.ContentServer;
+import org.gooru.navigatemap.processor.next.contentserver.RemoteAssessmentCollectionFetcher;
+import org.gooru.navigatemap.processor.next.contentserver.RemoteUriLocator;
+import org.gooru.navigatemap.processor.next.contentserver.ResponseParserForNextApi;
+import org.gooru.navigatemap.processor.next.pathfinder.PathFinderProcessor;
 import org.gooru.navigatemap.responses.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ public class NavigationVerticle extends AbstractVerticle {
     private RemoteUriLocator remoteUriLocator;
 
     @Override
-    public void start(Future<Void> startFuture) throws Exception {
+    public void start(Future<Void> startFuture) {
 
         EventBus eb = vertx.eventBus();
         eb.localConsumer(Constants.EventBus.MBEP_NAVIGATE, this::processMessage).completionHandler(result -> {
@@ -66,7 +66,7 @@ public class NavigationVerticle extends AbstractVerticle {
         Objects.requireNonNull(resourceUri);
         String assessmentExternalUri = config().getString("assessment-external.fetch.uri");
         Objects.requireNonNull(assessmentExternalUri);
-        remoteUriLocator = new RemoteUriLocator(assessmentUri, collectionUri, resourceUri, assessmentExternalUri);
+        remoteUriLocator = new RemoteUriLocator(assessmentUri, collectionUri, assessmentExternalUri);
 
         client = vertx.createHttpClient(new HttpClientOptions().setConnectTimeout(timeout).setMaxPoolSize(poolSize));
     }
@@ -86,18 +86,19 @@ public class NavigationVerticle extends AbstractVerticle {
     private void processNextCommand(Message<JsonObject> message) {
         Future<JsonObject> future = Future.future();
         new ContextProcessor(vertx).fetchContext(message)
-            .compose(navigateProcessorContext -> new PathMapper(vertx).mapPath(navigateProcessorContext)).compose(
-            ar -> new ContentServer(vertx, future, new RemoteAssessmentCollectionFetcher(client, remoteUriLocator))
-                .serveContent(ar), future);
+            .compose(navigateProcessorContext -> new PathFinderProcessor(vertx).findNext(navigateProcessorContext))
+            .compose(
+                ar -> new ContentServer(vertx, future, new RemoteAssessmentCollectionFetcher(client, remoteUriLocator))
+                    .serveContent(ar), future);
 
         future.setHandler(event -> {
             if (event.succeeded()) {
                 message.reply(event.result());
-                ResponseParser responseParser = ResponseParser.build(event.result());
+                ResponseParserForNextApi responseParserForNextApi = ResponseParserForNextApi.build(event.result());
 
                 String user = message.body().getString(Constants.Message.MSG_USER_ID);
-                persistNewContext(responseParser, user);
-                persistSuggestion(responseParser);
+                persistNewContext(responseParserForNextApi, user);
+                persistSuggestion(responseParserForNextApi);
             } else {
                 LOGGER.warn("Failed to process next command", event.cause());
                 if (event.cause() instanceof HttpResponseWrapperException) {
@@ -118,15 +119,15 @@ public class NavigationVerticle extends AbstractVerticle {
         });
     }
 
-    private void persistSuggestion(ResponseParser responseParser) {
-        if (responseParser.getSuggestions().isEmpty()) {
+    private void persistSuggestion(ResponseParserForNextApi responseParserForNextApi) {
+        if (responseParserForNextApi.getSuggestions().isEmpty()) {
             return;
         }
-        vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, responseParser.getResponse());
+        vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, responseParserForNextApi.getResponse());
     }
 
-    private void persistNewContext(ResponseParser responseParser, String user) {
-        JsonObject newContext = responseParser.getContext();
+    private void persistNewContext(ResponseParserForNextApi responseParserForNextApi, String user) {
+        JsonObject newContext = responseParserForNextApi.getContext();
         if (newContext != null) {
             String contextKey = ContextUtil
                 .createUserContextKey(user, newContext.getString(ContextAttributes.COURSE_ID),
@@ -138,6 +139,6 @@ public class NavigationVerticle extends AbstractVerticle {
     }
 
     @Override
-    public void stop(Future<Void> stopFuture) throws Exception {
+    public void stop(Future<Void> stopFuture) {
     }
 }

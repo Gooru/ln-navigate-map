@@ -1,7 +1,6 @@
 package org.gooru.navigatemap.processor.postprocessor.repositories;
 
-import org.gooru.navigatemap.app.components.DataSourceRegistry;
-import org.gooru.navigatemap.processor.utilities.jdbi.DBICreator;
+import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
 import org.skife.jdbi.v2.DBI;
 
 /**
@@ -14,7 +13,7 @@ public final class PostProcessorRespositoryBuilder {
     }
 
     public static PostProcessorRepository build() {
-        DBI dbi = DBICreator.createDBI(DataSourceRegistry.getInstance().getDefaultDataSource());
+        DBI dbi = DBICreator.getDbiForDefaultDS();
         return new PostProcessorRepositoryImpl(dbi);
 
     }
