@@ -22,7 +22,7 @@ class PostSuggestionItemFinderService implements PathFinder {
     @Override
     public PathFinderResult findPath(PathFinderContext context) {
         return new PathFinderResult(ContentFinderFactory
-            .buildAlternatePathUnawareMainPathContentFinder(dbi, ContentFinderCriteria.CRITERIA_VISIBLE)
+            .buildAlternatePathUnawareMainPathContentFinder(dbi, ContentFinderCriteria.CRITERIA_VISIBLE_NON_SKIPPABLE)
             .findContent(context));
     }
 }
