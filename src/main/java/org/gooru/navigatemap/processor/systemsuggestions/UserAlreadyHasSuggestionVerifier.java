@@ -5,7 +5,6 @@ import java.util.Objects;
 import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.infra.data.AlternatePath;
-import org.gooru.navigatemap.infra.data.SuggestionType;
 
 /**
  * @author ashish on 27/12/17.
@@ -22,9 +21,7 @@ class UserAlreadyHasSuggestionVerifier {
     }
 
     Long findUserPathForCurrentSuggestion() {
-        if (command.getSuggestionType() == SuggestionType.Route0) {
-            return userAlreadyHasSuggestionForRoute0();
-        } else if (command.getCtxClassId() == null) {
+        if (command.getCtxClassId() == null) {
             return userAlreadyHasSuggestionForCourse();
         } else {
             return userAlreadyHasSuggestionForClass();
