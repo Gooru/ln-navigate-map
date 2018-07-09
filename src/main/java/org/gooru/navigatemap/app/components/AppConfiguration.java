@@ -40,6 +40,10 @@ public final class AppConfiguration implements Initializer {
         }
     }
 
+    public String getSuggestionsApplicabilityCourseVersion() {
+        return configuration.getString("suggestions.applicable.course.version");
+    }
+
     public int getConfigAsInt(String key) {
         return configuration.getInteger(key);
     }

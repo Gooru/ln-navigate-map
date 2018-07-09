@@ -10,10 +10,13 @@ import org.skife.jdbi.v2.sqlobject.SqlQuery;
  */
 interface SuggestionsApplicabilityDao {
 
+    @SqlQuery("select course_id from class where id = :classId")
+    String fetchCourseForClass(@Bind("classId") UUID classId);
+
     @SqlQuery("select version from course where id = :courseId")
-    String findCourseVersion(@Bind("courseId") UUID courseId);
+    String fetchCourseVersion(@Bind("courseId") UUID courseId);
 
-    @SqlQuery("select setting from class where id = :classId")
-    String fetchClassSetting(@Bind("classId") UUID classId);
-
+    @SqlQuery("select version from course where id = :courseId::uuid")
+    String fetchCourseVersion(@Bind("courseId") String courseId);
+    
 }
