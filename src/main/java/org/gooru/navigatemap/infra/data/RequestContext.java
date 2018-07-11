@@ -92,10 +92,15 @@ public final class RequestContext {
                 "Invalid context for Start flow");
         }
 
-        if (pathType == SuggestionType.Teacher || pathType == SuggestionType.System) {
+        if (pathType != null) {
             if (pathId == null || pathId == 0) {
                 throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
-                    "Invalid context, for teacher or system type paths, path id should be valid");
+                    "Invalid context, either both pathId and pathType should be present or both should be absent");
+            }
+        } else {
+            if (pathId != null && pathId > 0) {
+                throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
+                    "Invalid context, either both pathId and pathType should be present or both should be absent");
             }
         }
     }
