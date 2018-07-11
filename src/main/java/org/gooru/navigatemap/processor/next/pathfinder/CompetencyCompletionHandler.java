@@ -37,7 +37,7 @@ class CompetencyCompletionHandler {
     }
 
     void handleCompetencyMastery(AlternatePath alternatePath) {
-        if (context.getContentAddress().isOnAlternatePath()
+        if (context.getContentAddress().isOnTeacherOrSystemPath()
             && context.getContentAddress().getCurrentItemType() == CurrentItemType.Assessment && alternatePath
             .isSuggestionSystemSuggestion() && alternatePath.isSuggestionSignatureAssessment()) {
             if (isCompetencyCompleted()) {

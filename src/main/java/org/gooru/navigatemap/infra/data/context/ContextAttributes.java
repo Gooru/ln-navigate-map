@@ -18,6 +18,7 @@ public final class ContextAttributes {
 
     public static final String SCORE_PERCENT = "score_percent";
     public static final String STATE = "state";
+    public static final String PATH_TYPE = "path_type";
 
     private ContextAttributes() {
         throw new AssertionError();

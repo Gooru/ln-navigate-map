@@ -24,6 +24,7 @@ public final class RequestContext {
 
     private State state;
     private Long pathId;
+    private SuggestionType pathType;
     private Double scorePercent;
 
     public UUID getClassId() {
@@ -52,6 +53,10 @@ public final class RequestContext {
 
     public Long getPathId() {
         return pathId;
+    }
+
+    public SuggestionType getPathType() {
+        return pathType;
     }
 
     public Double getScorePercent() {
@@ -86,6 +91,13 @@ public final class RequestContext {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                 "Invalid context for Start flow");
         }
+
+        if (pathType == SuggestionType.Teacher || pathType == SuggestionType.System) {
+            if (pathId == null || pathId == 0) {
+                throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
+                    "Invalid context, for teacher or system type paths, path id should be valid");
+            }
+        }
     }
 
     public static RequestContext builder(JsonObject input) {
@@ -113,6 +125,8 @@ public final class RequestContext {
             context.currentItemSubtype = (value != null && !value.isEmpty()) ? CurrentItemSubtype.builder(value) : null;
             value = input.getString(ContextAttributes.STATE);
             context.state = State.builder(value);
+            value = input.getString(ContextAttributes.PATH_TYPE);
+            context.pathType = (value != null && !value.isEmpty()) ? SuggestionType.builder(value) : null;
         } catch (IllegalArgumentException e) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, e.getMessage());
         }

@@ -23,7 +23,7 @@ class StraightPathFinderService implements PathFinder {
 
     @Override
     public PathFinderResult findPath(PathFinderContext context) {
-        if (context.getContentAddress().isOnAlternatePath()) {
+        if (context.getContentAddress().isOnTeacherOrSystemPath()) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                 "Alternate path navigation is disabled");
         }

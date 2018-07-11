@@ -62,7 +62,7 @@ public final class NavigateProcessorContext {
     }
 
     public boolean onMainPath() {
-        return ctxIn.getPathId() == null || ctxIn.getPathId() == 0;
+        return (ctxIn.getPathId() == null || ctxIn.getPathId() == 0) && ctxIn.getPathType() == null;
     }
 
     public NavigateMessageContext navigateMessageContext() {
@@ -94,6 +94,7 @@ public final class NavigateProcessorContext {
         nextContentAddress.setLesson(address.getLesson());
         nextContentAddress.setCollection(address.getCollection());
         nextContentAddress.setPathId(address.getPathId());
+        nextContentAddress.setPathType(address.getPathType());
         nextContentAddress.setCurrentItem(address.getCurrentItem());
         nextContentAddress.setCurrentItemType(address.getCurrentItemType());
         nextContentAddress.setCurrentItemSubtype(address.getCurrentItemSubtype());
@@ -110,6 +111,7 @@ public final class NavigateProcessorContext {
             currentContentAddress.setCurrentItemType(requestContext().getCurrentItemType());
             currentContentAddress.setCurrentItemSubtype(requestContext().getCurrentItemSubtype());
             currentContentAddress.setPathId(requestContext().getPathId());
+            currentContentAddress.setPathType(requestContext().getPathType());
             currentAddressSet = true;
             return currentContentAddress;
         }

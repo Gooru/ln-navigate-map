@@ -40,7 +40,7 @@ class ExplicitStartPathFinderService implements PathFinder {
         if (specifiedContentAddress.getCollection() == null) {
             // This is user asking to start a lesson
             result = fetchFirstItemFromLesson();
-        } else if (specifiedContentAddress.isOnAlternatePath()) {
+        } else if (specifiedContentAddress.isOnTeacherOrSystemPath()) {
             // User is asking to play a content which was already added to alternate path
             result = fetchSpecifiedAlternatePath();
         } else {

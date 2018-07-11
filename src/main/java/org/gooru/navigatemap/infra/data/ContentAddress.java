@@ -10,6 +10,7 @@ public final class ContentAddress {
     private String collection;
     private String visibility;
     private Long pathId;
+    private SuggestionType pathType;
     private String currentItem;
     private CurrentItemType currentItemType;
     private CurrentItemSubtype currentItemSubtype;
@@ -23,6 +24,7 @@ public final class ContentAddress {
         this.lesson = address.lesson;
         this.collection = address.collection;
         this.pathId = address.pathId;
+        this.pathType = address.pathType;
         this.currentItem = address.currentItem;
         this.currentItemType = address.currentItemType;
         this.currentItemSubtype = address.currentItemSubtype;
@@ -69,6 +71,14 @@ public final class ContentAddress {
         this.pathId = pathId;
     }
 
+    public SuggestionType getPathType() {
+        return pathType;
+    }
+
+    public void setPathType(SuggestionType pathType) {
+        this.pathType = pathType;
+    }
+
     public String getCurrentItem() {
         return currentItem;
     }
@@ -101,12 +111,12 @@ public final class ContentAddress {
         this.currentItemSubtype = currentItemSubtype;
     }
 
-    public boolean isOnAlternatePath() {
+    public boolean isOnTeacherOrSystemPath() {
         return (pathId != null && pathId != 0);
     }
 
     public boolean isOnMainPath() {
-        return !isOnAlternatePath();
+        return !isOnTeacherOrSystemPath();
     }
 
     public boolean isValidAddress() {
