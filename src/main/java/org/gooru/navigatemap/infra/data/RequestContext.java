@@ -79,6 +79,26 @@ public final class RequestContext {
         return (state == State.Continue);
     }
 
+    public boolean explicitStartRequested() {
+        return (state == State.Start);
+    }
+
+    public boolean needToStartCollection() {
+        return (state == State.Start && currentItemId != null);
+    }
+
+    public boolean onMainPath() {
+        return (getPathId() == null || getPathId() == 0) && getPathType() == null;
+    }
+
+    public boolean needToStartCourse() {
+        return getState() == State.Continue;
+    }
+
+    public boolean userWasSuggestedAnItem() {
+        return getState() == State.ContentEndSuggested;
+    }
+
     public boolean needToStartLesson() {
         return (state == State.Start && currentItemId == null);
     }
