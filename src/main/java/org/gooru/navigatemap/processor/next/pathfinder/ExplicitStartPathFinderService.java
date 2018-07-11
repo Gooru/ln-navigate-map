@@ -7,6 +7,8 @@ import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.infra.data.AlternatePath;
 import org.gooru.navigatemap.infra.data.ContentAddress;
 import org.skife.jdbi.v2.DBI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * If user has explicitly asked for collection either on main path or on alternate path, we serve it without
@@ -25,6 +27,7 @@ class ExplicitStartPathFinderService implements PathFinder {
     private final ContentFinderDao finderDao;
     private PathFinderContext context;
     private ContentAddress specifiedContentAddress;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExplicitStartPathFinderService.class);
 
     ExplicitStartPathFinderService(DBI dbi) {
         this.dbi = dbi;
@@ -39,12 +42,15 @@ class ExplicitStartPathFinderService implements PathFinder {
         validateCULValues(specifiedContentAddress);
         if (specifiedContentAddress.getCollection() == null) {
             // This is user asking to start a lesson
+            LOGGER.debug("User asking to start a lesson.");
             result = fetchFirstItemFromLesson();
         } else if (specifiedContentAddress.isOnTeacherOrSystemPath()) {
             // User is asking to play a content which was already added to alternate path
+            LOGGER.debug("User asking to start a system/teacher suggestion.");
             result = fetchSpecifiedAlternatePath();
         } else {
             // User wanted to play something on course path
+            LOGGER.debug("User asking to start an item on main path.");
             result = fetchSpecifiedContentFromCoursePath();
         }
         return new PathFinderResult(result);

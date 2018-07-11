@@ -10,6 +10,8 @@ import org.gooru.navigatemap.infra.data.CurrentItemType;
 import org.gooru.navigatemap.infra.data.SuggestedContentSubType;
 import org.gooru.navigatemap.infra.data.SuggestedContentType;
 import org.skife.jdbi.v2.DBI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // @formatter:off
 /**
@@ -66,6 +68,7 @@ class SuggestionsAwarePathFinderService implements PathFinder {
 
     private final DBI dbi;
     private PathFinderContext context;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SuggestionsAwarePathFinderService.class);
 
     SuggestionsAwarePathFinderService(DBI dbi) {
         this.dbi = dbi;
@@ -79,7 +82,9 @@ class SuggestionsAwarePathFinderService implements PathFinder {
 
     private PathFinderResult process() {
         if (context.getContentAddress().isOnMainPath()) {
+            LOGGER.debug("On main path, doing processing.");
             if (context.getContentAddress().getCurrentItemType() == CurrentItemType.Assessment) {
+                LOGGER.debug("On main path, assessment was played.");
                 CompetencyCompletionHandler competencyCompletionHandler = new CompetencyCompletionHandler(dbi, context);
                 competencyCompletionHandler.handleCompetencyCompletion();
                 List<String> competencies = competencyCompletionHandler.fetchCompetenciesForCollection();
@@ -87,40 +92,51 @@ class SuggestionsAwarePathFinderService implements PathFinder {
                     List<String> signatureItems = SuggestionFinderBuilder.buildSuggestionFinder(dbi)
                         .findSignatureAssessmentsForCompetencies(context, competencies);
                     if (signatureItems != null && !signatureItems.isEmpty()) {
+                        LOGGER.debug("Found signature assessments to serve.");
                         return new PathFinderResult(signatureItems, SuggestedContentType.Assessment,
                             SuggestedContentSubType.SignatureAssessment);
                     } else {
+                        LOGGER.debug("Loading next item from main path.");
                         return loadNextItemFromMainpath();
                     }
                 } else {
                     List<String> signatureItems = SuggestionFinderBuilder.buildSuggestionFinder(dbi)
                         .findSignatureCollectionsForCompetencies(context, competencies);
                     if (signatureItems != null && !signatureItems.isEmpty()) {
+                        LOGGER.debug("Found signature collections to serve.");
                         return new PathFinderResult(signatureItems, SuggestedContentType.Collection,
                             SuggestedContentSubType.SignatureCollection);
                     } else {
+                        LOGGER.debug("Loading next item from main path.");
                         return loadNextItemFromMainpath();
                     }
                 }
             } else {
+                LOGGER.debug("Loading next item from main path.");
                 return loadNextItemFromMainpath();
             }
         } else {
+            LOGGER.debug("On alternate path, doing processing.");
             AlternatePath alternatePath = findAlternatePath();
             if (alternatePath.isSuggestionTeacherSuggestion()) {
+                LOGGER.debug("On alternate path for teacher suggestion.");
                 if (context.getContentAddress().getCurrentItemType() == CurrentItemType.Assessment) {
+                    LOGGER.debug("On alternate path for teacher suggestion, checking competency completion.");
                     CompetencyCompletionHandler competencyCompletionHandler =
                         new CompetencyCompletionHandler(dbi, context);
                     competencyCompletionHandler.handleCompetencyCompletion();
                 }
                 return loadNextItemFromTeacherpath();
             } else if (alternatePath.isSuggestionSystemSuggestion()) {
+                LOGGER.debug("On alternate path for system suggestion.");
                 if (context.getContentAddress().getCurrentItemType() == CurrentItemType.Assessment) {
+                    LOGGER.debug("On alternate path for system suggestion, checking competency completion.");
                     CompetencyCompletionHandler competencyCompletionHandler =
                         new CompetencyCompletionHandler(dbi, context);
                     competencyCompletionHandler.handleCompetencyMastery(alternatePath);
                     return loadNextItemFromMainpath();
                 } else {
+                    LOGGER.debug("On alternate path for system suggestion, finding next system suggestion to serve.");
                     return loadNextItemFromSystemPath(alternatePath);
                 }
             } else {
