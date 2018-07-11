@@ -74,7 +74,17 @@ public class PathFinderProcessor {
     }
 
     private void handleSuggestionsOrientedRoute() {
-        if (npc.userExplicitlyAskedToStartHere()) {
+        if (npc.needToStartCourse()) {
+            LOGGER.debug("Need to start course");
+            PathFinderResult result =
+                PathFinderFactory.buildCourseStartPathFinderService().findPath(PathFinderContext.buildContext(npc));
+            serveTheContent(result.getContentAddress());
+        } else if (npc.onRoute0()) {
+            LOGGER.debug("User is currently on Route0");
+            PathFinderResult result =
+                PathFinderFactory.buildRoute0PathFinderService().findPath(PathFinderContext.buildContext(npc));
+            serveTheContent(result.getContentAddress());
+        } else if (npc.userExplicitlyAskedToStartHere()) {
             LOGGER.debug("User explicitly requested to start the content.");
             PathFinderResult result =
                 PathFinderFactory.buildExplicitStartPathFinderService().findPath(PathFinderContext.buildContext(npc));
