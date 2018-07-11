@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import org.gooru.navigatemap.infra.data.ContentAddress;
 import org.gooru.navigatemap.infra.data.CurrentItemSubtype;
 import org.gooru.navigatemap.infra.data.CurrentItemType;
-import org.gooru.navigatemap.infra.data.SuggestionType;
+import org.gooru.navigatemap.infra.data.PathType;
 import org.gooru.navigatemap.infra.data.context.ContextAttributes;
 import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
@@ -27,7 +27,7 @@ public class ContentAddressMapper implements ResultSetMapper<ContentAddress> {
         result.setUnit(r.getString(ContextAttributes.UNIT_ID));
         result.setPathId(r.getLong(ContextAttributes.PATH_ID));
         String pathType = r.getString(ContextAttributes.PATH_TYPE);
-        result.setPathType(pathType != null ? SuggestionType.builder(pathType) : null);
+        result.setPathType(pathType != null ? PathType.builder(pathType) : null);
         result.setVisibility(r.getString("visibility"));
         return result;
     }

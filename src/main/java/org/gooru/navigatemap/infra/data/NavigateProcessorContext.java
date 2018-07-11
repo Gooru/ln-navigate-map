@@ -45,6 +45,10 @@ public final class NavigateProcessorContext {
         return ctxIn.needToStartCourse();
     }
 
+    public boolean onRoute0() {
+        return ctxIn.onRoute0();
+    }
+
     public boolean userExplicitlyAskedToStartHere() {
         return ctxIn.explicitStartRequested();
     }

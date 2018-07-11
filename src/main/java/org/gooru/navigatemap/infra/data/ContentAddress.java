@@ -10,7 +10,7 @@ public final class ContentAddress {
     private String collection;
     private String visibility;
     private Long pathId;
-    private SuggestionType pathType;
+    private PathType pathType;
     private String currentItem;
     private CurrentItemType currentItemType;
     private CurrentItemSubtype currentItemSubtype;
@@ -67,16 +67,16 @@ public final class ContentAddress {
         return pathId;
     }
 
-    public void setPathId(Long pathId) {
-        this.pathId = pathId;
-    }
-
-    public SuggestionType getPathType() {
+    public PathType getPathType() {
         return pathType;
     }
 
-    public void setPathType(SuggestionType pathType) {
+    public void setPathType(PathType pathType) {
         this.pathType = pathType;
+    }
+
+    public void setPathId(Long pathId) {
+        this.pathId = pathId;
     }
 
     public String getCurrentItem() {

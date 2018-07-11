@@ -24,7 +24,7 @@ public final class RequestContext {
 
     private State state;
     private Long pathId;
-    private SuggestionType pathType;
+    private PathType pathType;
     private Double scorePercent;
 
     public UUID getClassId() {
@@ -55,7 +55,7 @@ public final class RequestContext {
         return pathId;
     }
 
-    public SuggestionType getPathType() {
+    public PathType getPathType() {
         return pathType;
     }
 
@@ -81,6 +81,10 @@ public final class RequestContext {
 
     public boolean explicitStartRequested() {
         return (state == State.Start);
+    }
+
+    public boolean onRoute0() {
+        return (pathId != null && pathType == PathType.Route0);
     }
 
     public boolean needToStartCollection() {
@@ -151,7 +155,7 @@ public final class RequestContext {
             value = input.getString(ContextAttributes.STATE);
             context.state = State.builder(value);
             value = input.getString(ContextAttributes.PATH_TYPE);
-            context.pathType = (value != null && !value.isEmpty()) ? SuggestionType.builder(value) : null;
+            context.pathType = (value != null && !value.isEmpty()) ? PathType.builder(value) : null;
         } catch (IllegalArgumentException e) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, e.getMessage());
         }
