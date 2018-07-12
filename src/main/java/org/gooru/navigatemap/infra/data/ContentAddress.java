@@ -112,11 +112,23 @@ public final class ContentAddress {
     }
 
     public boolean isOnTeacherOrSystemPath() {
-        return (pathId != null && pathId != 0);
+        return isOnSystemPath() || isOnTeacherPath();
+    }
+
+    public boolean isOnTeacherPath() {
+        return (pathId != null && pathId > 0 && pathType == PathType.Teacher);
+    }
+
+    public boolean isOnSystemPath() {
+        return (pathId != null && pathId > 0 && pathType == PathType.System);
+    }
+
+    public boolean isOnRoute0() {
+        return pathType == PathType.Route0;
     }
 
     public boolean isOnMainPath() {
-        return !isOnTeacherOrSystemPath();
+        return (pathId == null || pathId == 0) && pathType == null;
     }
 
     public boolean isValidAddress() {

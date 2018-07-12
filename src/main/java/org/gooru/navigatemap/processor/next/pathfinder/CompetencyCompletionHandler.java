@@ -28,7 +28,7 @@ class CompetencyCompletionHandler {
     }
 
     void handleCompetencyCompletion() {
-        if (context.getContentAddress().isOnMainPath()
+        if ((context.getContentAddress().isOnMainPath() || context.getContentAddress().isOnRoute0())
             && context.getContentAddress().getCurrentItemType() == CurrentItemType.Assessment) {
             if (isCompetencyCompleted()) {
                 markCompetencyCompletedForUser();
@@ -65,10 +65,16 @@ class CompetencyCompletionHandler {
     List<String> fetchCompetenciesForCollection() {
         ContentFinderDao finderDao = dbi.onDemand(ContentFinderDao.class);
         if (!areCompetenciesFetched) {
-            List<List<String>> listOfListOfComps = finderDao
-                .findCompetenciesForCollection(context.getContentAddress().getCourse(),
+            List<List<String>> listOfListOfComps;
+            if (context.getContentAddress().isOnRoute0()) {
+                listOfListOfComps =
+                    finderDao.findCompetenciesForCollection(context.getContentAddress().getCurrentItem());
+            } else {
+                // TODO: Verify if for mastery we use competencies for main content or signature one
+                listOfListOfComps = finderDao.findCompetenciesForCollection(context.getContentAddress().getCourse(),
                     context.getContentAddress().getUnit(), context.getContentAddress().getLesson(),
                     context.getContentAddress().getCollection());
+            }
             if (listOfListOfComps != null && !listOfListOfComps.isEmpty()) {
                 competencies = listOfListOfComps.get(0);
             }

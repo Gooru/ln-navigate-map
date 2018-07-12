@@ -25,6 +25,7 @@ class Route0PathFinderService implements PathFinder {
     public PathFinderResult findPath(PathFinderContext context) {
         this.context = context;
         validateProvidedRoute0Context();
+        handleCompetencyCompletion();
         ContentAddress result = ContentFinderFactory.buildRoute0NextContentFinder(dbi,
             ContentVerifierBuilder.buildRoute0ContentNonSkippabilityVerifier(dbi, context.getUserId()))
             .findContent(context);
@@ -34,6 +35,11 @@ class Route0PathFinderService implements PathFinder {
                 .findContent(createInitialContextToContinueOnMainPath()));
         }
         return new PathFinderResult(result);
+    }
+
+    private void handleCompetencyCompletion() {
+        CompetencyCompletionHandler competencyCompletionHandler = new CompetencyCompletionHandler(dbi, context);
+        competencyCompletionHandler.handleCompetencyCompletion();
     }
 
     private PathFinderContext createInitialContextToContinueOnMainPath() {
