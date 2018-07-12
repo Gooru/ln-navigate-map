@@ -122,9 +122,10 @@ public class UserRoute0ContentDetailModel {
 
     /**
      * Note: This just denotes ContentAddress and there is no guarantee that this will actually exist.
-     *
+     * <p>
      * For R0 since we UL are actually placeholders, if the following object is used as validator to locate the content,
      * it will fail.
+     *
      * @param courseId
      * @return
      */
@@ -140,6 +141,5 @@ public class UserRoute0ContentDetailModel {
         result.setPathType(PathType.Route0);
         return result;
     }
-
 
 }

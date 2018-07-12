@@ -7,8 +7,6 @@ import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.core.json.JsonObject;
-
 /**
  * @author ashish on 2/5/18.
  */

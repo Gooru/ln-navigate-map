@@ -29,8 +29,7 @@ class Route0ContentNonSkippabilityVerifier implements ContentVerifier {
 
     @Override
     public boolean isContentVerified(ContentAddress contentAddress) {
-        List<List<String>> listOfListOfComps = finderDao
-            .findCompetenciesForCollection(contentAddress.getCollection());
+        List<List<String>> listOfListOfComps = finderDao.findCompetenciesForCollection(contentAddress.getCollection());
 
         List<String> competencyList =
             (listOfListOfComps != null && !listOfListOfComps.isEmpty()) ? listOfListOfComps.get(0) :

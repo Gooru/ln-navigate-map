@@ -2,10 +2,6 @@ package org.gooru.navigatemap.processor.next.pathfinder;
 
 import java.util.UUID;
 
-import org.gooru.navigatemap.infra.data.ContentAddress;
-import org.gooru.navigatemap.infra.data.CurrentItemType;
-import org.gooru.navigatemap.infra.data.PathType;
-
 /**
  * @author ashish on 12/7/18.
  */

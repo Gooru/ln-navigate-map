@@ -2,7 +2,6 @@ package org.gooru.navigatemap.processor.next.pathfinder;
 
 import java.util.UUID;
 
-import org.gooru.navigatemap.infra.data.ContentAddress;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
