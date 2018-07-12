@@ -38,4 +38,8 @@ final class PathFinderFactory {
     static PathFinder buildRoute0PathFinderService() {
         return new Route0PathFinderService(DBICreator.getDbiForDefaultDS());
     }
+
+    public static PathFinder buildRoute0ExplicitStartPathFinderService() {
+        return new Route0ExplicitStartPathFinderService(DBICreator.getDbiForDefaultDS());
+    }
 }

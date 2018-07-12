@@ -79,6 +79,11 @@ public class PathFinderProcessor {
             PathFinderResult result =
                 PathFinderFactory.buildCourseStartPathFinderService().findPath(PathFinderContext.buildContext(npc));
             serveTheContent(result.getContentAddress());
+        } else if (npc.onRoute0() && npc.userExplicitlyAskedToStartHere()) {
+            LOGGER.debug("User is currently on Route0 and explicitly asking for start");
+            PathFinderResult result = PathFinderFactory.buildRoute0ExplicitStartPathFinderService()
+                .findPath(PathFinderContext.buildContext(npc));
+            serveTheContent(result.getContentAddress());
         } else if (npc.onRoute0()) {
             LOGGER.debug("User is currently on Route0");
             PathFinderResult result =

@@ -23,7 +23,7 @@ final class ContentFinderFactory {
         return new AlternatePathUnawareSpecifiedPathContentFinder(dbi);
     }
 
-    static ContentFinder buildRoute0NextContentFinder(DBI dbi) {
-        return new Route0NextContentFinder(dbi);
+    static ContentFinder buildRoute0NextContentFinder(DBI dbi, ContentVerifier verifier) {
+        return new Route0NextContentFinder(dbi, verifier);
     }
 }
