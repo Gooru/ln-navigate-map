@@ -17,13 +17,14 @@ public class Route0ContentFinderContext {
 
     public static Route0ContentFinderContext buildFromPathFinderContext(PathFinderContext context) {
         Route0ContentFinderContext result = new Route0ContentFinderContext();
-        result.setUserId(UUID.fromString(context.getUserId()));
+        result.setUserId(convertStringToUUID(context.getUserId()));
         result.setClassId(context.getClassId());
-        result.setCourseId(UUID.fromString(context.getContentAddress().getCourse()));
-        result.setUnitId(UUID.fromString(context.getContentAddress().getUnit()));
-        result.setLessonId(UUID.fromString(context.getContentAddress().getLesson()));
-        result.setCollectionId(UUID.fromString(context.getContentAddress().getCurrentItem()));
-        result.setCollectionType(context.getContentAddress().getCurrentItemType().getName());
+        result.setCourseId(convertStringToUUID(context.getContentAddress().getCourse()));
+        result.setUnitId(convertStringToUUID(context.getContentAddress().getUnit()));
+        result.setLessonId(convertStringToUUID(context.getContentAddress().getLesson()));
+        result.setCollectionId(convertStringToUUID(context.getContentAddress().getCurrentItem()));
+        result.setCollectionType(context.getContentAddress().getCurrentItemType() != null ?
+            context.getContentAddress().getCurrentItemType().getName() : null);
         result.setPathId(context.getContentAddress().getPathId());
         return result;
     }
@@ -90,5 +91,12 @@ public class Route0ContentFinderContext {
 
     public void setPathId(Long pathId) {
         this.pathId = pathId;
+    }
+
+    private static UUID convertStringToUUID(String string) {
+        if (string != null) {
+            return UUID.fromString(string);
+        }
+        return null;
     }
 }

@@ -37,7 +37,11 @@ class Route0NextContentFinder implements ContentFinder {
                 models = getRoute0ContentFinderDao().fetchNextContentsFromRoute0InClass(route0ContentFinderContext);
             }
         } else {
-            models = getRoute0ContentFinderDao().fetchAllContentsFromRoute0(route0ContentFinderContext);
+            if (route0ContentFinderContext.getClassId() == null) {
+                models = getRoute0ContentFinderDao().fetchAllContentsFromRoute0ForIL(route0ContentFinderContext);
+            } else {
+                models = getRoute0ContentFinderDao().fetchAllContentsFromRoute0InClass(route0ContentFinderContext);
+            }
         }
         ContentAddress result;
         for (UserRoute0ContentDetailModel model : models) {

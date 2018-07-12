@@ -84,7 +84,7 @@ public final class RequestContext {
     }
 
     public boolean onRoute0() {
-        return (pathId != null && pathType == PathType.Route0);
+        return (pathType == PathType.Route0);
     }
 
     public boolean needToStartCollection() {
@@ -116,15 +116,10 @@ public final class RequestContext {
                 "Invalid context for Start flow");
         }
 
-        if (pathType != null) {
-            if (pathId == null || pathId == 0) {
+        if (pathId != null && pathId > 0) {
+            if (pathType == null) {
                 throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
-                    "Invalid context, either both pathId and pathType should be present or both should be absent");
-            }
-        } else {
-            if (pathId != null && pathId > 0) {
-                throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
-                    "Invalid context, either both pathId and pathType should be present or both should be absent");
+                    "Invalid context, pathType should be present for pathId, if pathId is present");
             }
         }
     }
