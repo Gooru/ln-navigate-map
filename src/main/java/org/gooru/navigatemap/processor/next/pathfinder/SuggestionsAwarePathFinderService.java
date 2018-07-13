@@ -182,8 +182,9 @@ class SuggestionsAwarePathFinderService implements PathFinder {
 
     /* Load item from main path, and if there is teacher path on that item, return that else return the loaded path */
     private PathFinderResult loadNextItemFromMainpath() {
-        return new PathFinderResult(
-            ContentFinderFactory.buildTeacherPathAwareMainPathContentFinder(dbi).findContent(context));
+        return new PathFinderResult(ContentFinderFactory
+            .buildTeacherPathAwareMainPathContentFinder(dbi, ContentFinderCriteria.CRITERIA_NON_SKIPPABLE)
+            .findContent(context));
     }
 
     private AlternatePath findAlternatePath() {

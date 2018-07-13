@@ -31,7 +31,8 @@ class Route0PathFinderService implements PathFinder {
             .findContent(context);
         if (result == null) {
             LOGGER.debug("No more content available on Route0. Continue on main path.");
-            return new PathFinderResult(ContentFinderFactory.buildTeacherPathAwareMainPathContentFinder(dbi)
+            return new PathFinderResult(ContentFinderFactory
+                .buildTeacherPathAwareMainPathContentFinder(dbi, ContentFinderCriteria.CRITERIA_NON_SKIPPABLE)
                 .findContent(createInitialContextToContinueOnMainPath()));
         }
         return new PathFinderResult(result);

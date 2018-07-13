@@ -69,13 +69,38 @@ class AlternatePathUnawareMainPathContentFinder extends AbstractContentFinder {
         switch (criteria) {
         case CRITERIA_VISIBLE:
             return findNextVisibleContentInLessons(address, unit, lessons);
-        case CRITERIA_ALL:
+        case CRITERIA_NONE:
             return findNextContentInLessons(address, unit, lessons);
+        case CRITERIA_NON_SKIPPABLE:
+            return findNextNonSkippableContentInLesson(address, unit, lessons);
         case CRITERIA_VISIBLE_NON_SKIPPABLE:
             return findNextVisibleAndNonSkippableContentInLessons(address, unit, lessons);
         default:
             throw new IllegalStateException("Invalid criteria for finding content");
         }
+    }
+
+    private ContentAddress findNextNonSkippableContentInLesson(ContentAddress address, String unit,
+        List<String> lessons) {
+        List<ContentAddress> contentAddresses;
+        ContentAddress result;
+        ContentVerifier nonSkippabilityVerifier = getNonSkippabilityVerifier(context.getUserId());
+
+        for (String lesson : lessons) {
+            if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())
+                && address.getCollection() != null) {
+                contentAddresses =
+                    finderDao.findNextCollectionsInCUL(address.getCourse(), unit, lesson, address.getCollection());
+                result = nonSkippabilityVerifier.findFirstVerifiedContent(contentAddresses);
+            } else {
+                contentAddresses = finderDao.findCollectionsInCUL(address.getCourse(), unit, lesson);
+                result = nonSkippabilityVerifier.findFirstVerifiedContent(contentAddresses);
+            }
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
     }
 
     private ContentAddress findNextContentInLessons(ContentAddress address, String unit, List<String> lessons) {

@@ -36,8 +36,9 @@ class CourseStartPathFinderService implements PathFinder {
     }
 
     private PathFinderResult startCourseNormally() {
-        return new PathFinderResult(
-            ContentFinderFactory.buildTeacherPathAwareMainPathContentFinder(dbi).findContent(context));
+        return new PathFinderResult(ContentFinderFactory
+            .buildTeacherPathAwareMainPathContentFinder(dbi, ContentFinderCriteria.CRITERIA_NON_SKIPPABLE)
+            .findContent(context));
     }
 
     private boolean route0ExistsAndAcceptedByUser() {
