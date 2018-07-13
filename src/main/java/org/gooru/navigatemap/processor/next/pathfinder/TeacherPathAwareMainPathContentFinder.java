@@ -14,19 +14,21 @@ import org.skife.jdbi.v2.DBI;
  *
  * @author ashish on 7/5/18.
  */
-class TeacherPathAwareMainPathContentFinder extends AbstractContentFinder {
+class TeacherPathAwareMainPathContentFinder implements ContentFinder {
 
     private final ContentFinderCriteria contentFinderCriteria;
+    private final DBI dbi;
+    private AlternatePathDao alternatePathDao;
 
     TeacherPathAwareMainPathContentFinder(DBI dbi, ContentFinderCriteria contentFinderCriteria) {
-        super(dbi);
+        this.dbi = dbi;
         this.contentFinderCriteria = contentFinderCriteria;
     }
 
     @Override
     public ContentAddress findContent(PathFinderContext context) {
         ContentAddress result =
-            ContentFinderFactory.buildAlternatePathUnawareMainPathContentFinder(getDbi(), contentFinderCriteria)
+            ContentFinderFactory.buildAlternatePathUnawareMainPathContentFinder(dbi, contentFinderCriteria)
                 .findContent(context);
 
         if (context.getClassId() != null) {
@@ -38,4 +40,13 @@ class TeacherPathAwareMainPathContentFinder extends AbstractContentFinder {
         }
         return result;
     }
+
+    protected AlternatePathDao getAlternatePathDao() {
+        if (alternatePathDao == null) {
+            alternatePathDao = dbi.onDemand(AlternatePathDao.class);
+        }
+        return alternatePathDao;
+    }
+
+
 }

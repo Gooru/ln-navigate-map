@@ -1,6 +1,7 @@
 package org.gooru.navigatemap.processor.next.pathfinder;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.gooru.navigatemap.infra.data.ContentAddress;
 import org.skife.jdbi.v2.DBI;
@@ -12,19 +13,15 @@ import org.skife.jdbi.v2.DBI;
  *
  * @author ashish on 5/4/17.
  */
-class AlternatePathUnawareMainPathContentFinder extends AbstractContentFinder {
+class AlternatePathUnawareMainPathContentFinder implements ContentFinder {
+    private final DBI dbi;
     private final ContentFinderCriteria criteria;
     private PathFinderContext context;
-
-    // This can be obtained from base class but we want to cache it instead of creating new every time as this is the
-    // only dao we are going to use. If there is another dao which we need to use here, we should ask fresh every
-    // time from base class
-    private final ContentFinderDao finderDao;
+    private ContentFinderDao finderDao;
 
     AlternatePathUnawareMainPathContentFinder(DBI dbi, ContentFinderCriteria criteria) {
-        super(dbi);
+        this.dbi = dbi;
         this.criteria = criteria;
-        finderDao = getContentFinderDao();
     }
 
     @Override
@@ -41,9 +38,9 @@ class AlternatePathUnawareMainPathContentFinder extends AbstractContentFinder {
     private ContentAddress findNextValidContent(ContentAddress address) {
         List<String> units;
         if (address.getUnit() != null) {
-            units = finderDao.findNextUnitsInCourse(address.getCourse(), address.getUnit());
+            units = getContentFinderDao().findNextUnitsInCourse(address.getCourse(), address.getUnit());
         } else {
-            units = finderDao.findUnitsInCourse(address.getCourse());
+            units = getContentFinderDao().findUnitsInCourse(address.getCourse());
         }
 
         return findNextValidContentInUnits(address, units);
@@ -53,9 +50,9 @@ class AlternatePathUnawareMainPathContentFinder extends AbstractContentFinder {
         List<String> lessons;
         for (String unit : units) {
             if (unit.equalsIgnoreCase(address.getUnit())) {
-                lessons = finderDao.findNextLessonsInCU(address.getCourse(), unit, address.getLesson());
+                lessons = getContentFinderDao().findNextLessonsInCU(address.getCourse(), unit, address.getLesson());
             } else {
-                lessons = finderDao.findLessonsInCU(address.getCourse(), unit);
+                lessons = getContentFinderDao().findLessonsInCU(address.getCourse(), unit);
             }
             ContentAddress result = findNextValidContentInLessons(address, unit, lessons);
             if (result != null) {
@@ -84,7 +81,7 @@ class AlternatePathUnawareMainPathContentFinder extends AbstractContentFinder {
         List<String> lessons) {
         List<ContentAddress> contentAddresses;
         ContentAddress result;
-        ContentVerifier nonSkippabilityVerifier = getNonSkippabilityVerifier(context.getUserId());
+        ContentVerifier nonSkippabilityVerifier = getNonSkippabilityVerifier();
 
         for (String lesson : lessons) {
             if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())
@@ -131,7 +128,7 @@ class AlternatePathUnawareMainPathContentFinder extends AbstractContentFinder {
     private ContentAddress findNextVisibleContentInLessons(ContentAddress address, String unit, List<String> lessons) {
         List<ContentAddress> contentAddresses;
         ContentAddress result;
-        ContentVerifier visibilityVerifier = getVisibilityVerifier(context.getClassId());
+        ContentVerifier visibilityVerifier = getVisibilityVerifier();
 
         for (String lesson : lessons) {
             if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())
@@ -154,8 +151,8 @@ class AlternatePathUnawareMainPathContentFinder extends AbstractContentFinder {
         List<String> lessons) {
         List<ContentAddress> contentAddresses;
         ContentAddress result = null;
-        ContentVerifier visibilityVerifier = getVisibilityVerifier(context.getClassId());
-        ContentVerifier nonSkippabilityVerifier = getNonSkippabilityVerifier(context.getUserId());
+        ContentVerifier visibilityVerifier = getVisibilityVerifier();
+        ContentVerifier nonSkippabilityVerifier = getNonSkippabilityVerifier();
 
         for (String lesson : lessons) {
             if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())
@@ -181,4 +178,21 @@ class AlternatePathUnawareMainPathContentFinder extends AbstractContentFinder {
         }
         return null;
     }
+
+    private ContentFinderDao getContentFinderDao() {
+        if (finderDao == null) {
+            finderDao = dbi.onDemand(ContentFinderDao.class);
+        }
+        return finderDao;
+    }
+
+    protected ContentVerifier getVisibilityVerifier() {
+        return ContentVerifierBuilder.buildContentVisibilityVerifier(context.getClassId(), dbi);
+    }
+
+    protected ContentVerifier getNonSkippabilityVerifier() {
+        return ContentVerifierBuilder.buildContentNonSkippabilityVerifier(dbi, context.getUserId());
+    }
+
+
 }
