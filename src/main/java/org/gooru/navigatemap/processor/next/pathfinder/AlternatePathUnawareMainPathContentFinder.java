@@ -1,7 +1,6 @@
 package org.gooru.navigatemap.processor.next.pathfinder;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.gooru.navigatemap.infra.data.ContentAddress;
 import org.skife.jdbi.v2.DBI;
@@ -193,6 +192,5 @@ class AlternatePathUnawareMainPathContentFinder implements ContentFinder {
     protected ContentVerifier getNonSkippabilityVerifier() {
         return ContentVerifierBuilder.buildContentNonSkippabilityVerifier(dbi, context.getUserId());
     }
-
 
 }
