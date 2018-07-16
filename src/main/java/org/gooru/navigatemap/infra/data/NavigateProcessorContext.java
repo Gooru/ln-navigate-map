@@ -42,27 +42,31 @@ public final class NavigateProcessorContext {
         // 2. If we don't find context in Redis, we initialize context with whatever is coming in. The client is
         // supposed to send either "Continue" or "Start" state. While start would mean that user has provided start
         // point, Continue now would mean that Course needs to be started.
-        return ctxIn.getState() == State.Continue;
+        return ctxIn.needToStartCourse();
+    }
+
+    public boolean onRoute0() {
+        return ctxIn.onRoute0();
     }
 
     public boolean userExplicitlyAskedToStartHere() {
-        return ctxIn.getState() == State.Start;
+        return ctxIn.explicitStartRequested();
     }
 
     public boolean userWasSuggestedAnItem() {
-        return ctxIn.getState() == State.ContentEndSuggested;
+        return ctxIn.userWasSuggestedAnItem();
     }
 
     public boolean userExplicitlyAskedToStartLesson() {
-        return userExplicitlyAskedToStartHere() && ctxIn.getCollectionId() == null;
+        return ctxIn.needToStartLesson();
     }
 
     public boolean userExplicitlyAskedToStartCollection() {
-        return userExplicitlyAskedToStartHere() && ctxIn.getCollectionId() != null;
+        return ctxIn.needToStartCollection();
     }
 
     public boolean onMainPath() {
-        return ctxIn.getPathId() == null || ctxIn.getPathId() == 0;
+        return ctxIn.onMainPath();
     }
 
     public NavigateMessageContext navigateMessageContext() {
@@ -94,6 +98,7 @@ public final class NavigateProcessorContext {
         nextContentAddress.setLesson(address.getLesson());
         nextContentAddress.setCollection(address.getCollection());
         nextContentAddress.setPathId(address.getPathId());
+        nextContentAddress.setPathType(address.getPathType());
         nextContentAddress.setCurrentItem(address.getCurrentItem());
         nextContentAddress.setCurrentItemType(address.getCurrentItemType());
         nextContentAddress.setCurrentItemSubtype(address.getCurrentItemSubtype());
@@ -110,6 +115,7 @@ public final class NavigateProcessorContext {
             currentContentAddress.setCurrentItemType(requestContext().getCurrentItemType());
             currentContentAddress.setCurrentItemSubtype(requestContext().getCurrentItemSubtype());
             currentContentAddress.setPathId(requestContext().getPathId());
+            currentContentAddress.setPathType(requestContext().getPathType());
             currentAddressSet = true;
             return currentContentAddress;
         }

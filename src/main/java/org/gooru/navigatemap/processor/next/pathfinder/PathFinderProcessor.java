@@ -62,9 +62,11 @@ public class PathFinderProcessor {
     private Future<NavigateProcessorContext> doPathMapping() {
         Future<NavigateProcessorContext> resultFuture = Future.future();
         if (!npc.suggestionsApplicable()) {
+            LOGGER.debug("Suggestions not applicable. Will handle accordingly.");
             handleNoSuggestionsRoute();
         } else {
             // Delegate it to Suggestion oriented path finder
+            LOGGER.debug("Suggestions are applicable. Will handle accordingly.");
             handleSuggestionsOrientedRoute();
         }
         resultFuture.complete(npc);
@@ -72,16 +74,34 @@ public class PathFinderProcessor {
     }
 
     private void handleSuggestionsOrientedRoute() {
-        if (npc.userExplicitlyAskedToStartHere()) {
+        if (npc.needToStartCourse()) {
+            LOGGER.debug("Need to start course");
+            PathFinderResult result =
+                PathFinderFactory.buildCourseStartPathFinderService().findPath(PathFinderContext.buildContext(npc));
+            serveTheContent(result.getContentAddress());
+        } else if (npc.onRoute0() && npc.userExplicitlyAskedToStartHere()) {
+            LOGGER.debug("User is currently on Route0 and explicitly asking for start");
+            PathFinderResult result = PathFinderFactory.buildRoute0ExplicitStartPathFinderService()
+                .findPath(PathFinderContext.buildContext(npc));
+            serveTheContent(result.getContentAddress());
+        } else if (npc.onRoute0()) {
+            LOGGER.debug("User is currently on Route0");
+            PathFinderResult result =
+                PathFinderFactory.buildRoute0PathFinderService().findPath(PathFinderContext.buildContext(npc));
+            serveTheContent(result.getContentAddress());
+        } else if (npc.userExplicitlyAskedToStartHere()) {
+            LOGGER.debug("User explicitly requested to start the content.");
             PathFinderResult result =
                 PathFinderFactory.buildExplicitStartPathFinderService().findPath(PathFinderContext.buildContext(npc));
             serveTheContent(result.getContentAddress());
         } else if (npc.userWasSuggestedAnItem()) {
+            LOGGER.debug("User was served an suggestion. Need to start from there.");
             PathFinderResult result =
                 PathFinderFactory.buildPostSuggestionItemFinderService().findPath(PathFinderContext.buildContext(npc));
             serveTheContent(result.getContentAddress());
         } else {
             // This is our default content served state
+            LOGGER.debug("Default state handling.");
             PathFinderResult result = PathFinderFactory.buildSuggestionsAwarePathFinderService()
                 .findPath(PathFinderContext.buildContext(npc));
             if (result.hasSuggestions()) {
@@ -114,10 +134,12 @@ public class PathFinderProcessor {
 
     private void handleNoSuggestionsRoute() {
         if (npc.userExplicitlyAskedToStartCollection()) {
+            LOGGER.debug("User explicitly asked to start collection on no suggestions route.");
             PathFinderResult result =
                 PathFinderFactory.buildSpecifiedItemFinderService().findPath(PathFinderContext.buildContext(npc));
             serveTheContent(result.getContentAddress());
         } else {
+            LOGGER.debug("Will find next item on no suggestions route.");
             PathFinderResult result =
                 PathFinderFactory.buildStraightPathFinderService().findPath(PathFinderContext.buildContext(npc));
             serveTheContent(result.getContentAddress());

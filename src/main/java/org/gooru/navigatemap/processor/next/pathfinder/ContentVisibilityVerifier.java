@@ -26,6 +26,7 @@ final class ContentVisibilityVerifier implements ContentVerifier {
         this.visibility = visibility;
     }
 
+    @Override
     public boolean isContentVerified(ContentAddress address) {
         if (this.visibility == CLASS_VISIBILITY.VISIBLE_NA) {
             return verifyVisibilityPlaceholder(address);
@@ -34,6 +35,7 @@ final class ContentVisibilityVerifier implements ContentVerifier {
         }
     }
 
+    @Override
     public ContentAddress findFirstVerifiedContent(List<ContentAddress> contentAddresses) {
         if (contentAddresses != null && !contentAddresses.isEmpty()) {
             for (ContentAddress address : contentAddresses) {
@@ -45,6 +47,7 @@ final class ContentVisibilityVerifier implements ContentVerifier {
         return null;
     }
 
+    @Override
     public List<ContentAddress> filterVerifiedContent(List<ContentAddress> contentAddresses) {
         List<ContentAddress> result = new ArrayList<>();
         if (contentAddresses != null && !contentAddresses.isEmpty()) {

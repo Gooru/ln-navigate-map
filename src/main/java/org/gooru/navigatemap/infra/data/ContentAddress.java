@@ -10,6 +10,7 @@ public final class ContentAddress {
     private String collection;
     private String visibility;
     private Long pathId;
+    private PathType pathType;
     private String currentItem;
     private CurrentItemType currentItemType;
     private CurrentItemSubtype currentItemSubtype;
@@ -23,6 +24,7 @@ public final class ContentAddress {
         this.lesson = address.lesson;
         this.collection = address.collection;
         this.pathId = address.pathId;
+        this.pathType = address.pathType;
         this.currentItem = address.currentItem;
         this.currentItemType = address.currentItemType;
         this.currentItemSubtype = address.currentItemSubtype;
@@ -65,6 +67,14 @@ public final class ContentAddress {
         return pathId;
     }
 
+    public PathType getPathType() {
+        return pathType;
+    }
+
+    public void setPathType(PathType pathType) {
+        this.pathType = pathType;
+    }
+
     public void setPathId(Long pathId) {
         this.pathId = pathId;
     }
@@ -101,12 +111,24 @@ public final class ContentAddress {
         this.currentItemSubtype = currentItemSubtype;
     }
 
-    public boolean isOnAlternatePath() {
-        return (pathId != null && pathId != 0);
+    public boolean isOnTeacherOrSystemPath() {
+        return isOnSystemPath() || isOnTeacherPath();
+    }
+
+    public boolean isOnTeacherPath() {
+        return (pathId != null && pathId > 0 && pathType == PathType.Teacher);
+    }
+
+    public boolean isOnSystemPath() {
+        return (pathId != null && pathId > 0 && pathType == PathType.System);
+    }
+
+    public boolean isOnRoute0() {
+        return pathType == PathType.Route0;
     }
 
     public boolean isOnMainPath() {
-        return !isOnAlternatePath();
+        return (pathId == null || pathId == 0) && pathType == null;
     }
 
     public boolean isValidAddress() {

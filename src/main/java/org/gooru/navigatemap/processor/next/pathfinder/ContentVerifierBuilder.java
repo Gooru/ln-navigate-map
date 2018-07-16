@@ -20,4 +20,9 @@ final class ContentVerifierBuilder {
     static ContentVerifier buildContentNonSkippabilityVerifier(DBI dbi, String user) {
         return ContentNonSkippabilityVerifier.build(dbi, user);
     }
+
+    static ContentVerifier buildRoute0ContentNonSkippabilityVerifier(DBI dbi, String user) {
+        return ContentNonSkippabilityVerifier.build(dbi, user);
+    }
+
 }

@@ -24,6 +24,7 @@ public final class RequestContext {
 
     private State state;
     private Long pathId;
+    private PathType pathType;
     private Double scorePercent;
 
     public UUID getClassId() {
@@ -54,6 +55,10 @@ public final class RequestContext {
         return pathId;
     }
 
+    public PathType getPathType() {
+        return pathType;
+    }
+
     public Double getScorePercent() {
         return scorePercent;
     }
@@ -74,6 +79,30 @@ public final class RequestContext {
         return (state == State.Continue);
     }
 
+    public boolean explicitStartRequested() {
+        return (state == State.Start);
+    }
+
+    public boolean onRoute0() {
+        return (pathType == PathType.Route0);
+    }
+
+    public boolean needToStartCollection() {
+        return (state == State.Start && currentItemId != null);
+    }
+
+    public boolean onMainPath() {
+        return (getPathId() == null || getPathId() == 0) && getPathType() == null;
+    }
+
+    public boolean needToStartCourse() {
+        return getState() == State.Continue;
+    }
+
+    public boolean userWasSuggestedAnItem() {
+        return getState() == State.ContentEndSuggested;
+    }
+
     public boolean needToStartLesson() {
         return (state == State.Start && currentItemId == null);
     }
@@ -85,6 +114,13 @@ public final class RequestContext {
         if (((unitId == null || lessonId == null) && state == State.Start)) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                 "Invalid context for Start flow");
+        }
+
+        if (pathId != null && pathId > 0) {
+            if (pathType == null) {
+                throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
+                    "Invalid context, pathType should be present for pathId, if pathId is present");
+            }
         }
     }
 
@@ -113,6 +149,8 @@ public final class RequestContext {
             context.currentItemSubtype = (value != null && !value.isEmpty()) ? CurrentItemSubtype.builder(value) : null;
             value = input.getString(ContextAttributes.STATE);
             context.state = State.builder(value);
+            value = input.getString(ContextAttributes.PATH_TYPE);
+            context.pathType = (value != null && !value.isEmpty()) ? PathType.builder(value) : null;
         } catch (IllegalArgumentException e) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, e.getMessage());
         }

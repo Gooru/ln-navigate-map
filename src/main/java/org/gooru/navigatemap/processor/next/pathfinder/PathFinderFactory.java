@@ -30,4 +30,16 @@ final class PathFinderFactory {
     static PathFinder buildPostSuggestionItemFinderService() {
         return new PostSuggestionItemFinderService(DBICreator.getDbiForDefaultDS());
     }
+
+    static PathFinder buildCourseStartPathFinderService() {
+        return new CourseStartPathFinderService(DBICreator.getDbiForDefaultDS());
+    }
+
+    static PathFinder buildRoute0PathFinderService() {
+        return new Route0PathFinderService(DBICreator.getDbiForDefaultDS());
+    }
+
+    public static PathFinder buildRoute0ExplicitStartPathFinderService() {
+        return new Route0ExplicitStartPathFinderService(DBICreator.getDbiForDefaultDS());
+    }
 }
