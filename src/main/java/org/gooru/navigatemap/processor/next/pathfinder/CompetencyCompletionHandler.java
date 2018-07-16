@@ -3,7 +3,6 @@ package org.gooru.navigatemap.processor.next.pathfinder;
 import java.util.List;
 
 import org.gooru.navigatemap.app.components.utilities.DbLookupUtility;
-import org.gooru.navigatemap.infra.data.AlternatePath;
 import org.gooru.navigatemap.infra.data.CurrentItemType;
 import org.gooru.navigatemap.infra.utilities.CollectionUtils;
 import org.skife.jdbi.v2.DBI;
@@ -36,32 +35,6 @@ class CompetencyCompletionHandler {
         }
     }
 
-    void handleCompetencyMastery(AlternatePath alternatePath) {
-        if (context.getContentAddress().isOnTeacherOrSystemPath()
-            && context.getContentAddress().getCurrentItemType() == CurrentItemType.Assessment && alternatePath
-            .isSuggestionSystemSuggestion() && alternatePath.isSuggestionSignatureAssessment()) {
-            if (isCompetencyCompleted()) {
-                markCompetencyMasteredForUser();
-            }
-        }
-    }
-
-    private void markCompetencyMasteredForUser() {
-        List<String> competencyList = fetchCompetenciesForCollection();
-        if (!competencyList.isEmpty()) {
-            UserCompetencyCompletionDao userCompetencyCompletionDao = dbi.onDemand(UserCompetencyCompletionDao.class);
-            List<String> masteredCompetenciesByUser = userCompetencyCompletionDao
-                .findCompetenciesBasedOnCompletionStatusForUserInGivenList(context.getUserId(),
-                    CollectionUtils.convertToSqlArrayOfString(competencyList), COMPETENCY_STATUS_MASTERED);
-            competencyList.removeAll(masteredCompetenciesByUser);
-            if (!competencyList.isEmpty()) {
-                userCompetencyCompletionDao
-                    .markCompetencyCompletedOrMastered(context.getUserId(), competencyList, COMPETENCY_STATUS_MASTERED);
-            }
-        }
-
-    }
-
     List<String> fetchCompetenciesForCollection() {
         ContentFinderDao finderDao = dbi.onDemand(ContentFinderDao.class);
         if (!areCompetenciesFetched) {
@@ -70,7 +43,6 @@ class CompetencyCompletionHandler {
                 listOfListOfComps =
                     finderDao.findCompetenciesForCollection(context.getContentAddress().getCurrentItem());
             } else {
-                // TODO: Verify if for mastery we use competencies for main content or signature one
                 listOfListOfComps = finderDao.findCompetenciesForCollection(context.getContentAddress().getCourse(),
                     context.getContentAddress().getUnit(), context.getContentAddress().getLesson(),
                     context.getContentAddress().getCollection());

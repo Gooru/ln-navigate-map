@@ -130,10 +130,7 @@ class SuggestionsAwarePathFinderService implements PathFinder {
             } else if (alternatePath.isSuggestionSystemSuggestion()) {
                 LOGGER.debug("On alternate path for system suggestion.");
                 if (context.getContentAddress().getCurrentItemType() == CurrentItemType.Assessment) {
-                    LOGGER.debug("On alternate path for system suggestion, checking competency completion.");
-                    CompetencyCompletionHandler competencyCompletionHandler =
-                        new CompetencyCompletionHandler(dbi, context);
-                    competencyCompletionHandler.handleCompetencyMastery(alternatePath);
+                    LOGGER.debug("On alternate path for system suggestion, no mastery update, will find next item");
                     return loadNextItemFromMainpath();
                 } else {
                     LOGGER.debug("On alternate path for system suggestion, finding next system suggestion to serve.");
