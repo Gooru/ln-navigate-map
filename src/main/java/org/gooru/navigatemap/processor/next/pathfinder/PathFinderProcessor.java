@@ -102,8 +102,9 @@ public class PathFinderProcessor {
         } else {
             // This is our default content served state
             LOGGER.debug("Default state handling.");
-            PathFinderResult result = PathFinderFactory.buildSuggestionsAwarePathFinderService()
-                .findPath(PathFinderContext.buildContext(npc));
+            PathFinderResult result =
+                PathFinderFactory.buildSuggestionsAwarePathFinderService(npc.requestContext().getRouteContextData())
+                    .findPath(PathFinderContext.buildContext(npc));
             if (result.hasSuggestions()) {
                 serveTheSuggestions(result);
             } else {
@@ -149,6 +150,7 @@ public class PathFinderProcessor {
     private void serveTheContent(ContentAddress contentToServe) {
         if (contentToServe != null) {
             if (contentToServe.getCollection() != null) {
+                handleRepeatIfServingSignatureCollection(contentToServe);
                 npc.serveContent(contentToServe);
             } else {
                 npc.responseContext().setState(State.Done);
@@ -157,6 +159,13 @@ public class PathFinderProcessor {
             LOGGER.warn("Not able to locate valid content in course");
             npc.responseContext().setState(State.Done);
         }
+    }
+
+    private void handleRepeatIfServingSignatureCollection(ContentAddress contentToServe) {
+        if (contentToServe.isCurrentItemSignatureCollection()) {
+            npc.requestContext().getRouteContextData().turnOnRepeatAssessmentPostSignatureCollection();
+        }
+
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.infra.data.context.ContextAttributes;
+import org.gooru.navigatemap.infra.data.context.RouteContextData;
 
 import io.vertx.core.json.JsonObject;
 
@@ -26,6 +27,8 @@ public final class RequestContext {
     private Long pathId;
     private PathType pathType;
     private Double scorePercent;
+
+    private RouteContextData routeContextData;
 
     public UUID getClassId() {
         return classId;
@@ -73,6 +76,10 @@ public final class RequestContext {
 
     public CurrentItemSubtype getCurrentItemSubtype() {
         return currentItemSubtype;
+    }
+
+    public RouteContextData getRouteContextData() {
+        return routeContextData;
     }
 
     public boolean needsLastState() {
@@ -151,6 +158,7 @@ public final class RequestContext {
             context.state = State.builder(value);
             value = input.getString(ContextAttributes.PATH_TYPE);
             context.pathType = (value != null && !value.isEmpty()) ? PathType.builder(value) : null;
+            context.routeContextData = new RouteContextData(input.getString(ContextAttributes.CONTEXT_DATA));
         } catch (IllegalArgumentException e) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, e.getMessage());
         }
