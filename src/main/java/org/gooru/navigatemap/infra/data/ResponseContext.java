@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import org.gooru.navigatemap.infra.data.context.ContextAttributes;
+import org.gooru.navigatemap.infra.data.context.RouteContextData;
 
 import io.vertx.core.json.JsonObject;
 
@@ -23,7 +24,7 @@ public final class ResponseContext {
     private Long pathId;
     private String pathType;
     private final Double scorePercent;
-    private int version;
+    private RouteContextData routeContextData;
 
     public ResponseContext(RequestContext context) {
         this.classId = context.getClassId();
@@ -38,6 +39,7 @@ public final class ResponseContext {
         this.currentItemId = context.getCurrentItemId();
         this.currentItemType = context.getCurrentItemType();
         this.currentItemSubtype = context.getCurrentItemSubtype();
+        this.routeContextData = context.getRouteContextData();
     }
 
     public JsonObject toJson() {
@@ -56,6 +58,7 @@ public final class ResponseContext {
         context.put(ContextAttributes.CURRENT_ITEM_TYPE, currentItemType != null ? currentItemType.getName() : null);
         context.put(ContextAttributes.CURRENT_ITEM_SUBTYPE,
             currentItemSubtype != null ? currentItemSubtype.getName() : null);
+        context.put(ContextAttributes.CONTEXT_DATA, routeContextData.encode());
         return context;
     }
 
@@ -162,14 +165,6 @@ public final class ResponseContext {
 
     public void setCurrentItemSubtype(CurrentItemSubtype currentItemSubtype) {
         this.currentItemSubtype = currentItemSubtype;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
     }
 
 }
