@@ -131,6 +131,14 @@ public final class ContentAddress {
         return (pathId == null || pathId == 0) && pathType == null;
     }
 
+    public boolean isCurrentItemSignatureAssessment() {
+        return isOnSystemPath() && getCurrentItemSubtype() == CurrentItemSubtype.SignatureAssessment;
+    }
+
+    public boolean isCurrentItemSignatureCollection() {
+        return isOnSystemPath() && getCurrentItemSubtype() == CurrentItemSubtype.SignatureCollection;
+    }
+
     public boolean isValidAddress() {
         return course != null && unit != null && lesson != null && collection != null;
     }
