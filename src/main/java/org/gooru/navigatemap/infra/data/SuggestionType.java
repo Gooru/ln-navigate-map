@@ -9,8 +9,7 @@ import java.util.Map;
 public enum SuggestionType {
 
     System("system"),
-    Teacher("teacher"),
-    Route0("route0");
+    Teacher("teacher");
 
     private final String name;
 

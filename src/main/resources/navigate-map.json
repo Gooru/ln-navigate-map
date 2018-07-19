@@ -86,7 +86,8 @@
     "context.mbus.timeout.seconds": 60,
     "suggestions.advise": true,
     "serve.content.details": false,
-    "suggestions.limit": 1
+    "suggestions.limit": 1,
+    "suggestions.applicable.course.version": "premium"
   },
   "vertxOptions": {
     "workerPoolSize": 40,

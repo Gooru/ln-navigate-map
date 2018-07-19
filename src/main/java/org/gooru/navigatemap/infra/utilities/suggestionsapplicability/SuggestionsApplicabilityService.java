@@ -2,7 +2,10 @@ package org.gooru.navigatemap.infra.utilities.suggestionsapplicability;
 
 import java.util.UUID;
 
+import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.skife.jdbi.v2.DBI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.vertx.core.json.JsonObject;
 
@@ -13,7 +16,7 @@ class SuggestionsApplicabilityService {
 
     private SuggestionsApplicabilityDao suggestionsApplicabilityDao;
     private final DBI dbi;
-    private static final String RESCOPE_SETTING_KEY = "rescope";
+    private static final Logger LOGGER = LoggerFactory.getLogger(SuggestionsApplicabilityService.class);
 
     SuggestionsApplicabilityService(DBI dbi) {
         this.dbi = dbi;
@@ -22,23 +25,24 @@ class SuggestionsApplicabilityService {
     boolean areSuggestionsApplicable(UUID classId, UUID courseId) {
         suggestionsApplicabilityDao = dbi.onDemand(SuggestionsApplicabilityDao.class);
         if (classId != null) {
-            return rescopeApplicableBasedOnClassSettings(classId);
+            return areSuggestionsApplicableBasedOnClass(classId);
         }
         return areSuggestionsApplicableBasedOnCourseVersion(courseId);
     }
 
     private boolean areSuggestionsApplicableBasedOnCourseVersion(UUID course) {
-        String version = suggestionsApplicabilityDao.findCourseVersion(course);
-        return (version != null);
+        return AppConfiguration.getInstance().getSuggestionsApplicabilityCourseVersion()
+            .equals(suggestionsApplicabilityDao.fetchCourseVersion(course));
     }
 
-    private boolean rescopeApplicableBasedOnClassSettings(UUID classId) {
-        String setting = suggestionsApplicabilityDao.fetchClassSetting(classId);
-        if (setting == null) {
-            throw new IllegalStateException("Class setting should not be null");
+    private boolean areSuggestionsApplicableBasedOnClass(UUID classId) {
+        String courseId = suggestionsApplicabilityDao.fetchCourseForClass(classId);
+        if (courseId == null) {
+            LOGGER.info("Course is not assigned to class '{}' hence suggestions not applicable", classId.toString());
+            return false;
         }
-        JsonObject jsonSetting = new JsonObject(setting);
-        return Boolean.TRUE.equals(jsonSetting.getBoolean(RESCOPE_SETTING_KEY));
+        return AppConfiguration.getInstance().getSuggestionsApplicabilityCourseVersion()
+            .equals(suggestionsApplicabilityDao.fetchCourseVersion(courseId));
     }
 
 }

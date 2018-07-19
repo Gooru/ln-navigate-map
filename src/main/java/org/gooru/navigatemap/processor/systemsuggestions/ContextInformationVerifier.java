@@ -2,7 +2,6 @@ package org.gooru.navigatemap.processor.systemsuggestions;
 
 import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
-import org.gooru.navigatemap.infra.data.SuggestionType;
 
 /**
  * @author ashish on 27/12/17.
@@ -17,9 +16,7 @@ class ContextInformationVerifier {
     }
 
     void validateContextInformation() {
-        if (command.getSuggestionType() == SuggestionType.Route0) {
-            validateContextInformationForRoute0();
-        } else if (command.getCtxClassId() == null) {
+        if (command.getCtxClassId() == null) {
             validateContextInformationForCourse();
         } else {
             validateContextInformationForClass();

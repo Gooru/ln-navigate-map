@@ -93,13 +93,9 @@ class AddSystemSuggestionCommand {
         } else if (ctxClassId == null && ctxCourseId == null) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                 "Course or class should be provided");
-        } else if ((ctxUnitId == null || ctxLessonId == null) && suggestionType != SuggestionType.Route0) {
+        } else if (ctxUnitId == null || ctxLessonId == null) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                 "Invalid unit or lesson for suggestion which is not Route0 suggestion");
-        } else if (suggestionType == SuggestionType.Route0 && (ctxUnitId != null || ctxLessonId != null
-            || ctxCollectionId != null)) {
-            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
-                "Route0 suggestion is applicable at course level only");
         } else if (suggestedContentId == null) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                 "Invalid content id for suggestion");
