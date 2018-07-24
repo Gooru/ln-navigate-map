@@ -69,11 +69,12 @@ class Route0PathFinderService implements PathFinder {
     }
 
     private boolean startingCourse() {
-        if (context.getContentAddress().getPathId() == null && context.getContentAddress().getCurrentItem() == null
-            && context.getContentAddress().getLesson() == null && context.getContentAddress().getUnit() == null) {
-            return true;
-        }
-        return false;
+        return noPath() && context.getContentAddress().getCurrentItem() == null
+            && context.getContentAddress().getLesson() == null && context.getContentAddress().getUnit() == null;
+    }
+
+    private boolean noPath() {
+        return context.getContentAddress().getPathId() == null || context.getContentAddress().getPathId() == 0;
     }
 
     private Route0ContentFinderDao getRoute0ContentFinderDao() {

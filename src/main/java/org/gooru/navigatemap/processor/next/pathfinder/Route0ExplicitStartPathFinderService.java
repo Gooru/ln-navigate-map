@@ -29,7 +29,7 @@ class Route0ExplicitStartPathFinderService implements PathFinder {
         this.context = context;
         UserRoute0ContentDetailModel userRoute0ContentDetailModel;
         initialize();
-        if (context.getContentAddress().getPathId() == null) {
+        if (context.getContentAddress().getPathId() == null || context.getContentAddress().getPathId() == 0) {
             userRoute0ContentDetailModel = startSpecifiedLesson();
         } else {
             userRoute0ContentDetailModel = startSpecifiedCollection();
