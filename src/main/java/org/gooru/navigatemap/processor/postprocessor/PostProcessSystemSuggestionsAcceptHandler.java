@@ -81,10 +81,6 @@ class PostProcessSystemSuggestionsAcceptHandler implements PostProcessorHandler 
         return request.mapTo(SystemSuggestionPayload.class);
     }
 
-    private static UUID nullSafeUuidConverter(String str) {
-        return (str != null && !str.isEmpty()) ? UUID.fromString(str) : null;
-    }
-
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class SystemSuggestionPayload {
         @JsonProperty("ctx_user_id")

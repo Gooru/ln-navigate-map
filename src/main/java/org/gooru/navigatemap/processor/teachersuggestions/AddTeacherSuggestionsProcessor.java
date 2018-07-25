@@ -1,5 +1,7 @@
 package org.gooru.navigatemap.processor.teachersuggestions;
 
+import java.util.UUID;
+
 import org.gooru.navigatemap.app.constants.Constants;
 import org.gooru.navigatemap.infra.data.EventBusMessage;
 import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
@@ -59,14 +61,19 @@ public class AddTeacherSuggestionsProcessor implements AsyncMessageProcessor {
             }
         }, asyncResult -> {
             if (asyncResult.succeeded()) {
-                vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, eventBusMessage.getRequestBody(),
+                vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, createPostProcessorPayload(),
                     DeliveryOptionsBuilder
-                        .createDeliveryOptionsWithMsgOp(Constants.Message.MSG_OP_POSTPROCESS_SYSTEM_SUGGESTION_ADD));
+                        .createDeliveryOptionsWithMsgOp(Constants.Message.MSG_OP_POSTPROCESS_TEACHER_SUGGESTION_ADD));
                 result.complete(MessageResponseFactory.createOkayResponse(new JsonObject()));
             } else {
                 result.fail(asyncResult.cause());
             }
         });
 
+    }
+
+    private JsonObject createPostProcessorPayload() {
+        UUID teacherId = eventBusMessage.getUserId();
+        return eventBusMessage.getRequestBody().copy().put(Constants.Message.MSG_USER_ID, teacherId.toString());
     }
 }

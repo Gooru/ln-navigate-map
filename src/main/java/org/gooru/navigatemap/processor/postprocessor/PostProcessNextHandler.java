@@ -24,6 +24,7 @@ class PostProcessNextHandler implements PostProcessorHandler {
 
     @Override
     public void handle(JsonObject requestData) {
+        LOGGER.info("Handling the postprocessing for next output: '{}'", Objects.toString(requestData));
         command = PostProcessorNextCommand.buildFromJson(requestData);
         // 1. if we are serving content on teacher path, then update serve count for that item
         handleTeacherPathItemServed();
@@ -31,8 +32,6 @@ class PostProcessNextHandler implements PostProcessorHandler {
         handleSystemPathItemServed();
         // 3. if we are giving any suggestion, make an entry into suggestions_tracker
         handleSuggestionsProvided();
-        // TODO : Remove this
-        LOGGER.info(Objects.toString(requestData));
     }
 
     private void handleSuggestionsProvided() {
