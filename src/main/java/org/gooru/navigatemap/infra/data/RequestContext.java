@@ -91,7 +91,7 @@ public final class RequestContext {
     }
 
     public boolean onRoute0() {
-        return (pathType == PathType.Route0);
+        return (pathType == PathType.Route0 && isValidPath());
     }
 
     public boolean needToStartCollection() {
@@ -99,7 +99,15 @@ public final class RequestContext {
     }
 
     public boolean onMainPath() {
-        return (getPathId() == null || getPathId() == 0) && getPathType() == null;
+        return (!isValidPath() && getPathType() == null);
+    }
+
+    public boolean onTeacherPath() {
+        return (isValidPath() && getPathType() == PathType.Teacher);
+    }
+
+    public boolean onSystemPath() {
+        return (isValidPath() && getPathType() == PathType.System);
     }
 
     public boolean needToStartCourse() {
@@ -112,6 +120,10 @@ public final class RequestContext {
 
     public boolean needToStartLesson() {
         return (state == State.Start && currentItemId == null);
+    }
+
+    private boolean isValidPath() {
+        return pathId != null && pathId != 0;
     }
 
     private void validate() {

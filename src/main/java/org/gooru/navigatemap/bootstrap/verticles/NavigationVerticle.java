@@ -9,11 +9,12 @@ import org.gooru.navigatemap.infra.data.context.ContextAttributes;
 import org.gooru.navigatemap.infra.data.context.ContextProcessor;
 import org.gooru.navigatemap.infra.data.context.ContextUtil;
 import org.gooru.navigatemap.processor.next.contentserver.ContentServer;
+import org.gooru.navigatemap.processor.next.contentserver.PostProcessorPayloadCreator;
 import org.gooru.navigatemap.processor.next.contentserver.RemoteAssessmentCollectionFetcher;
 import org.gooru.navigatemap.processor.next.contentserver.RemoteUriLocator;
-import org.gooru.navigatemap.processor.next.contentserver.ResponseParserForNextApi;
 import org.gooru.navigatemap.processor.next.pathfinder.PathFinderProcessor;
 import org.gooru.navigatemap.responses.ResponseUtil;
+import org.gooru.navigatemap.routes.utils.DeliveryOptionsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,11 +95,12 @@ public class NavigationVerticle extends AbstractVerticle {
         future.setHandler(event -> {
             if (event.succeeded()) {
                 message.reply(event.result());
-                ResponseParserForNextApi responseParserForNextApi = ResponseParserForNextApi.build(event.result());
+                PostProcessorPayloadCreator postProcessorPayloadCreator =
+                    PostProcessorPayloadCreator.buildFromNextApiResponse(event.result());
 
                 String user = message.body().getString(Constants.Message.MSG_USER_ID);
-                persistNewContext(responseParserForNextApi, user);
-                persistSuggestion(responseParserForNextApi);
+                persistNewContext(postProcessorPayloadCreator, user);
+                triggerPostProcessing(postProcessorPayloadCreator);
             } else {
                 LOGGER.warn("Failed to process next command", event.cause());
                 if (event.cause() instanceof HttpResponseWrapperException) {
@@ -119,15 +121,14 @@ public class NavigationVerticle extends AbstractVerticle {
         });
     }
 
-    private void persistSuggestion(ResponseParserForNextApi responseParserForNextApi) {
-        if (responseParserForNextApi.getSuggestions().isEmpty()) {
-            return;
-        }
-        vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, responseParserForNextApi.getResponse());
+    private void triggerPostProcessing(PostProcessorPayloadCreator postProcessorPayloadCreator) {
+        DeliveryOptions options =
+            DeliveryOptionsBuilder.createDeliveryOptionsWithMsgOp(Constants.Message.MSG_OP_POSTPROCESS_NEXT);
+        vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, postProcessorPayloadCreator.getResponse(), options);
     }
 
-    private void persistNewContext(ResponseParserForNextApi responseParserForNextApi, String user) {
-        JsonObject newContext = responseParserForNextApi.getContext();
+    private void persistNewContext(PostProcessorPayloadCreator postProcessorPayloadCreator, String user) {
+        JsonObject newContext = postProcessorPayloadCreator.getContext();
         if (newContext != null) {
             String contextKey = ContextUtil
                 .createUserContextKey(user, newContext.getString(ContextAttributes.COURSE_ID),
