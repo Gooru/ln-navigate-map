@@ -38,7 +38,7 @@ public class AddSystemSuggestionProcessor implements AsyncMessageProcessor {
         try {
             this.eventBusMessage = EventBusMessage.eventBusMessageBuilder(message);
             AddSystemSuggestionCommand command = AddSystemSuggestionCommand.builder(eventBusMessage.getRequestBody());
-            addTeacherSuggestion(command);
+            addSystemSuggestion(command);
         } catch (Throwable throwable) {
             LOGGER.warn("Encountered exception", throwable);
             result.fail(throwable);
@@ -46,7 +46,7 @@ public class AddSystemSuggestionProcessor implements AsyncMessageProcessor {
         return result;
     }
 
-    private void addTeacherSuggestion(AddSystemSuggestionCommand command) {
+    private void addSystemSuggestion(AddSystemSuggestionCommand command) {
         vertx.executeBlocking(future -> {
             try {
                 Long result = addSystemSuggestionService.addSystemSuggestion(command);
@@ -57,7 +57,7 @@ public class AddSystemSuggestionProcessor implements AsyncMessageProcessor {
             }
         }, asyncResult -> {
             if (asyncResult.succeeded()) {
-                vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, JsonObject.mapFrom(command),
+                vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, eventBusMessage.getRequestBody(),
                     DeliveryOptionsBuilder
                         .createDeliveryOptionsWithMsgOp(Constants.Message.MSG_OP_POSTPROCESS_SYSTEM_SUGGESTION_ADD));
                 result.complete(MessageResponseFactory.createCreatedResponse(asyncResult.result().toString()));
