@@ -30,28 +30,28 @@ interface PostProcessorDao {
                   + ":unitId and lesson_id = :lessonId and collection_id is null and class_id = :classId and "
                   + "suggested_content_id = :suggestedContentId")
     SuggestionTrackerModel fetchSystemSuggestionInClassAtLesson(
-        @BindBean PostProcessSystemSuggestionsAddHandler.SystemSuggestionPayload bean);
+        @BindBean PostProcessSystemSuggestionsAcceptHandler.SystemSuggestionPayload bean);
 
     @Mapper(SuggestionTrackerModelMapper.class)
     @SqlQuery("select * from suggestions_tracker where user_id = :userId and course_id = :courseId and unit_id = "
                   + ":unitId and lesson_id = :lessonId and collection_id is null and class_id is null and "
                   + "suggested_content_id = :suggestedContentId")
     SuggestionTrackerModel fetchSystemSuggestionForILAtLesson(
-        @BindBean PostProcessSystemSuggestionsAddHandler.SystemSuggestionPayload bean);
+        @BindBean PostProcessSystemSuggestionsAcceptHandler.SystemSuggestionPayload bean);
 
     @Mapper(SuggestionTrackerModelMapper.class)
     @SqlQuery("select * from suggestions_tracker where user_id = :userId and course_id = :courseId and unit_id = "
                   + ":unitId and lesson_id = :lessonId and collection_id = :collectionId and class_id = :classId and "
                   + "suggested_content_id = :suggestedContentId")
     SuggestionTrackerModel fetchSystemSuggestionInClassAtCollection(
-        @BindBean PostProcessSystemSuggestionsAddHandler.SystemSuggestionPayload bean);
+        @BindBean PostProcessSystemSuggestionsAcceptHandler.SystemSuggestionPayload bean);
 
     @Mapper(SuggestionTrackerModelMapper.class)
     @SqlQuery("select * from suggestions_tracker where user_id = :userId and course_id = :courseId and unit_id = "
                   + ":unitId and lesson_id = :lessonId and collection_id = :collectionId and class_id is null and "
                   + "suggested_content_id = :suggestedContentId")
     SuggestionTrackerModel fetchSystemSuggestionForILAtCollection(
-        @BindBean PostProcessSystemSuggestionsAddHandler.SystemSuggestionPayload bean);
+        @BindBean PostProcessSystemSuggestionsAcceptHandler.SystemSuggestionPayload bean);
 
     @SqlUpdate("update suggestions_tracker set accepted = true, accepted_at = now() where id = :id")
     void acceptSystemSuggestion(@Bind("id") Long id);

@@ -59,7 +59,7 @@ public class AddTeacherSuggestionsProcessor implements AsyncMessageProcessor {
             }
         }, asyncResult -> {
             if (asyncResult.succeeded()) {
-                vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, JsonObject.mapFrom(command),
+                vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, eventBusMessage.getRequestBody(),
                     DeliveryOptionsBuilder
                         .createDeliveryOptionsWithMsgOp(Constants.Message.MSG_OP_POSTPROCESS_SYSTEM_SUGGESTION_ADD));
                 result.complete(MessageResponseFactory.createOkayResponse(new JsonObject()));

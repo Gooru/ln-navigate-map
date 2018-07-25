@@ -15,20 +15,20 @@ import io.vertx.core.json.JsonObject;
 /**
  * @author ashish on 24/7/18.
  */
-class PostProcessSystemSuggestionsAddHandler implements PostProcessorHandler {
+class PostProcessSystemSuggestionsAcceptHandler implements PostProcessorHandler {
     private final DBI dbi;
-    private static final Logger LOGGER = LoggerFactory.getLogger(PostProcessSystemSuggestionsAddHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostProcessSystemSuggestionsAcceptHandler.class);
     private SystemSuggestionPayload command;
     private PostProcessorDao postProcessorDao;
     private SuggestionTrackerModel suggestionTrackerModel;
 
-    PostProcessSystemSuggestionsAddHandler(DBI dbi) {
+    PostProcessSystemSuggestionsAcceptHandler(DBI dbi) {
         this.dbi = dbi;
     }
 
     @Override
     public void handle(JsonObject requestData) {
-        LOGGER.info("Processing system suggestion add handler for payload: '{}'", Objects.toString(requestData));
+        LOGGER.info("Processing system suggestion accept handler for payload: '{}'", Objects.toString(requestData));
         initialize(requestData);
         if (command.getClassId() == null) {
             handleForIL();

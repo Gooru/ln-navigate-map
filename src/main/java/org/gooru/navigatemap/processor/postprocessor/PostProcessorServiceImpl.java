@@ -28,7 +28,7 @@ class PostProcessorServiceImpl implements PostProcessorService {
             PostProcessorHandler.buildForNextCommand(dbi).handle(requestData);
             break;
         case Constants.Message.MSG_OP_POSTPROCESS_SYSTEM_SUGGESTION_ADD:
-            PostProcessorHandler.buildForSystemSuggestionsAddCommand(dbi).handle(requestData);
+            PostProcessorHandler.buildForSystemSuggestionsAcceptCommand(dbi).handle(requestData);
             break;
         case Constants.Message.MSG_OP_POSTPROCESS_TEACHER_SUGGESTION_ADD:
             PostProcessorHandler.buildForTeacherSuggestionsAddCommand(dbi).handle(requestData);

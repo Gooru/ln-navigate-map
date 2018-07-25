@@ -16,8 +16,8 @@ interface PostProcessorHandler {
         return new PostProcessNextHandler(dbi);
     }
 
-    static PostProcessorHandler buildForSystemSuggestionsAddCommand(DBI dbi) {
-        return new PostProcessSystemSuggestionsAddHandler(dbi);
+    static PostProcessorHandler buildForSystemSuggestionsAcceptCommand(DBI dbi) {
+        return new PostProcessSystemSuggestionsAcceptHandler(dbi);
     }
 
     static PostProcessorHandler buildForTeacherSuggestionsAddCommand(DBI dbi) {
@@ -28,8 +28,8 @@ interface PostProcessorHandler {
         return new PostProcessNextHandler(DBICreator.getDbiForDefaultDS());
     }
 
-    static PostProcessorHandler buildForSystemSuggestionsAddCommand() {
-        return new PostProcessSystemSuggestionsAddHandler(DBICreator.getDbiForDefaultDS());
+    static PostProcessorHandler buildForSystemSuggestionsAcceptCommand() {
+        return new PostProcessSystemSuggestionsAcceptHandler(DBICreator.getDbiForDefaultDS());
     }
 
     static PostProcessorHandler buildForTeacherSuggestionsAddCommand() {
