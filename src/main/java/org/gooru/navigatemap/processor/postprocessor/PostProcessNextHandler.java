@@ -1,5 +1,6 @@
 package org.gooru.navigatemap.processor.postprocessor;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.skife.jdbi.v2.DBI;
@@ -35,10 +36,10 @@ class PostProcessNextHandler implements PostProcessorHandler {
     }
 
     private void handleSuggestionsProvided() {
-        // TODO: Provide implementation
         if (command.getSuggestions() != null && !command.getSuggestions().isEmpty()) {
-            LOGGER.info("Handling provided suggestions.");
-            LOGGER.info(command.getContext().getCourseId().toString());
+            List<SuggestionTrackerModel> suggestionTrackerModels =
+                SuggestionTrackerModelsBuilder.buildForSystemSuggestion(command).build();
+            getPostProcessorDao().insertAllSuggestions(suggestionTrackerModels);
         }
     }
 

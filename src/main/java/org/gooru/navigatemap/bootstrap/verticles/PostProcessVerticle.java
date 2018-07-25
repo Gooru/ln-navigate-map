@@ -43,7 +43,7 @@ public class PostProcessVerticle extends AbstractVerticle {
                 PostProcessorService.build().process(op, requestData);
                 future.complete();
             } catch (Throwable throwable) {
-                LOGGER.warn("Not able to do post processing.");
+                LOGGER.warn("Not able to do post processing.", throwable);
                 LOGGER.warn(Objects.toString(requestData));
                 future.fail(throwable);
             }
@@ -52,7 +52,7 @@ public class PostProcessVerticle extends AbstractVerticle {
             if (asyncResult.succeeded()) {
                 LOGGER.info("Done doing the post processing");
             } else {
-                LOGGER.warn("Not able to do the post processing");
+                LOGGER.warn("Not able to do the post processing", asyncResult.cause());
             }
         });
     }

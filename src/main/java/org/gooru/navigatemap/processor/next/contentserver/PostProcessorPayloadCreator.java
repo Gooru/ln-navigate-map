@@ -31,17 +31,19 @@ public final class PostProcessorPayloadCreator {
     /**
      * Remove the data specific to content section as it is huge and create another JsonObject to do postprocessing
      *
+     *
+     * @param user
      * @param responseJson The response sent as part of Next API to caller
      * @return A new object which does not have dependency on content section of response
      */
-    public static PostProcessorPayloadCreator buildFromNextApiResponse(JsonObject responseJson) {
+    public static PostProcessorPayloadCreator buildFromNextApiResponse(String user, JsonObject responseJson) {
         if (responseJson == null || responseJson.isEmpty()) {
             throw new IllegalStateException("No response to parse");
         }
         JsonObject postProcessorResponse = new JsonObject().put(Constants.Response.RESP_CONTEXT,
-            responseJson.getJsonObject(Constants.Message.MSG_HTTP_BODY).getJsonObject(Constants.Response.RESP_CONTEXT)
+            responseJson.getJsonObject(Constants.Message.MSG_HTTP_BODY).getJsonObject(Constants.Response.RESP_CONTEXT))
                 .put(Constants.Response.RESP_SUGGESTIONS, responseJson.getJsonObject(Constants.Message.MSG_HTTP_BODY)
-                    .getJsonArray(Constants.Response.RESP_SUGGESTIONS)));
+                    .getJsonArray(Constants.Response.RESP_SUGGESTIONS)).put(Constants.Message.MSG_USER_ID, user);
         return new PostProcessorPayloadCreator(postProcessorResponse.copy());
     }
 }

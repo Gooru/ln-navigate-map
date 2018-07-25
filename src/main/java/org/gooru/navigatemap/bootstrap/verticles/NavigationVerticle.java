@@ -95,10 +95,10 @@ public class NavigationVerticle extends AbstractVerticle {
         future.setHandler(event -> {
             if (event.succeeded()) {
                 message.reply(event.result());
-                PostProcessorPayloadCreator postProcessorPayloadCreator =
-                    PostProcessorPayloadCreator.buildFromNextApiResponse(event.result());
-
                 String user = message.body().getString(Constants.Message.MSG_USER_ID);
+                PostProcessorPayloadCreator postProcessorPayloadCreator =
+                    PostProcessorPayloadCreator.buildFromNextApiResponse(user, event.result());
+
                 persistNewContext(postProcessorPayloadCreator, user);
                 triggerPostProcessing(postProcessorPayloadCreator);
             } else {

@@ -3,6 +3,7 @@ package org.gooru.navigatemap.processor.postprocessor;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import org.gooru.navigatemap.app.constants.Constants;
 import org.gooru.navigatemap.infra.data.RequestContext;
@@ -21,18 +22,24 @@ import io.vertx.core.json.JsonObject;
  */
 class PostProcessorNextCommand {
 
+    private final UUID userId;
     private final List<SuggestionCard> suggestions;
     private final RequestContext context;
     private static final Logger LOGGER = LoggerFactory.getLogger(PostProcessorNextCommand.class);
 
-    private PostProcessorNextCommand(RequestContext requestContext, List<SuggestionCard> suggestionCards) {
+    private PostProcessorNextCommand(RequestContext requestContext, List<SuggestionCard> suggestionCards, UUID userId) {
         context = requestContext;
         suggestions = suggestionCards;
+        this.userId = userId;
     }
 
     static PostProcessorNextCommand buildFromJson(JsonObject request) {
         JsonObject ctx = request.getJsonObject(Constants.Response.RESP_CONTEXT);
         JsonArray suggestions = request.getJsonArray(Constants.Response.RESP_SUGGESTIONS);
+        String userString = request.getString(Constants.Message.MSG_USER_ID);
+
+        UUID userId = UUID.fromString(userString);
+
         RequestContext requestContext = RequestContext.builder(ctx);
         List<SuggestionCard> suggestionCards;
 
@@ -48,7 +55,7 @@ class PostProcessorNextCommand {
         } else {
             suggestionCards = Collections.emptyList();
         }
-        return new PostProcessorNextCommand(requestContext, suggestionCards);
+        return new PostProcessorNextCommand(requestContext, suggestionCards, userId);
     }
 
     List<SuggestionCard> getSuggestions() {
@@ -57,5 +64,9 @@ class PostProcessorNextCommand {
 
     RequestContext getContext() {
         return context;
+    }
+
+    public UUID getUserId() {
+        return userId;
     }
 }
