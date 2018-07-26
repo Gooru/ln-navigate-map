@@ -12,10 +12,13 @@ import org.skife.jdbi.v2.DBI;
  *
  * @author ashish on 7/5/18.
  */
-class TeacherPathContentFinder extends AbstractContentFinder {
+class TeacherPathContentFinder implements ContentFinder {
+
+    private final DBI dbi;
+    private AlternatePathDao alternatePathDao;
 
     TeacherPathContentFinder(DBI dbi) {
-        super(dbi);
+        this.dbi = dbi;
     }
 
     @Override
@@ -31,5 +34,12 @@ class TeacherPathContentFinder extends AbstractContentFinder {
         } else {
             return teacherPathsForContext.get(0).toContentAddress();
         }
+    }
+
+    private AlternatePathDao getAlternatePathDao() {
+        if (alternatePathDao == null) {
+            alternatePathDao = dbi.onDemand(AlternatePathDao.class);
+        }
+        return alternatePathDao;
     }
 }

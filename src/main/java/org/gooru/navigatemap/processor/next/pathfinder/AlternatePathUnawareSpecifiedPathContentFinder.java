@@ -28,19 +28,8 @@ class AlternatePathUnawareSpecifiedPathContentFinder implements ContentFinder {
 
     private ContentAddress fetchSpecifiedContentFromCoursePath() {
         ContentAddress specifiedContentAddress = context.getContentAddress();
-        ContentAddress result = finderDao
-            .findCULC(specifiedContentAddress.getCourse(), specifiedContentAddress.getUnit(),
-                specifiedContentAddress.getLesson(), specifiedContentAddress.getCollection());
-        validateVisibility(result);
-        return result;
-    }
-
-    private void validateVisibility(ContentAddress result) {
-        ContentVerifier visibilityVerifier =
-            ContentVerifierBuilder.buildContentVisibilityVerifier(context.getClassId(), dbi);
-        if (result == null || !visibilityVerifier.isContentVerified(result)) {
-            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid content");
-        }
+        return finderDao.findCULC(specifiedContentAddress.getCourse(), specifiedContentAddress.getUnit(),
+            specifiedContentAddress.getLesson(), specifiedContentAddress.getCollection());
     }
 
     private void validateCULValues(ContentAddress contentAddress) {

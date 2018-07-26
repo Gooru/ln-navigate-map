@@ -1,5 +1,6 @@
 package org.gooru.navigatemap.processor.next.pathfinder;
 
+import org.gooru.navigatemap.infra.data.context.RouteContextData;
 import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
 
 /**
@@ -19,8 +20,8 @@ final class PathFinderFactory {
         return new ExplicitStartPathFinderService(DBICreator.getDbiForDefaultDS());
     }
 
-    static PathFinder buildSuggestionsAwarePathFinderService() {
-        return new SuggestionsAwarePathFinderService(DBICreator.getDbiForDefaultDS());
+    static PathFinder buildSuggestionsAwarePathFinderService(RouteContextData routeContextData) {
+        return new SuggestionsAwarePathFinderService(DBICreator.getDbiForDefaultDS(), routeContextData);
     }
 
     static PathFinder buildSpecifiedItemFinderService() {
@@ -29,5 +30,17 @@ final class PathFinderFactory {
 
     static PathFinder buildPostSuggestionItemFinderService() {
         return new PostSuggestionItemFinderService(DBICreator.getDbiForDefaultDS());
+    }
+
+    static PathFinder buildCourseStartPathFinderService() {
+        return new CourseStartPathFinderService(DBICreator.getDbiForDefaultDS());
+    }
+
+    static PathFinder buildRoute0PathFinderService() {
+        return new Route0PathFinderService(DBICreator.getDbiForDefaultDS());
+    }
+
+    public static PathFinder buildRoute0ExplicitStartPathFinderService() {
+        return new Route0ExplicitStartPathFinderService(DBICreator.getDbiForDefaultDS());
     }
 }

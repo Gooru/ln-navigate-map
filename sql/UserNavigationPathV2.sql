@@ -40,6 +40,8 @@ CREATE UNIQUE INDEX unp_uculccst_null_coll_idx
     ON user_navigation_paths (ctx_user_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, ctx_class_id, suggested_content_id, suggestion_type)
     WHERE ctx_class_id IS not NULL and ctx_collection_id is null;
 
+ALTER TABLE collection DROP CONSTRAINT col_cs_check;
+
 UPDATE collection set subformat = 'signature-assessment' where subformat = 'pre-test' OR subformat = 'post-test' OR subformat = 'benchmark';
 
 -- Though there may not be any data here

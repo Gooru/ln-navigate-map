@@ -18,5 +18,5 @@ interface SuggestionsApplicabilityDao {
 
     @SqlQuery("select version from course where id = :courseId::uuid")
     String fetchCourseVersion(@Bind("courseId") String courseId);
-    
+
 }

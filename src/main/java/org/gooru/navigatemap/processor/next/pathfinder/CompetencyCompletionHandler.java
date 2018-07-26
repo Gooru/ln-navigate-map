@@ -3,7 +3,6 @@ package org.gooru.navigatemap.processor.next.pathfinder;
 import java.util.List;
 
 import org.gooru.navigatemap.app.components.utilities.DbLookupUtility;
-import org.gooru.navigatemap.infra.data.AlternatePath;
 import org.gooru.navigatemap.infra.data.CurrentItemType;
 import org.gooru.navigatemap.infra.utilities.CollectionUtils;
 import org.skife.jdbi.v2.DBI;
@@ -28,7 +27,7 @@ class CompetencyCompletionHandler {
     }
 
     void handleCompetencyCompletion() {
-        if (context.getContentAddress().isOnMainPath()
+        if ((context.getContentAddress().isOnMainPath() || context.getContentAddress().isOnRoute0())
             && context.getContentAddress().getCurrentItemType() == CurrentItemType.Assessment) {
             if (isCompetencyCompleted()) {
                 markCompetencyCompletedForUser();
@@ -36,39 +35,18 @@ class CompetencyCompletionHandler {
         }
     }
 
-    void handleCompetencyMastery(AlternatePath alternatePath) {
-        if (context.getContentAddress().isOnAlternatePath()
-            && context.getContentAddress().getCurrentItemType() == CurrentItemType.Assessment && alternatePath
-            .isSuggestionSystemSuggestion() && alternatePath.isSuggestionSignatureAssessment()) {
-            if (isCompetencyCompleted()) {
-                markCompetencyMasteredForUser();
-            }
-        }
-    }
-
-    private void markCompetencyMasteredForUser() {
-        List<String> competencyList = fetchCompetenciesForCollection();
-        if (!competencyList.isEmpty()) {
-            UserCompetencyCompletionDao userCompetencyCompletionDao = dbi.onDemand(UserCompetencyCompletionDao.class);
-            List<String> masteredCompetenciesByUser = userCompetencyCompletionDao
-                .findCompetenciesBasedOnCompletionStatusForUserInGivenList(context.getUserId(),
-                    CollectionUtils.convertToSqlArrayOfString(competencyList), COMPETENCY_STATUS_MASTERED);
-            competencyList.removeAll(masteredCompetenciesByUser);
-            if (!competencyList.isEmpty()) {
-                userCompetencyCompletionDao
-                    .markCompetencyCompletedOrMastered(context.getUserId(), competencyList, COMPETENCY_STATUS_MASTERED);
-            }
-        }
-
-    }
-
     List<String> fetchCompetenciesForCollection() {
         ContentFinderDao finderDao = dbi.onDemand(ContentFinderDao.class);
         if (!areCompetenciesFetched) {
-            List<List<String>> listOfListOfComps = finderDao
-                .findCompetenciesForCollection(context.getContentAddress().getCourse(),
+            List<List<String>> listOfListOfComps;
+            if (context.getContentAddress().isOnRoute0()) {
+                listOfListOfComps =
+                    finderDao.findCompetenciesForCollection(context.getContentAddress().getCurrentItem());
+            } else {
+                listOfListOfComps = finderDao.findCompetenciesForCollection(context.getContentAddress().getCourse(),
                     context.getContentAddress().getUnit(), context.getContentAddress().getLesson(),
                     context.getContentAddress().getCollection());
+            }
             if (listOfListOfComps != null && !listOfListOfComps.isEmpty()) {
                 competencies = listOfListOfComps.get(0);
             }

@@ -166,6 +166,7 @@ public final class AlternatePath {
         result.setLesson(Objects.toString(lessonId, null));
         result.setCollection(Objects.toString(collectionId, null));
         result.setPathId(id);
+        result.setPathType(suggestionType != null ? PathType.builder(suggestionType) : null);
         result.setCurrentItem(Objects.toString(suggestedContentId, null));
         result.setCurrentItemType(suggestedContentType != null ? CurrentItemType.builder(suggestedContentType) : null);
         result.setCurrentItemSubtype(

@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import org.gooru.navigatemap.infra.data.context.ContextAttributes;
+import org.gooru.navigatemap.infra.data.context.RouteContextData;
 
 import io.vertx.core.json.JsonObject;
 
@@ -21,8 +22,9 @@ public final class ResponseContext {
     private CurrentItemSubtype currentItemSubtype;
     private State state;
     private Long pathId;
+    private String pathType;
     private final Double scorePercent;
-    private int version;
+    private RouteContextData routeContextData;
 
     public ResponseContext(RequestContext context) {
         this.classId = context.getClassId();
@@ -32,10 +34,12 @@ public final class ResponseContext {
         this.collectionId = context.getCollectionId();
         this.state = context.getState();
         this.pathId = context.getPathId();
+        this.pathType = context.getPathType() != null ? context.getPathType().getName() : null;
         this.scorePercent = 0D;
         this.currentItemId = context.getCurrentItemId();
         this.currentItemType = context.getCurrentItemType();
         this.currentItemSubtype = context.getCurrentItemSubtype();
+        this.routeContextData = context.getRouteContextData();
     }
 
     public JsonObject toJson() {
@@ -48,11 +52,13 @@ public final class ResponseContext {
         context.put(ContextAttributes.COLLECTION_ID, Objects.toString(collectionId, null));
         context.put(ContextAttributes.STATE, state.getName());
         context.put(ContextAttributes.PATH_ID, pathId);
+        context.put(ContextAttributes.PATH_TYPE, pathType);
         context.put(ContextAttributes.SCORE_PERCENT, scorePercent);
         context.put(ContextAttributes.CURRENT_ITEM_ID, Objects.toString(currentItemId, null));
         context.put(ContextAttributes.CURRENT_ITEM_TYPE, currentItemType != null ? currentItemType.getName() : null);
         context.put(ContextAttributes.CURRENT_ITEM_SUBTYPE,
             currentItemSubtype != null ? currentItemSubtype.getName() : null);
+        context.put(ContextAttributes.CONTEXT_DATA, routeContextData.encode());
         return context;
     }
 
@@ -68,6 +74,7 @@ public final class ResponseContext {
         this.currentItemSubtype = contentAddress.getCurrentItemSubtype();
 
         this.pathId = contentAddress.getPathId();
+        this.pathType = contentAddress.getPathType() != null ? contentAddress.getPathType().getName() : null;
     }
 
     public void setCurrentItemAddress(UUID itemId, CurrentItemType itemType, CurrentItemSubtype itemSubtype) {
@@ -124,6 +131,14 @@ public final class ResponseContext {
         this.pathId = pathId;
     }
 
+    public String getPathType() {
+        return pathType;
+    }
+
+    public void setPathType(String pathType) {
+        this.pathType = pathType;
+    }
+
     public Double getScorePercent() {
         return scorePercent;
     }
@@ -150,14 +165,6 @@ public final class ResponseContext {
 
     public void setCurrentItemSubtype(CurrentItemSubtype currentItemSubtype) {
         this.currentItemSubtype = currentItemSubtype;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
     }
 
 }

@@ -7,15 +7,17 @@ import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.infra.data.AlternatePath;
 import org.gooru.navigatemap.infra.data.ContentAddress;
 import org.skife.jdbi.v2.DBI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * If user has explicitly asked for collection either on main path or on alternate path, we serve it without
  * considering skip logic.
- * If user asks to start a lesson, then we assume that user wants to study this lesson (whatever is visible of this
- * lesson). In this case also, we do not apply skip logic (based on competency), but we find the first visible
- * content of this lesson. However, teacher suggestions are treated as pre for a content. So once we get the content,
- * we check if any teacher suggestion exists for this content. If there is, we return first one. If there is none, we
- * go ahead and serve the content that we originally fetched.
+ * If user asks to start a lesson, then we assume that user wants to study this lesson In this case also, we do not
+ * apply skip logic (based on competency), However, teacher suggestions are treated as pre for a content. So once we
+ * get the content, we check if any teacher suggestion exists for this content. If there is, we return first one. If
+ * there is none, we go ahead and serve the content that we originally fetched.
+ * Note that this is used when reroute is enabled.
  *
  * @author ashish on 4/5/18.
  */
@@ -25,6 +27,7 @@ class ExplicitStartPathFinderService implements PathFinder {
     private final ContentFinderDao finderDao;
     private PathFinderContext context;
     private ContentAddress specifiedContentAddress;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExplicitStartPathFinderService.class);
 
     ExplicitStartPathFinderService(DBI dbi) {
         this.dbi = dbi;
@@ -39,38 +42,36 @@ class ExplicitStartPathFinderService implements PathFinder {
         validateCULValues(specifiedContentAddress);
         if (specifiedContentAddress.getCollection() == null) {
             // This is user asking to start a lesson
+            LOGGER.debug("User asking to start a lesson.");
             result = fetchFirstItemFromLesson();
-        } else if (specifiedContentAddress.isOnAlternatePath()) {
+        } else if (specifiedContentAddress.isOnTeacherOrSystemPath()) {
             // User is asking to play a content which was already added to alternate path
+            LOGGER.debug("User asking to start a system/teacher suggestion.");
             result = fetchSpecifiedAlternatePath();
         } else {
             // User wanted to play something on course path
+            LOGGER.debug("User asking to start an item on main path.");
             result = fetchSpecifiedContentFromCoursePath();
         }
         return new PathFinderResult(result);
     }
 
     private ContentAddress fetchFirstItemFromLesson() {
-        // Note that Teacher suggestions are pre to actual item. So this could be teacher suggestion on first visible
-        // item, or it could be first visible item. If there is no visible item in lesson, then it is an error.
-        ContentVerifier visibilityVerifier =
-            ContentVerifierBuilder.buildContentVisibilityVerifier(context.getClassId(), dbi);
-
-        ContentAddress firstVisibleItem = visibilityVerifier.findFirstVerifiedContent(finderDao
+        ContentAddress firstItem;
+        List<ContentAddress> contentAddresses = finderDao
             .findFirstCollectionInLesson(specifiedContentAddress.getCourse(), specifiedContentAddress.getUnit(),
-                specifiedContentAddress.getLesson()));
+                specifiedContentAddress.getLesson());
 
-        if (firstVisibleItem == null) {
+        if (contentAddresses == null || contentAddresses.isEmpty()) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
                 "No visible content in lesson");
         }
-
-        ContentAddress teacherSuggestedItemForContext =
-            findFirstTeacherSuggestedItemForSpecifiedContext(firstVisibleItem);
+        firstItem = contentAddresses.get(0);
+        ContentAddress teacherSuggestedItemForContext = findFirstTeacherSuggestedItemForSpecifiedContext(firstItem);
         if (teacherSuggestedItemForContext != null) {
             return teacherSuggestedItemForContext;
         } else {
-            return firstVisibleItem;
+            return firstItem;
         }
     }
 
@@ -113,16 +114,7 @@ class ExplicitStartPathFinderService implements PathFinder {
         ContentAddress result = finderDao
             .findCULC(specifiedContentAddress.getCourse(), specifiedContentAddress.getUnit(),
                 specifiedContentAddress.getLesson(), specifiedContentAddress.getCollection());
-        validateVisibility(result);
         return result;
-    }
-
-    private void validateVisibility(ContentAddress result) {
-        ContentVerifier visibilityVerifier =
-            ContentVerifierBuilder.buildContentVisibilityVerifier(context.getClassId(), dbi);
-        if (result == null || !visibilityVerifier.isContentVerified(result)) {
-            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid content");
-        }
     }
 
     private void validateCULValues(ContentAddress contentAddress) {

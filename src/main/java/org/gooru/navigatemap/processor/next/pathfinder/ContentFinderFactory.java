@@ -15,11 +15,15 @@ final class ContentFinderFactory {
         return new TeacherPathContentFinder(dbi);
     }
 
-    static ContentFinder buildTeacherPathAwareMainPathContentFinder(DBI dbi) {
-        return new TeacherPathAwareMainPathContentFinder(dbi);
+    static ContentFinder buildTeacherPathAwareMainPathContentFinder(DBI dbi, ContentFinderCriteria criteria) {
+        return new TeacherPathAwareMainPathContentFinder(dbi, criteria);
     }
 
     static ContentFinder buildAlternatePathUnawareSpecifiedPathContentFinder(DBI dbi) {
         return new AlternatePathUnawareSpecifiedPathContentFinder(dbi);
+    }
+
+    static ContentFinder buildRoute0NextContentFinder(DBI dbi, ContentVerifier verifier) {
+        return new Route0NextContentFinder(dbi, verifier);
     }
 }
