@@ -98,6 +98,10 @@ public final class RequestContext {
         return (state == State.Start && currentItemId != null);
     }
 
+    public boolean isCourseCompleted() {
+        return state == State.Done;
+    }
+
     public boolean onMainPath() {
         return (getPathId() == null || getPathId() == 0) && getPathType() == null;
     }
