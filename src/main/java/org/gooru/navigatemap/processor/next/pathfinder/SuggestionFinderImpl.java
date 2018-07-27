@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.gooru.navigatemap.app.components.utilities.DbLookupUtility;
+import org.gooru.navigatemap.infra.data.CurrentItemType;
 import org.gooru.navigatemap.infra.utilities.CollectionUtils;
 import org.skife.jdbi.v2.DBI;
 
@@ -13,6 +14,9 @@ import org.skife.jdbi.v2.DBI;
 public class SuggestionFinderImpl implements SuggestionFinder {
 
     private final DBI dbi;
+    private PathFinderContext context;
+    private List<String> competencies;
+    private SuggestionFinderDao dao;
 
     SuggestionFinderImpl(DBI dbi) {
 
@@ -21,15 +25,15 @@ public class SuggestionFinderImpl implements SuggestionFinder {
 
     @Override
     public List<String> findSignatureCollectionsForCompetencies(PathFinderContext context, List<String> competencies) {
-        /* Signature Collections suggestions is dependent on score range */
-        if (competencies == null || competencies.isEmpty()) {
+        this.context = context;
+        this.competencies = competencies;
+
+        if (isNotEligibleForSuggestion()) {
             return Collections.emptyList();
         }
 
-        SuggestionFinderDao dao = dbi.onDemand(SuggestionFinderDao.class);
-        // Find signature collections honoring the score range
         List<String> signatureCollectionsForCompetency =
-            dao.findSignatureCollectionForSpecifiedCompetenciesAndScoreRange(
+            getSuggestionFinderDao().findSignatureCollectionForSpecifiedCompetenciesAndScoreRange(
                 CollectionUtils.convertToSqlArrayOfString(competencies),
                 DbLookupUtility.getInstance().scoreRangeNameByScore(context.getScore()));
 
@@ -51,13 +55,11 @@ public class SuggestionFinderImpl implements SuggestionFinder {
 
     @Override
     public List<String> findSignatureAssessmentsForCompetencies(PathFinderContext context, List<String> competencies) {
-        /* Suggestion for SignatureAssessment is not dependent on score */
-        if (competencies == null || competencies.isEmpty()) {
+        if (isNotEligibleForSuggestion()) {
             return Collections.emptyList();
         }
-        SuggestionFinderDao dao = dbi.onDemand(SuggestionFinderDao.class);
-        List<String> signatureAssessmentsForCompetencies = dao.findSignatureAssessmentsForSpecifiedCompetencies(
-            CollectionUtils.convertToSqlArrayOfString(competencies));
+        List<String> signatureAssessmentsForCompetencies = getSuggestionFinderDao()
+            .findSignatureAssessmentsForSpecifiedCompetencies(CollectionUtils.convertToSqlArrayOfString(competencies));
 
         if (signatureAssessmentsForCompetencies != null && !signatureAssessmentsForCompetencies.isEmpty()) {
             List<String> signatureItemsAlreadyAddedByUser =
@@ -69,4 +71,21 @@ public class SuggestionFinderImpl implements SuggestionFinder {
         }
         return Collections.emptyList();
     }
+
+    private boolean isNotEligibleForSuggestion() {
+        return (competencies == null || competencies.isEmpty() || isAssessmentForTeacherGrading());
+    }
+
+    private boolean isAssessmentForTeacherGrading() {
+        return (context.getContentAddress().getCurrentItemType() == CurrentItemType.Assessment)
+            && (getSuggestionFinderDao().isAssessmentTeacherGraded(context.getContentAddress().getCurrentItem()));
+    }
+
+    private SuggestionFinderDao getSuggestionFinderDao() {
+        if (dao == null) {
+            dao = dbi.onDemand(SuggestionFinderDao.class);
+        }
+        return dao;
+    }
+
 }
