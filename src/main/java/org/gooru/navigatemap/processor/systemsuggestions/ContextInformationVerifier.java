@@ -23,28 +23,6 @@ class ContextInformationVerifier {
         }
     }
 
-    private void validateContextInformationForRoute0() {
-        if (command.getCtxClassId() != null) {
-            validateContextInformationForRoute0WithClass();
-        } else {
-            validateContextInformationForRoute0WithoutClass();
-        }
-    }
-
-    private void validateContextInformationForRoute0WithoutClass() {
-        if (!addSystemSuggestionDao.validateContextInformationForRoute0WithoutClass(command.getBean())) {
-            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
-                "Incorrect context information");
-        }
-    }
-
-    private void validateContextInformationForRoute0WithClass() {
-        if (!addSystemSuggestionDao.validateContextInformationForRoute0WithClass(command.getBean())) {
-            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
-                "Incorrect context information");
-        }
-    }
-
     private void validateContextInformationForClass() {
         if (!addSystemSuggestionDao.validateContextInformationForClassRootedAtCollection(command.getBean())) {
             throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,

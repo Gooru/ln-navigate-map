@@ -1,10 +1,14 @@
 package org.gooru.navigatemap.processor.teachersuggestions;
 
+import java.util.UUID;
+
+import org.gooru.navigatemap.app.constants.Constants;
 import org.gooru.navigatemap.infra.data.EventBusMessage;
 import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
 import org.gooru.navigatemap.processor.AsyncMessageProcessor;
 import org.gooru.navigatemap.responses.MessageResponse;
 import org.gooru.navigatemap.responses.MessageResponseFactory;
+import org.gooru.navigatemap.routes.utils.DeliveryOptionsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,12 +61,19 @@ public class AddTeacherSuggestionsProcessor implements AsyncMessageProcessor {
             }
         }, asyncResult -> {
             if (asyncResult.succeeded()) {
-                // TODO: Send proper and correct response
+                vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, createPostProcessorPayload(),
+                    DeliveryOptionsBuilder
+                        .createDeliveryOptionsWithMsgOp(Constants.Message.MSG_OP_POSTPROCESS_TEACHER_SUGGESTION_ADD));
                 result.complete(MessageResponseFactory.createOkayResponse(new JsonObject()));
             } else {
                 result.fail(asyncResult.cause());
             }
         });
 
+    }
+
+    private JsonObject createPostProcessorPayload() {
+        UUID teacherId = eventBusMessage.getUserId();
+        return eventBusMessage.getRequestBody().copy().put(Constants.Message.MSG_USER_ID, teacherId.toString());
     }
 }
