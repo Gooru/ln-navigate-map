@@ -61,13 +61,17 @@ public class PathFinderProcessor {
 
     private Future<NavigateProcessorContext> doPathMapping() {
         Future<NavigateProcessorContext> resultFuture = Future.future();
-        if (!npc.suggestionsApplicable()) {
-            LOGGER.debug("Suggestions not applicable. Will handle accordingly.");
-            handleNoSuggestionsRoute();
+        if (!npc.requestContext().isCourseCompleted()) {
+            if (!npc.suggestionsApplicable()) {
+                LOGGER.debug("Suggestions not applicable. Will handle accordingly.");
+                handleNoSuggestionsRoute();
+            } else {
+                // Delegate it to Suggestion oriented path finder
+                LOGGER.debug("Suggestions are applicable. Will handle accordingly.");
+                handleSuggestionsOrientedRoute();
+            }
         } else {
-            // Delegate it to Suggestion oriented path finder
-            LOGGER.debug("Suggestions are applicable. Will handle accordingly.");
-            handleSuggestionsOrientedRoute();
+            LOGGER.warn("Course already completed. Will return");
         }
         resultFuture.complete(npc);
         return resultFuture;

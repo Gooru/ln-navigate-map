@@ -32,4 +32,9 @@ interface SuggestionFinderDao {
                   + "  and performance_range = :scoreRangeName order by weight desc")
     List<String> findSignatureCollectionForSpecifiedCompetenciesAndScoreRange(
         @Bind("competencies") PGArray<String> stringPGArray, @Bind("scoreRangeName") String scoreRangeName);
+
+    @SqlQuery("select exists (select 1 from collection where id = :id::uuid and is_deleted = false and grading = "
+                  + "'teacher'::grading_type)")
+    boolean isAssessmentTeacherGraded(@Bind("id") String id);
+
 }
