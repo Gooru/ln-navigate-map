@@ -55,6 +55,8 @@ public class SuggestionFinderImpl implements SuggestionFinder {
 
     @Override
     public List<String> findSignatureAssessmentsForCompetencies(PathFinderContext context, List<String> competencies) {
+        this.context = context;
+        this.competencies = competencies;
         if (isNotEligibleForSuggestion()) {
             return Collections.emptyList();
         }
