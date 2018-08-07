@@ -1,13 +1,12 @@
 package org.gooru.navigatemap.infra.data;
 
-import java.util.UUID;
-
+import io.vertx.core.json.JsonObject;
 import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.infra.data.context.ContextAttributes;
 import org.gooru.navigatemap.infra.data.context.RouteContextData;
 
-import io.vertx.core.json.JsonObject;
+import java.util.UUID;
 
 /**
  * @author ashish on 26/2/17.
@@ -91,7 +90,8 @@ public final class RequestContext {
     }
 
     public boolean onRoute0() {
-        return (pathType == PathType.Route0 && isValidPath());
+        return (pathType == PathType.Route0 && isValidPath()) ||
+                   (pathType == PathType.Route0 && needToStartLesson());
     }
 
     public boolean needToStartCollection() {
