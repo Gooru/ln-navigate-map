@@ -24,4 +24,8 @@ public final class DeliveryOptionsBuilder {
             .addHeader(Constants.Message.MSG_OP, Constants.Message.MSG_OP_CONTEXT_GET)
             .addHeader(Constants.Message.MSG_HDR_KEY_CONTEXT, contextKey);
     }
+
+    public static DeliveryOptions createDeliveryOptionsWithMsgOp(String op) {
+        return new DeliveryOptions().addHeader(Constants.Message.MSG_OP, op);
+    }
 }

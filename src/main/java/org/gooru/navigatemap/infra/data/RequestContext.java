@@ -1,13 +1,12 @@
 package org.gooru.navigatemap.infra.data;
 
-import java.util.UUID;
-
+import io.vertx.core.json.JsonObject;
 import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.infra.data.context.ContextAttributes;
 import org.gooru.navigatemap.infra.data.context.RouteContextData;
 
-import io.vertx.core.json.JsonObject;
+import java.util.UUID;
 
 /**
  * @author ashish on 26/2/17.
@@ -91,15 +90,28 @@ public final class RequestContext {
     }
 
     public boolean onRoute0() {
-        return (pathType == PathType.Route0);
+        return (pathType == PathType.Route0 && isValidPath()) ||
+                   (pathType == PathType.Route0 && needToStartLesson());
     }
 
     public boolean needToStartCollection() {
         return (state == State.Start && currentItemId != null);
     }
 
+    public boolean isCourseCompleted() {
+        return state == State.Done;
+    }
+
     public boolean onMainPath() {
-        return (getPathId() == null || getPathId() == 0) && getPathType() == null;
+        return (!isValidPath() && getPathType() == null);
+    }
+
+    public boolean onTeacherPath() {
+        return (isValidPath() && getPathType() == PathType.Teacher);
+    }
+
+    public boolean onSystemPath() {
+        return (isValidPath() && getPathType() == PathType.System);
     }
 
     public boolean needToStartCourse() {
@@ -112,6 +124,10 @@ public final class RequestContext {
 
     public boolean needToStartLesson() {
         return (state == State.Start && currentItemId == null);
+    }
+
+    private boolean isValidPath() {
+        return pathId != null && pathId != 0;
     }
 
     private void validate() {

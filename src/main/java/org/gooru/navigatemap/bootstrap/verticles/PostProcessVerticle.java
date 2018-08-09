@@ -1,16 +1,11 @@
 package org.gooru.navigatemap.bootstrap.verticles;
 
-import java.io.IOException;
+import java.util.Objects;
 
 import org.gooru.navigatemap.app.constants.Constants;
-import org.gooru.navigatemap.infra.data.SuggestionCard;
-import org.gooru.navigatemap.processor.next.contentserver.ResponseParserForNextApi;
-import org.gooru.navigatemap.processor.postprocessor.repositories.PostProcessorRepository;
-import org.gooru.navigatemap.processor.postprocessor.repositories.PostProcessorRespositoryBuilder;
+import org.gooru.navigatemap.processor.postprocessor.PostProcessorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
@@ -29,8 +24,7 @@ public class PostProcessVerticle extends AbstractVerticle {
         EventBus eb = vertx.eventBus();
 
         eb.<JsonObject>localConsumer(Constants.EventBus.MBEP_POST_PROCESS, message -> {
-            ResponseParserForNextApi requestData = ResponseParserForNextApi.build(message.body());
-            process(requestData);
+            process(message.headers().get(Constants.Message.MSG_OP), message.body());
         }).completionHandler(result -> {
             if (result.succeeded()) {
                 LOGGER.info("Post processor end point ready to listen");
@@ -43,35 +37,22 @@ public class PostProcessVerticle extends AbstractVerticle {
         });
     }
 
-    private void process(ResponseParserForNextApi requestData) {
+    private void process(String op, JsonObject requestData) {
         vertx.<Void>executeBlocking(future -> {
-            requestData.getSuggestions().forEach(suggestionObj -> {
-                if (suggestionObj instanceof JsonObject) {
-                    try {
-                        SuggestionCard suggestion =
-                            new ObjectMapper().readValue(suggestionObj.toString(), SuggestionCard.class);
-                        PostProcessorRepository repository = PostProcessorRespositoryBuilder.build();
-                        // TODO: Do the serve count increment here
-                        future.complete();
-                    } catch (IOException e) {
-                        LOGGER.warn("Suggestion Json failed to convert to suggestion card, will skip count update. "
-                            + "Value : {}", suggestionObj.toString());
-                        future.fail(e);
+            try {
+                PostProcessorService.build().process(op, requestData);
+                future.complete();
+            } catch (Throwable throwable) {
+                LOGGER.warn("Not able to do post processing.", throwable);
+                LOGGER.warn(Objects.toString(requestData));
+                future.fail(throwable);
+            }
 
-                    } catch (Throwable t) {
-                        LOGGER.warn("Suggestion count update failed", t);
-                        future.fail(t);
-                    }
-                } else {
-                    LOGGER.warn("Got non Json object as suggestion: {}", suggestionObj.toString());
-                    future.fail(new IllegalArgumentException("Non json object as suggestion"));
-                }
-            });
         }, asyncResult -> {
             if (asyncResult.succeeded()) {
-                LOGGER.info("Done updating the suggested count for resource suggestion");
+                LOGGER.info("Done doing the post processing");
             } else {
-                LOGGER.warn("Not able to update the resource suggestion count");
+                LOGGER.warn("Not able to do the post processing", asyncResult.cause());
             }
         });
     }

@@ -40,6 +40,9 @@ public final class Constants {
         public static final String MSG_OP_NEXT = "navigate.next";
         public static final String MSG_OP_CONTEXT_GET = "context.get";
         public static final String MSG_OP_CONTEXT_SET = "context.set";
+        public static final String MSG_OP_POSTPROCESS_NEXT = "postprocess.next";
+        public static final String MSG_OP_POSTPROCESS_TEACHER_SUGGESTION_ADD = "postprocess.suggestion.add.teacher";
+        public static final String MSG_OP_POSTPROCESS_SYSTEM_SUGGESTION_ADD = "postprocess.suggestion.add.system";
         public static final String MSG_OP_TEACHER_SUGGESTION_ADD = "teacher.suggestion.add";
         public static final String MSG_OP_SYSTEM_SUGGESTION_ADD = "system.suggestion.add";
 

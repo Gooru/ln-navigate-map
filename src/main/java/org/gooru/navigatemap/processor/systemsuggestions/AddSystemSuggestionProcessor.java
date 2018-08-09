@@ -1,10 +1,12 @@
 package org.gooru.navigatemap.processor.systemsuggestions;
 
+import org.gooru.navigatemap.app.constants.Constants;
 import org.gooru.navigatemap.infra.data.EventBusMessage;
 import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
 import org.gooru.navigatemap.processor.AsyncMessageProcessor;
 import org.gooru.navigatemap.responses.MessageResponse;
 import org.gooru.navigatemap.responses.MessageResponseFactory;
+import org.gooru.navigatemap.routes.utils.DeliveryOptionsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +38,7 @@ public class AddSystemSuggestionProcessor implements AsyncMessageProcessor {
         try {
             this.eventBusMessage = EventBusMessage.eventBusMessageBuilder(message);
             AddSystemSuggestionCommand command = AddSystemSuggestionCommand.builder(eventBusMessage.getRequestBody());
-            addTeacherSuggestion(command);
+            addSystemSuggestion(command);
         } catch (Throwable throwable) {
             LOGGER.warn("Encountered exception", throwable);
             result.fail(throwable);
@@ -44,7 +46,7 @@ public class AddSystemSuggestionProcessor implements AsyncMessageProcessor {
         return result;
     }
 
-    private void addTeacherSuggestion(AddSystemSuggestionCommand command) {
+    private void addSystemSuggestion(AddSystemSuggestionCommand command) {
         vertx.executeBlocking(future -> {
             try {
                 Long result = addSystemSuggestionService.addSystemSuggestion(command);
@@ -55,6 +57,9 @@ public class AddSystemSuggestionProcessor implements AsyncMessageProcessor {
             }
         }, asyncResult -> {
             if (asyncResult.succeeded()) {
+                vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, eventBusMessage.getRequestBody(),
+                    DeliveryOptionsBuilder
+                        .createDeliveryOptionsWithMsgOp(Constants.Message.MSG_OP_POSTPROCESS_SYSTEM_SUGGESTION_ADD));
                 result.complete(MessageResponseFactory.createCreatedResponse(asyncResult.result().toString()));
             } else {
                 result.fail(asyncResult.cause());

@@ -24,6 +24,7 @@ class SuggestionsCardBuilder {
     private final SuggestionCardService suggestionCardService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SuggestionsCardBuilder.class);
+    private List<SuggestionCard> suggestionCards;
 
     SuggestionsCardBuilder(SuggestionContext ctxSuggestions, SuggestionCardService suggestionCardService) {
         this.suggestionContext = ctxSuggestions;
@@ -37,17 +38,16 @@ class SuggestionsCardBuilder {
             return new JsonArray();
         }
         initializeSuggestionsList();
+        fetchSuggestionCards();
         applySuggestionsLimit();
-        List<SuggestionCard> result = getSuggestionCards();
-        return transformSuggestionsCardToJson(result);
+        return transformSuggestionsCardToJson();
     }
 
-    private List<SuggestionCard> getSuggestionCards() {
-        List<SuggestionCard> suggestionCards = suggestionCardService.suggestionCardForCollections(suggestions);
+    private void fetchSuggestionCards() {
+        suggestionCards = suggestionCardService.suggestionCardForCollections(suggestions);
         for (SuggestionCard suggestionCard : suggestionCards) {
             suggestionCard.setSuggestedContentSubType(suggestionContext.getSuggestedContentSubType());
         }
-        return suggestionCards;
     }
 
     private void applySuggestionsLimit() {
@@ -56,17 +56,15 @@ class SuggestionsCardBuilder {
         if (limit == null) {
             limit = DEFAULT_LIMIT;
         }
-        if (suggestions.size() > limit) {
-            List<String> limitedCollectionsList = new ArrayList<>(limit);
-            int currentSize = 0;
-            for (String item : suggestions) {
-                limitedCollectionsList.add(item);
-                currentSize++;
-                if (currentSize == limit) {
-                    break;
-                }
+        if (suggestionCards.size() > limit) {
+            suggestionCards.subList(limit, suggestionCards.size()).clear();
+        }
+        if (suggestionCards.isEmpty()) {
+            LOGGER.warn("Suggestions are empty after querying the db.");
+            LOGGER.warn("Original ids fetched were:");
+            for (String suggestion : suggestions) {
+                LOGGER.warn("Vanished Id: '{}'", suggestion);
             }
-            suggestions = limitedCollectionsList;
         }
     }
 
@@ -82,14 +80,16 @@ class SuggestionsCardBuilder {
         }
     }
 
-    private static JsonArray transformSuggestionsCardToJson(List<SuggestionCard> result) {
-        if (result != null && !result.isEmpty()) {
+    private JsonArray transformSuggestionsCardToJson() {
+        if (suggestionCards != null && !suggestionCards.isEmpty()) {
             try {
-                String resultString = new ObjectMapper().writeValueAsString(result);
+                String resultString = new ObjectMapper().writeValueAsString(suggestionCards);
                 return new JsonArray(resultString);
             } catch (JsonProcessingException e) {
                 LOGGER.error("Not able to convert suggestions card to Json Array", e);
             }
+        } else {
+            LOGGER.warn("Suggestions cards are empty");
         }
         return new JsonArray();
     }
