@@ -22,7 +22,7 @@ public final class KafkaProducerRegistry implements Initializer, Finalizer {
     private static final String KAFKA_PRODUCERS_ENABLED = "kafka.producers.enabled";
     private static final String MOCK_PRODUCER_NAME = "mock.producer";
 
-    private final Map<String, Producer> registry = new HashMap<>();
+    private final Map<String, Producer<String, String>> registry = new HashMap<>();
     private volatile boolean initialized = false;
     private Vertx vertx;
     private JsonObject globalConfig;
@@ -76,7 +76,7 @@ public final class KafkaProducerRegistry implements Initializer, Finalizer {
         initialized = true;
     }
 
-    public Producer getDefaultKafkaProducer() {
+    public Producer<String, String> getDefaultKafkaProducer() {
         if (isKafkaEnabled) {
             return registry.get(PRODUCER_TEACHER_SUGGESTION);
         } else {
@@ -84,11 +84,11 @@ public final class KafkaProducerRegistry implements Initializer, Finalizer {
         }
     }
 
-    public Producer getTeacherSuggestionKafkaProducer() {
+    public Producer<String, String> getTeacherSuggestionKafkaProducer() {
         return getKafkaProducerByName(PRODUCER_TEACHER_SUGGESTION);
     }
 
-    public Producer getKafkaProducerByName(String name) {
+    public Producer<String, String> getKafkaProducerByName(String name) {
         if (isKafkaEnabled) {
             if (name != null) {
                 return registry.get(name);
@@ -101,7 +101,7 @@ public final class KafkaProducerRegistry implements Initializer, Finalizer {
 
     @Override
     public void finalizeComponent() {
-        for (Map.Entry<String, Producer> producerEntry : registry.entrySet()) {
+        for (Map.Entry<String, Producer<String, String>> producerEntry : registry.entrySet()) {
             if (producerEntry.getValue() != null) {
                 producerEntry.getValue().flush();
                 producerEntry.getValue().close(5, TimeUnit.SECONDS);

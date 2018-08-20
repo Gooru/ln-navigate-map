@@ -1,18 +1,16 @@
 package org.gooru.navigatemap.processor.postprocessor;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.vertx.core.json.JsonObject;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.vertx.core.json.JsonObject;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author ashish on 24/7/18.
@@ -34,11 +32,20 @@ class PostProcessTeacherSuggestionAddHandler implements PostProcessorHandler {
         if (command.getUserIds() != null && !command.getUserIds().isEmpty()) {
             List<SuggestionTrackerModel> suggestionTrackerModels =
                 SuggestionTrackerModelsBuilder.buildForTeacherSuggestion(command).build();
-            getPostProcessorDao().insertAllSuggestions(suggestionTrackerModels);
+            trackSuggestion(suggestionTrackerModels);
+            NotificationCoordinator.buildForTeacherSuggestionAdded(command, requestData).coordinateNotification();
         } else {
             LOGGER.warn("User id list is null or empty for teacher suggestions.");
         }
 
+    }
+
+    private void trackSuggestion(List<SuggestionTrackerModel> suggestionTrackerModels) {
+        try {
+            getPostProcessorDao().insertAllSuggestions(suggestionTrackerModels);
+        } catch (Throwable e) {
+            LOGGER.warn("Not able to track suggestion in db.", e);
+        }
     }
 
     private void initialize(JsonObject requestData) {
