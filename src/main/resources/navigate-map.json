@@ -98,6 +98,7 @@
     "serve.content.details": false,
     "suggestions.limit": 1,
     "notification.topic.name": "org.gooru.notifications.writers.topic",
+    "notification.teacher.suggestion.read.threshold": 5,
     "suggestions.applicable.course.version": "premium"
   },
   "vertxOptions": {
