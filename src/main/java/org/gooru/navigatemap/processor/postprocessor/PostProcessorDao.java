@@ -14,8 +14,9 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
  */
 interface PostProcessorDao {
 
-    @SqlUpdate("update user_navigation_paths set serve_count = serve_count + 1 where id = :id")
-    void updatePathServeCount(@Bind("id") long id);
+    // NOTE: The user of SqlQuery here is a hack to enable return of serve count. Should not be used as practice
+    @SqlQuery("update user_navigation_paths set serve_count = serve_count + 1 where id = :id returning serve_count")
+    long updatePathServeCount(@Bind("id") long id);
 
     @SqlBatch("insert into suggestions_tracker (user_id, course_id, unit_id, lesson_id, class_id, collection_id, "
                   + "suggested_content_id, suggestion_origin, suggestion_originator_id, suggestion_criteria, "
