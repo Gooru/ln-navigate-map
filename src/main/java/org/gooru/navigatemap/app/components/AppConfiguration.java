@@ -72,6 +72,10 @@ public final class AppConfiguration implements Initializer {
         return configuration.getBoolean("serve.content.details");
     }
 
+    public String getNotificationTopic() {
+        return configuration.getString("notification.topic.name");
+    }
+
     public boolean applyContentVisibilityToNonGlobalStrategy() {
         Boolean result = configuration.getBoolean("non.global.strategy.apply.visibility");
         return result != null && result;

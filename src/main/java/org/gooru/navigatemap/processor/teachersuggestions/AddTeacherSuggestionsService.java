@@ -1,13 +1,11 @@
 package org.gooru.navigatemap.processor.teachersuggestions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import org.gooru.navigatemap.infra.utilities.CollectionUtils;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * @author ashish on 24/11/17.
@@ -23,15 +21,34 @@ class AddTeacherSuggestionsService {
         this.addTeacherSuggestionsDao = dbi.onDemand(AddTeacherSuggestionsDao.class);
     }
 
-    void addTeacherSuggestion(AddTeacherSuggestionsCommand command) {
+    Map<String, Integer> addTeacherSuggestion(AddTeacherSuggestionsCommand command) {
         this.command = command;
         new ContextInformationVerifier(command, addTeacherSuggestionsDao).validateContextInformation();
         List<UUID> usersNotHavingSpecifiedSuggestions = findUsersNotHavingSpecifiedSuggestion();
         if (usersNotHavingSpecifiedSuggestions != null && !usersNotHavingSpecifiedSuggestions.isEmpty()) {
-            addTeacherSuggestionsDao.addTeacherSuggestion(command.getBean(), usersNotHavingSpecifiedSuggestions);
+            int[] result =
+                addTeacherSuggestionsDao.addTeacherSuggestion(command.getBean(), usersNotHavingSpecifiedSuggestions);
+            return transformResult(result, usersNotHavingSpecifiedSuggestions);
         } else {
             LOGGER.info("All specified users already have specified suggestion");
+            return Collections.emptyMap();
         }
+    }
+
+    private Map<String, Integer> transformResult(int[] input, List<UUID> usersNotHavingSpecifiedSuggestions) {
+        if (input == null || input.length == 0 || usersNotHavingSpecifiedSuggestions == null ||
+                usersNotHavingSpecifiedSuggestions.size() == 0) {
+            return Collections.emptyMap();
+        }
+        if (input.length != usersNotHavingSpecifiedSuggestions.size()) {
+            LOGGER.warn("Size of users list does not match returned id. May be race condition. Won't return anything");
+            return Collections.emptyMap();
+        }
+        Map<String, Integer> result = new HashMap<>(input.length);
+        for (int i = 0; i < input.length; i++) {
+            result.put(usersNotHavingSpecifiedSuggestions.get(i).toString(), input[i]);
+        }
+        return result;
     }
 
     private List<UUID> findUsersNotHavingSpecifiedSuggestion() {

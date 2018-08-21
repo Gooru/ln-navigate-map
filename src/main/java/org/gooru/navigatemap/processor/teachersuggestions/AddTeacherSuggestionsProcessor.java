@@ -1,7 +1,9 @@
 package org.gooru.navigatemap.processor.teachersuggestions;
 
-import java.util.UUID;
-
+import io.vertx.core.Future;
+import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonObject;
 import org.gooru.navigatemap.app.constants.Constants;
 import org.gooru.navigatemap.infra.data.EventBusMessage;
 import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
@@ -12,10 +14,8 @@ import org.gooru.navigatemap.routes.utils.DeliveryOptionsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.core.Future;
-import io.vertx.core.Vertx;
-import io.vertx.core.eventbus.Message;
-import io.vertx.core.json.JsonObject;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author ashish on 17/11/17.
@@ -51,19 +51,21 @@ public class AddTeacherSuggestionsProcessor implements AsyncMessageProcessor {
     }
 
     private void addTeacherSuggestion(AddTeacherSuggestionsCommand command) {
-        vertx.executeBlocking(future -> {
+        vertx.<JsonObject>executeBlocking(future -> {
             try {
-                addTeacherSuggestionsService.addTeacherSuggestion(command);
-                future.complete();
+                Map<String, Integer> result = addTeacherSuggestionsService.addTeacherSuggestion(command);
+                JsonObject postProcessorPayload = createPostProcessorPayload(result);
+                future.complete(postProcessorPayload);
             } catch (Throwable throwable) {
                 LOGGER.warn("Encountered exception accepting suggestion", throwable);
                 future.fail(throwable);
             }
         }, asyncResult -> {
             if (asyncResult.succeeded()) {
-                vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS, createPostProcessorPayload(),
-                    DeliveryOptionsBuilder
-                        .createDeliveryOptionsWithMsgOp(Constants.Message.MSG_OP_POSTPROCESS_TEACHER_SUGGESTION_ADD));
+                vertx.eventBus()
+                    .send(Constants.EventBus.MBEP_POST_PROCESS, asyncResult.result(),
+                        DeliveryOptionsBuilder.createDeliveryOptionsWithMsgOp(
+                            Constants.Message.MSG_OP_POSTPROCESS_TEACHER_SUGGESTION_ADD));
                 result.complete(MessageResponseFactory.createOkayResponse(new JsonObject()));
             } else {
                 result.fail(asyncResult.cause());
@@ -72,8 +74,11 @@ public class AddTeacherSuggestionsProcessor implements AsyncMessageProcessor {
 
     }
 
-    private JsonObject createPostProcessorPayload() {
+    private JsonObject createPostProcessorPayload(Map<String, Integer> result) {
+        JsonObject postProcessorPayload = eventBusMessage.getRequestBody().copy();
         UUID teacherId = eventBusMessage.getUserId();
-        return eventBusMessage.getRequestBody().copy().put(Constants.Message.MSG_USER_ID, teacherId.toString());
+        JsonObject userPathMap = new JsonObject((Map)result);
+        return postProcessorPayload.put(Constants.Message.MSG_USER_ID, teacherId.toString())
+                   .put(Constants.Message.MSG_USER_PATH_MAP, userPathMap);
     }
 }

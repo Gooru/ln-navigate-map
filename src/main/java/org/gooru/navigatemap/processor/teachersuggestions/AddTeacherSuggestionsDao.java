@@ -5,10 +5,7 @@ import java.util.UUID;
 
 import org.gooru.navigatemap.infra.utilities.jdbi.PGArray;
 import org.gooru.navigatemap.infra.utilities.jdbi.UUIDMapper;
-import org.skife.jdbi.v2.sqlobject.Bind;
-import org.skife.jdbi.v2.sqlobject.BindBean;
-import org.skife.jdbi.v2.sqlobject.SqlBatch;
-import org.skife.jdbi.v2.sqlobject.SqlQuery;
+import org.skife.jdbi.v2.sqlobject.*;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
 /**
@@ -16,12 +13,13 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
  */
 interface AddTeacherSuggestionsDao {
 
+    @GetGeneratedKeys
     @SqlBatch("insert into user_navigation_paths (ctx_user_id, ctx_course_id, ctx_unit_id, ctx_lesson_id, "
                   + "ctx_class_id, ctx_collection_id, suggested_content_id, suggested_content_type, "
                   + "suggested_content_subtype, suggestion_type) values (:ctxUserId, :ctxCourseId, :ctxUnitId, "
                   + ":ctxLessonId, :ctxClassId, :ctxCollectionId, :suggestedContentId, "
                   + ":suggestedContentType, :suggestedContentSubType, 'teacher')")
-    void addTeacherSuggestion(@BindBean AddTeacherSuggestionsCommand.AddTeacherSuggestionsBean command,
+    int[] addTeacherSuggestion(@BindBean AddTeacherSuggestionsCommand.AddTeacherSuggestionsBean command,
         @Bind("ctxUserId") List<UUID> ctxUserIds);
 
     @SqlQuery("select ctx_user_id from user_navigation_paths where ctx_course_id = :ctxCourseId and ctx_unit_id = "

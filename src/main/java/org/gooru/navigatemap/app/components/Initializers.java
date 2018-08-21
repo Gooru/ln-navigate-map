@@ -16,6 +16,7 @@ public class Initializers implements Iterable<Initializer> {
         initializers.add(DataSourceRegistry.getInstance());
         initializers.add(UtilityManager.getInstance());
         initializers.add(AppConfiguration.getInstance());
+        initializers.add(KafkaProducerRegistry.getInstance());
         internalIterator = initializers.iterator();
     }
 
