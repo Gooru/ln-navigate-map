@@ -1,5 +1,7 @@
 package org.gooru.navigatemap.processor.next.pathfinder;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.gooru.navigatemap.app.components.utilities.DbLookupUtility;
@@ -52,11 +54,11 @@ class CompetencyCompletionHandler {
             }
             areCompetenciesFetched = true;
         }
-        return competencies;
+        return Collections.unmodifiableList(competencies);
     }
 
     private void markCompetencyCompletedForUser() {
-        List<String> competencyList = fetchCompetenciesForCollection();
+        List<String> competencyList = new ArrayList<>(fetchCompetenciesForCollection());
         if (!competencyList.isEmpty()) {
             UserCompetencyCompletionDao userCompetencyCompletionDao = dbi.onDemand(UserCompetencyCompletionDao.class);
             List<String> completedCompetenciesByUser = userCompetencyCompletionDao
