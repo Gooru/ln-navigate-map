@@ -143,7 +143,7 @@ class SuggestionsAwarePathFinderService implements PathFinder {
                 return trySuggestingSignatureCollection(competencies);
             }
         } else {
-            LOGGER.debug("Loading next item from main path.");
+            LOGGER.debug("Loading next item from main path as assessment was not played, so no reroute.");
             return loadNextItemFromMainpath();
         }
     }
@@ -156,7 +156,7 @@ class SuggestionsAwarePathFinderService implements PathFinder {
             return new PathFinderResult(signatureItems, SuggestedContentType.Collection,
                 SuggestedContentSubType.SignatureCollection);
         } else {
-            LOGGER.debug("Loading next item from main path.");
+            LOGGER.debug("No signature collections found, loading next item from main path.");
             return loadNextItemFromMainpath();
         }
     }
@@ -169,7 +169,7 @@ class SuggestionsAwarePathFinderService implements PathFinder {
             return new PathFinderResult(signatureItems, SuggestedContentType.Assessment,
                 SuggestedContentSubType.SignatureAssessment);
         } else {
-            LOGGER.debug("Loading next item from main path.");
+            LOGGER.debug("No signature assessments found, loading next item from main path.");
             return loadNextItemFromMainpath();
         }
     }
