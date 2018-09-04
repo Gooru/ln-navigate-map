@@ -3,6 +3,7 @@ package org.gooru.navigatemap.processor.postprocessor;
 import java.util.List;
 import java.util.Objects;
 
+import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,10 @@ class PostProcessNextHandler implements PostProcessorHandler {
 
     private void handleTeacherPathItemServed() {
         if (command.getContext().onTeacherPath()) {
-            getPostProcessorDao().updatePathServeCount(command.getContext().getPathId());
+            long currentCount = getPostProcessorDao().updatePathServeCount(command.getContext().getPathId());
+            if (currentCount <= AppConfiguration.getInstance().getNotificationTeacherSuggestionReadThreshold()) {
+                NotificationCoordinator.buildForTeacherSuggestionRead(command).coordinateNotification();
+            }
         }
     }
 

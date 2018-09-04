@@ -165,6 +165,9 @@ public final class RequestContext {
             context.currentItemId = toUuid(input, ContextAttributes.CURRENT_ITEM_ID);
             context.pathId = input.getLong(ContextAttributes.PATH_ID);
             context.scorePercent = input.getDouble(ContextAttributes.SCORE_PERCENT);
+            if (context.scorePercent == null) {
+                context.scorePercent = 0D;
+            }
             String value;
             value = input.getString(ContextAttributes.CURRENT_ITEM_TYPE);
             context.currentItemType = (value != null && !value.isEmpty()) ? CurrentItemType.builder(value) : null;

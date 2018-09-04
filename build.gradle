@@ -42,6 +42,7 @@ ext {
     hikariVersion = '2.7.6'
     postgresVersion = '9.4-1206-jdbc42'
     jdbiVersion = '2.78'
+    kafkaVersion = '0.10.1.1'
 }
 
 version = "0.1-snapshot"
@@ -79,6 +80,7 @@ dependencies {
     compile "org.postgresql:postgresql:${postgresVersion}"
     compile "io.vertx:vertx-redis-client:${vertxVersion}"
     compile "org.jdbi:jdbi:${jdbiVersion}"
+    compile "org.apache.kafka:kafka-clients:${kafkaVersion}"
     // Test dependencies
     testCompile "junit:junit:${junitVersion}"
 }

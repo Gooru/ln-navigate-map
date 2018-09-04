@@ -72,9 +72,12 @@ public final class AppConfiguration implements Initializer {
         return configuration.getBoolean("serve.content.details");
     }
 
-    public boolean applyContentVisibilityToNonGlobalStrategy() {
-        Boolean result = configuration.getBoolean("non.global.strategy.apply.visibility");
-        return result != null && result;
+    public String getNotificationTopic() {
+        return configuration.getString("notification.topic.name");
+    }
+
+    public int getNotificationTeacherSuggestionReadThreshold() {
+        return configuration.getInteger("notification.teacher.suggestion.read.threshold", 5);
     }
 
     private static final class Holder {
