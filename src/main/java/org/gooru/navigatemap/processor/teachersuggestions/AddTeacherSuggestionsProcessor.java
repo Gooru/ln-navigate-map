@@ -74,6 +74,7 @@ public class AddTeacherSuggestionsProcessor implements AsyncMessageProcessor {
 
     }
 
+    @SuppressWarnings("unchecked")
     private JsonObject createPostProcessorPayload(Map<String, Integer> result) {
         JsonObject postProcessorPayload = eventBusMessage.getRequestBody().copy();
         UUID teacherId = eventBusMessage.getUserId();

@@ -69,8 +69,6 @@ class AlternatePathUnawareMainPathContentFinder implements ContentFinder {
             return findNextContentInLessons(address, unit, lessons);
         case CRITERIA_NON_SKIPPABLE:
             return findNextNonSkippableContentInLesson(address, unit, lessons);
-        case CRITERIA_VISIBLE_NON_SKIPPABLE:
-            return findNextVisibleAndNonSkippableContentInLessons(address, unit, lessons);
         default:
             throw new IllegalStateException("Invalid criteria for finding content");
         }
@@ -139,38 +137,6 @@ class AlternatePathUnawareMainPathContentFinder implements ContentFinder {
                 contentAddresses = finderDao.findCollectionsInCUL(address.getCourse(), unit, lesson);
                 result = visibilityVerifier.findFirstVerifiedContent(contentAddresses);
             }
-            if (result != null) {
-                return result;
-            }
-        }
-        return null;
-    }
-
-    private ContentAddress findNextVisibleAndNonSkippableContentInLessons(ContentAddress address, String unit,
-        List<String> lessons) {
-        List<ContentAddress> contentAddresses;
-        ContentAddress result = null;
-        ContentVerifier visibilityVerifier = getVisibilityVerifier();
-        ContentVerifier nonSkippabilityVerifier = getNonSkippabilityVerifier();
-
-        for (String lesson : lessons) {
-            if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())
-                && address.getCollection() != null) {
-                contentAddresses =
-                    finderDao.findNextCollectionsInCUL(address.getCourse(), unit, lesson, address.getCollection());
-            } else {
-                contentAddresses = finderDao.findCollectionsInCUL(address.getCourse(), unit, lesson);
-            }
-
-            for (ContentAddress contentAddress : contentAddresses) {
-                if (visibilityVerifier.isContentVerified(contentAddress)) {
-                    if (nonSkippabilityVerifier.isContentVerified(contentAddress)) {
-                        result = contentAddress;
-                        break;
-                    }
-                }
-            }
-
             if (result != null) {
                 return result;
             }

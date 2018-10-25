@@ -65,7 +65,7 @@ public final class KafkaProducerRegistry implements Initializer, Finalizer {
             for (String producerName : config.fieldNames()) {
                 JsonObject producerConfig = config.getJsonObject(producerName);
                 if (producerConfig != null) {
-                    Producer producer = KafkaProducerBuilder.buildKafkaProducer(producerConfig);
+                    Producer<String, String> producer = KafkaProducerBuilder.buildKafkaProducer(producerConfig);
                     registry.put(producerName, producer);
                 }
             }
