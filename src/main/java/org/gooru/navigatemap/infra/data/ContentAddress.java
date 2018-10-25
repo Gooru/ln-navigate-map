@@ -4,143 +4,144 @@ package org.gooru.navigatemap.infra.data;
  * @author ashish on 3/3/17.
  */
 public final class ContentAddress {
-    private String course;
-    private String unit;
-    private String lesson;
-    private String collection;
-    private String visibility;
-    private Long pathId;
-    private PathType pathType;
-    private String currentItem;
-    private CurrentItemType currentItemType;
-    private CurrentItemSubtype currentItemSubtype;
 
-    public ContentAddress() {
-    }
+  private String course;
+  private String unit;
+  private String lesson;
+  private String collection;
+  private String visibility;
+  private Long pathId;
+  private PathType pathType;
+  private String currentItem;
+  private CurrentItemType currentItemType;
+  private CurrentItemSubtype currentItemSubtype;
 
-    public ContentAddress(ContentAddress address) {
-        this.course = address.course;
-        this.unit = address.unit;
-        this.lesson = address.lesson;
-        this.collection = address.collection;
-        this.pathId = address.pathId;
-        this.pathType = address.pathType;
-        this.currentItem = address.currentItem;
-        this.currentItemType = address.currentItemType;
-        this.currentItemSubtype = address.currentItemSubtype;
-        this.visibility = address.visibility;
-    }
+  public ContentAddress() {
+  }
 
-    public String getCourse() {
-        return course;
-    }
+  public ContentAddress(ContentAddress address) {
+    this.course = address.course;
+    this.unit = address.unit;
+    this.lesson = address.lesson;
+    this.collection = address.collection;
+    this.pathId = address.pathId;
+    this.pathType = address.pathType;
+    this.currentItem = address.currentItem;
+    this.currentItemType = address.currentItemType;
+    this.currentItemSubtype = address.currentItemSubtype;
+    this.visibility = address.visibility;
+  }
 
-    public void setCourse(String course) {
-        this.course = course;
-    }
+  public String getCourse() {
+    return course;
+  }
 
-    public String getUnit() {
-        return unit;
-    }
+  public void setCourse(String course) {
+    this.course = course;
+  }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
+  public String getUnit() {
+    return unit;
+  }
 
-    public String getLesson() {
-        return lesson;
-    }
+  public void setUnit(String unit) {
+    this.unit = unit;
+  }
 
-    public void setLesson(String lesson) {
-        this.lesson = lesson;
-    }
+  public String getLesson() {
+    return lesson;
+  }
 
-    public String getCollection() {
-        return collection;
-    }
+  public void setLesson(String lesson) {
+    this.lesson = lesson;
+  }
 
-    public void setCollection(String collection) {
-        this.collection = collection;
-    }
+  public String getCollection() {
+    return collection;
+  }
 
-    public Long getPathId() {
-        return pathId;
-    }
+  public void setCollection(String collection) {
+    this.collection = collection;
+  }
 
-    public PathType getPathType() {
-        return pathType;
-    }
+  public Long getPathId() {
+    return pathId;
+  }
 
-    public void setPathType(PathType pathType) {
-        this.pathType = pathType;
-    }
+  public PathType getPathType() {
+    return pathType;
+  }
 
-    public void setPathId(Long pathId) {
-        this.pathId = pathId;
-    }
+  public void setPathType(PathType pathType) {
+    this.pathType = pathType;
+  }
 
-    public String getCurrentItem() {
-        return currentItem;
-    }
+  public void setPathId(Long pathId) {
+    this.pathId = pathId;
+  }
 
-    public void setCurrentItem(String currentItem) {
-        this.currentItem = currentItem;
-    }
+  public String getCurrentItem() {
+    return currentItem;
+  }
 
-    public CurrentItemType getCurrentItemType() {
-        return currentItemType;
-    }
+  public void setCurrentItem(String currentItem) {
+    this.currentItem = currentItem;
+  }
 
-    public void setCurrentItemType(CurrentItemType currentItemType) {
-        this.currentItemType = currentItemType;
-    }
+  public CurrentItemType getCurrentItemType() {
+    return currentItemType;
+  }
 
-    public CurrentItemSubtype getCurrentItemSubtype() {
-        return currentItemSubtype;
-    }
+  public void setCurrentItemType(CurrentItemType currentItemType) {
+    this.currentItemType = currentItemType;
+  }
 
-    public String getVisibility() {
-        return visibility;
-    }
+  public CurrentItemSubtype getCurrentItemSubtype() {
+    return currentItemSubtype;
+  }
 
-    public void setVisibility(String visibility) {
-        this.visibility = visibility;
-    }
+  public String getVisibility() {
+    return visibility;
+  }
 
-    public void setCurrentItemSubtype(CurrentItemSubtype currentItemSubtype) {
-        this.currentItemSubtype = currentItemSubtype;
-    }
+  public void setVisibility(String visibility) {
+    this.visibility = visibility;
+  }
 
-    public boolean isOnTeacherOrSystemPath() {
-        return isOnSystemPath() || isOnTeacherPath();
-    }
+  public void setCurrentItemSubtype(CurrentItemSubtype currentItemSubtype) {
+    this.currentItemSubtype = currentItemSubtype;
+  }
 
-    public boolean isOnTeacherPath() {
-        return (pathId != null && pathId > 0 && pathType == PathType.Teacher);
-    }
+  public boolean isOnTeacherOrSystemPath() {
+    return isOnSystemPath() || isOnTeacherPath();
+  }
 
-    public boolean isOnSystemPath() {
-        return (pathId != null && pathId > 0 && pathType == PathType.System);
-    }
+  public boolean isOnTeacherPath() {
+    return (pathId != null && pathId > 0 && pathType == PathType.Teacher);
+  }
 
-    public boolean isOnRoute0() {
-        return pathType == PathType.Route0;
-    }
+  public boolean isOnSystemPath() {
+    return (pathId != null && pathId > 0 && pathType == PathType.System);
+  }
 
-    public boolean isOnMainPath() {
-        return (pathId == null || pathId == 0) && pathType == null;
-    }
+  public boolean isOnRoute0() {
+    return pathType == PathType.Route0;
+  }
 
-    public boolean isCurrentItemSignatureAssessment() {
-        return isOnSystemPath() && getCurrentItemSubtype() == CurrentItemSubtype.SignatureAssessment;
-    }
+  public boolean isOnMainPath() {
+    return (pathId == null || pathId == 0) && pathType == null;
+  }
 
-    public boolean isCurrentItemSignatureCollection() {
-        return isOnSystemPath() && getCurrentItemSubtype() == CurrentItemSubtype.SignatureCollection;
-    }
+  public boolean isCurrentItemSignatureAssessment() {
+    return isOnSystemPath() && getCurrentItemSubtype() == CurrentItemSubtype.SignatureAssessment;
+  }
 
-    public boolean isValidAddress() {
-        return course != null && unit != null && lesson != null && collection != null;
-    }
+  public boolean isCurrentItemSignatureCollection() {
+    return isOnSystemPath() && getCurrentItemSubtype() == CurrentItemSubtype.SignatureCollection;
+  }
+
+  public boolean isValidAddress() {
+    return course != null && unit != null && lesson != null && collection != null;
+  }
 
 }

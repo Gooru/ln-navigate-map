@@ -8,33 +8,33 @@ import java.util.Map;
  */
 public enum SuggestionType {
 
-    System("system"),
-    Teacher("teacher");
+  System("system"),
+  Teacher("teacher");
 
-    private final String name;
+  private final String name;
 
-    SuggestionType(String name) {
-        this.name = name;
+  SuggestionType(String name) {
+    this.name = name;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  private static final Map<String, SuggestionType> LOOKUP = new HashMap<>(values().length);
+
+  static {
+    for (SuggestionType suggestionType : values()) {
+      LOOKUP.put(suggestionType.name, suggestionType);
     }
+  }
 
-    public String getName() {
-        return this.name;
+  public static SuggestionType builder(String type) {
+    SuggestionType result = LOOKUP.get(type);
+    if (result == null) {
+      throw new IllegalArgumentException("Invalid suggested content type: " + type);
     }
-
-    private static final Map<String, SuggestionType> LOOKUP = new HashMap<>(values().length);
-
-    static {
-        for (SuggestionType suggestionType : values()) {
-            LOOKUP.put(suggestionType.name, suggestionType);
-        }
-    }
-
-    public static SuggestionType builder(String type) {
-        SuggestionType result = LOOKUP.get(type);
-        if (result == null) {
-            throw new IllegalArgumentException("Invalid suggested content type: " + type);
-        }
-        return result;
-    }
+    return result;
+  }
 
 }

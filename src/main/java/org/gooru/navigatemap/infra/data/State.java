@@ -8,35 +8,35 @@ import java.util.Map;
  */
 public enum State {
 
-    Start("start"),
-    Continue("continue"),
-    ContentServed("content-served"),
-    ContentEndSuggested("content-end-suggested"),
-    Done("done");
+  Start("start"),
+  Continue("continue"),
+  ContentServed("content-served"),
+  ContentEndSuggested("content-end-suggested"),
+  Done("done");
 
-    State(String name) {
-        this.name = name;
+  State(String name) {
+    this.name = name;
+  }
+
+  private final String name;
+
+  private static final Map<String, State> LOOKUP = new HashMap<>(values().length);
+
+  static {
+    for (State state : values()) {
+      LOOKUP.put(state.name, state);
     }
+  }
 
-    private final String name;
+  public String getName() {
+    return name;
+  }
 
-    private static final Map<String, State> LOOKUP = new HashMap<>(values().length);
-
-    static {
-        for (State state : values()) {
-            LOOKUP.put(state.name, state);
-        }
+  public static State builder(String state) {
+    State result = LOOKUP.get(state);
+    if (result == null) {
+      throw new IllegalArgumentException("Invalid state: " + state);
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public static State builder(String state) {
-        State result = LOOKUP.get(state);
-        if (result == null) {
-            throw new IllegalArgumentException("Invalid state: " + state);
-        }
-        return result;
-    }
+    return result;
+  }
 }

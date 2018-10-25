@@ -10,33 +10,35 @@ import org.skife.jdbi.v2.DBI;
  */
 class AlternatePathUnawareSpecifiedPathContentFinder implements ContentFinder {
 
-    private final DBI dbi;
-    private ContentFinderDao finderDao;
-    private PathFinderContext context;
+  private final DBI dbi;
+  private ContentFinderDao finderDao;
+  private PathFinderContext context;
 
-    AlternatePathUnawareSpecifiedPathContentFinder(DBI dbi) {
-        this.dbi = dbi;
-    }
+  AlternatePathUnawareSpecifiedPathContentFinder(DBI dbi) {
+    this.dbi = dbi;
+  }
 
-    @Override
-    public ContentAddress findContent(PathFinderContext context) {
-        validateCULValues(context.getContentAddress());
-        finderDao = dbi.onDemand(ContentFinderDao.class);
-        this.context = context;
-        return fetchSpecifiedContentFromCoursePath();
-    }
+  @Override
+  public ContentAddress findContent(PathFinderContext context) {
+    validateCULValues(context.getContentAddress());
+    finderDao = dbi.onDemand(ContentFinderDao.class);
+    this.context = context;
+    return fetchSpecifiedContentFromCoursePath();
+  }
 
-    private ContentAddress fetchSpecifiedContentFromCoursePath() {
-        ContentAddress specifiedContentAddress = context.getContentAddress();
-        return finderDao.findCULC(specifiedContentAddress.getCourse(), specifiedContentAddress.getUnit(),
+  private ContentAddress fetchSpecifiedContentFromCoursePath() {
+    ContentAddress specifiedContentAddress = context.getContentAddress();
+    return finderDao
+        .findCULC(specifiedContentAddress.getCourse(), specifiedContentAddress.getUnit(),
             specifiedContentAddress.getLesson(), specifiedContentAddress.getCollection());
-    }
+  }
 
-    private void validateCULValues(ContentAddress contentAddress) {
-        if (contentAddress.getCourse() == null || contentAddress.getUnit() == null
-            || contentAddress.getLesson() == null) {
-            throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST, "Invalid CUL info in context");
-        }
+  private void validateCULValues(ContentAddress contentAddress) {
+    if (contentAddress.getCourse() == null || contentAddress.getUnit() == null
+        || contentAddress.getLesson() == null) {
+      throw new HttpResponseWrapperException(HttpConstants.HttpStatus.BAD_REQUEST,
+          "Invalid CUL info in context");
     }
+  }
 
 }

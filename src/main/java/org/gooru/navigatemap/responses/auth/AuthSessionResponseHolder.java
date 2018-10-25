@@ -6,5 +6,6 @@ import io.vertx.core.json.JsonObject;
  * @author ashish on 24/2/17.
  */
 public interface AuthSessionResponseHolder extends AuthResponseHolder {
-    JsonObject getSession();
+
+  JsonObject getSession();
 }

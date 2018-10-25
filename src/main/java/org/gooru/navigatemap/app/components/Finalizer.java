@@ -5,6 +5,6 @@ package org.gooru.navigatemap.app.components;
  */
 public interface Finalizer {
 
-    void finalizeComponent();
+  void finalizeComponent();
 
 }
