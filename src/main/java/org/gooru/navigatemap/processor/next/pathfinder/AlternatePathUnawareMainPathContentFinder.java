@@ -163,7 +163,9 @@ class AlternatePathUnawareMainPathContentFinder implements ContentFinder {
   }
 
   protected ContentVerifier getNonSkippabilityVerifier() {
-    return ContentVerifierBuilder.buildContentNonSkippabilityVerifier(dbi, context.getUserId());
+    return ContentVerifierBuilder
+        .buildContentNonSkippabilityVerifier(dbi, context.getUserId(),
+            context.getContentAddress().getCourse(), context.getClassId());
   }
 
 }

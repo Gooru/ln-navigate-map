@@ -1,5 +1,6 @@
 package org.gooru.navigatemap.processor.next.pathfinder;
 
+import java.util.UUID;
 import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.infra.data.ContentAddress;
@@ -27,7 +28,8 @@ class Route0PathFinderService implements PathFinder {
     validateProvidedRoute0Context();
     handleCompetencyCompletion();
     ContentAddress result = ContentFinderFactory.buildRoute0NextContentFinder(dbi,
-        ContentVerifierBuilder.buildRoute0ContentNonSkippabilityVerifier(dbi, context.getUserId()))
+        ContentVerifierBuilder.buildRoute0ContentNonSkippabilityVerifier(dbi, context.getUserId(),
+            context.getContentAddress().getCourse(), context.getClassId()))
         .findContent(context);
     if (result == null) {
       LOGGER.debug("No more content available on Route0. Continue on main path.");

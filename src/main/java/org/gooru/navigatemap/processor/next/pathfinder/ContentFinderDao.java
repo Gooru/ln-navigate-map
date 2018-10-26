@@ -1,6 +1,7 @@
 package org.gooru.navigatemap.processor.next.pathfinder;
 
 import java.util.List;
+import java.util.UUID;
 import org.gooru.navigatemap.infra.data.ContentAddress;
 import org.gooru.navigatemap.infra.utilities.jdbi.SqlArrayMapper;
 import org.skife.jdbi.v2.sqlobject.Bind;
@@ -87,5 +88,14 @@ public interface ContentFinderDao {
   @Mapper(SqlArrayMapper.class)
   @SqlQuery("select gut_codes from collection where id = :collectionId::uuid and is_deleted = false")
   List<List<String>> findCompetenciesForCollection(@Bind("collectionId") String collectionId);
+
+  @SqlQuery("select skipped_content from user_rescoped_content where user_id = :userId and course_id = :courseId and class_id = :classId ")
+  String fetchRescopedContentForUserInClass(@Bind("userId") UUID userId,
+      @Bind("courseId") UUID courseId, @Bind("classId") UUID classId);
+
+  @SqlQuery("select skipped_content from user_rescoped_content where user_id = :userId and course_id = :courseId and class_id is null ")
+  String fetchRescopedContentForUserInIL(@Bind("userId") UUID userId,
+      @Bind("courseId") UUID courseId);
+
 
 }

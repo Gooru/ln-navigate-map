@@ -16,12 +16,15 @@ final class ContentVerifierBuilder {
     return ContentVisibilityVerifier.build(classId, dbi);
   }
 
-  static ContentVerifier buildContentNonSkippabilityVerifier(DBI dbi, String user) {
-    return ContentNonSkippabilityVerifier.build(dbi, user);
+  static ContentVerifier buildContentNonSkippabilityVerifier(DBI dbi, String user, String courseId,
+      UUID classId) {
+    return ContentNonSkippabilityVerifier.build(dbi, user, courseId, classId);
   }
 
-  static ContentVerifier buildRoute0ContentNonSkippabilityVerifier(DBI dbi, String user) {
-    return ContentNonSkippabilityVerifier.build(dbi, user);
+  static ContentVerifier buildRoute0ContentNonSkippabilityVerifier(DBI dbi, String user,
+      String courseId,
+      UUID classId) {
+    return ContentNonSkippabilityVerifier.buildForRoute0(dbi, user, courseId, classId);
   }
 
 }
