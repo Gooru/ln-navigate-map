@@ -6,19 +6,20 @@ import io.vertx.core.json.JsonObject;
  * @author ashish on 7/5/18.
  */
 public class Tracker {
-    private final String name;
-    private JsonObject payload;
 
-    public String getName() {
-        return name;
-    }
+  private final String name;
+  private JsonObject payload;
 
-    public JsonObject getPayload() {
-        return payload;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public Tracker(String name, JsonObject payload) {
-        this.name = name;
-        this.payload = payload;
-    }
+  public JsonObject getPayload() {
+    return payload;
+  }
+
+  public Tracker(String name, JsonObject payload) {
+    this.name = name;
+    this.payload = payload;
+  }
 }

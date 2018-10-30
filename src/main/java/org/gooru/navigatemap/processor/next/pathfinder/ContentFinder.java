@@ -7,6 +7,6 @@ import org.gooru.navigatemap.infra.data.ContentAddress;
  */
 interface ContentFinder {
 
-    ContentAddress findContent(PathFinderContext context);
+  ContentAddress findContent(PathFinderContext context);
 
 }

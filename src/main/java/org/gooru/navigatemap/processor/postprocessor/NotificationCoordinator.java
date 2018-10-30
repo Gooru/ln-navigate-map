@@ -8,15 +8,16 @@ import io.vertx.core.json.JsonObject;
 
 interface NotificationCoordinator {
 
-    void coordinateNotification();
+  void coordinateNotification();
 
-    static NotificationCoordinator buildForTeacherSuggestionAdded(
-        PostProcessTeacherSuggestionAddHandler.TeacherSuggestionPayload command, JsonObject requestData) {
-        return new TeacherSuggestionAddedNotificationCoordinator(command, requestData);
-    }
+  static NotificationCoordinator buildForTeacherSuggestionAdded(
+      PostProcessTeacherSuggestionAddHandler.TeacherSuggestionPayload command,
+      JsonObject requestData) {
+    return new TeacherSuggestionAddedNotificationCoordinator(command, requestData);
+  }
 
-    static NotificationCoordinator buildForTeacherSuggestionRead(PostProcessorNextCommand command) {
-        return new TeacherSuggestionReadNotificationCoordinator(command);
-    }
+  static NotificationCoordinator buildForTeacherSuggestionRead(PostProcessorNextCommand command) {
+    return new TeacherSuggestionReadNotificationCoordinator(command);
+  }
 
 }

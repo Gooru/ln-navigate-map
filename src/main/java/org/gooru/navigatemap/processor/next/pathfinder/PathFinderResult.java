@@ -2,7 +2,6 @@ package org.gooru.navigatemap.processor.next.pathfinder;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.gooru.navigatemap.infra.data.ContentAddress;
 import org.gooru.navigatemap.infra.data.SuggestedContentSubType;
 import org.gooru.navigatemap.infra.data.SuggestedContentType;
@@ -14,76 +13,76 @@ import org.gooru.navigatemap.infra.data.Tracker;
  */
 class PathFinderResult implements Trackable {
 
-    private ContentAddress contentAddress;
-    private List<String> suggestions;
-    private SuggestedContentType suggestedContentType;
-    private SuggestedContentSubType suggestedContentSubType;
-    private List<Tracker> trackers;
+  private ContentAddress contentAddress;
+  private List<String> suggestions;
+  private SuggestedContentType suggestedContentType;
+  private SuggestedContentSubType suggestedContentSubType;
+  private List<Tracker> trackers;
 
-    public ContentAddress getContentAddress() {
-        return contentAddress;
-    }
+  public ContentAddress getContentAddress() {
+    return contentAddress;
+  }
 
-    public void setContentAddress(ContentAddress contentAddress) {
-        this.contentAddress = contentAddress;
-    }
+  public void setContentAddress(ContentAddress contentAddress) {
+    this.contentAddress = contentAddress;
+  }
 
-    public List<String> getSuggestions() {
-        return suggestions;
-    }
+  public List<String> getSuggestions() {
+    return suggestions;
+  }
 
-    public void setSuggestions(List<String> suggestions) {
-        this.suggestions = suggestions;
-    }
+  public void setSuggestions(List<String> suggestions) {
+    this.suggestions = suggestions;
+  }
 
-    public SuggestedContentType getSuggestedContentType() {
-        return suggestedContentType;
-    }
+  public SuggestedContentType getSuggestedContentType() {
+    return suggestedContentType;
+  }
 
-    public void setSuggestedContentType(SuggestedContentType suggestedContentType) {
-        this.suggestedContentType = suggestedContentType;
-    }
+  public void setSuggestedContentType(SuggestedContentType suggestedContentType) {
+    this.suggestedContentType = suggestedContentType;
+  }
 
-    public SuggestedContentSubType getSuggestedContentSubType() {
-        return suggestedContentSubType;
-    }
+  public SuggestedContentSubType getSuggestedContentSubType() {
+    return suggestedContentSubType;
+  }
 
-    public void setSuggestedContentSubType(SuggestedContentSubType suggestedContentSubType) {
-        this.suggestedContentSubType = suggestedContentSubType;
-    }
+  public void setSuggestedContentSubType(SuggestedContentSubType suggestedContentSubType) {
+    this.suggestedContentSubType = suggestedContentSubType;
+  }
 
-    public PathFinderResult(ContentAddress contentAddress, List<String> suggestions,
-        SuggestedContentType suggestedContentType, SuggestedContentSubType suggestedContentSubType) {
-        this.contentAddress = contentAddress;
-        this.suggestions = suggestions;
-        this.suggestedContentType = suggestedContentType;
-        this.suggestedContentSubType = suggestedContentSubType;
-    }
+  public PathFinderResult(ContentAddress contentAddress, List<String> suggestions,
+      SuggestedContentType suggestedContentType, SuggestedContentSubType suggestedContentSubType) {
+    this.contentAddress = contentAddress;
+    this.suggestions = suggestions;
+    this.suggestedContentType = suggestedContentType;
+    this.suggestedContentSubType = suggestedContentSubType;
+  }
 
-    public PathFinderResult(List<String> suggestions, SuggestedContentType suggestedContentType,
-        SuggestedContentSubType suggestedContentSubType) {
-        this.suggestions = suggestions;
-        this.suggestedContentType = suggestedContentType;
-        this.suggestedContentSubType = suggestedContentSubType;
-    }
+  public PathFinderResult(List<String> suggestions, SuggestedContentType suggestedContentType,
+      SuggestedContentSubType suggestedContentSubType) {
+    this.suggestions = suggestions;
+    this.suggestedContentType = suggestedContentType;
+    this.suggestedContentSubType = suggestedContentSubType;
+  }
 
-    public PathFinderResult(ContentAddress contentAddress) {
-        this.contentAddress = contentAddress;
-    }
+  public PathFinderResult(ContentAddress contentAddress) {
+    this.contentAddress = contentAddress;
+  }
 
-    public boolean hasSuggestions() {
-        return suggestions != null && !suggestions.isEmpty();
-    }
+  public boolean hasSuggestions() {
+    return suggestions != null && !suggestions.isEmpty();
+  }
 
-    @Override
-    public List<Tracker> trackers() {
-        return trackers;
-    }
+  @Override
+  public List<Tracker> trackers() {
+    return trackers;
+  }
 
-    public void addTracker(Tracker tracker) {
-        if (trackers == null) {
-            trackers = new ArrayList<>();
-        }
-        trackers.add(tracker);
+  public void addTracker(Tracker tracker) {
+    if (trackers == null) {
+      trackers = new ArrayList<>();
     }
+    trackers.add(tracker);
+  }
 }

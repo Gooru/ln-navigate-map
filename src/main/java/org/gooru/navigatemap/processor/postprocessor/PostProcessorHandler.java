@@ -1,39 +1,38 @@
 package org.gooru.navigatemap.processor.postprocessor;
 
+import io.vertx.core.json.JsonObject;
 import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
 import org.skife.jdbi.v2.DBI;
-
-import io.vertx.core.json.JsonObject;
 
 /**
  * @author ashish on 24/7/18.
  */
 interface PostProcessorHandler {
 
-    void handle(JsonObject requestData);
+  void handle(JsonObject requestData);
 
-    static PostProcessorHandler buildForNextCommand(DBI dbi) {
-        return new PostProcessNextHandler(dbi);
-    }
+  static PostProcessorHandler buildForNextCommand(DBI dbi) {
+    return new PostProcessNextHandler(dbi);
+  }
 
-    static PostProcessorHandler buildForSystemSuggestionsAcceptCommand(DBI dbi) {
-        return new PostProcessSystemSuggestionsAcceptHandler(dbi);
-    }
+  static PostProcessorHandler buildForSystemSuggestionsAcceptCommand(DBI dbi) {
+    return new PostProcessSystemSuggestionsAcceptHandler(dbi);
+  }
 
-    static PostProcessorHandler buildForTeacherSuggestionsAddCommand(DBI dbi) {
-        return new PostProcessTeacherSuggestionAddHandler(dbi);
-    }
+  static PostProcessorHandler buildForTeacherSuggestionsAddCommand(DBI dbi) {
+    return new PostProcessTeacherSuggestionAddHandler(dbi);
+  }
 
-    static PostProcessorHandler buildForNextCommand() {
-        return new PostProcessNextHandler(DBICreator.getDbiForDefaultDS());
-    }
+  static PostProcessorHandler buildForNextCommand() {
+    return new PostProcessNextHandler(DBICreator.getDbiForDefaultDS());
+  }
 
-    static PostProcessorHandler buildForSystemSuggestionsAcceptCommand() {
-        return new PostProcessSystemSuggestionsAcceptHandler(DBICreator.getDbiForDefaultDS());
-    }
+  static PostProcessorHandler buildForSystemSuggestionsAcceptCommand() {
+    return new PostProcessSystemSuggestionsAcceptHandler(DBICreator.getDbiForDefaultDS());
+  }
 
-    static PostProcessorHandler buildForTeacherSuggestionsAddCommand() {
-        return new PostProcessTeacherSuggestionAddHandler(DBICreator.getDbiForDefaultDS());
-    }
+  static PostProcessorHandler buildForTeacherSuggestionsAddCommand() {
+    return new PostProcessTeacherSuggestionAddHandler(DBICreator.getDbiForDefaultDS());
+  }
 
 }

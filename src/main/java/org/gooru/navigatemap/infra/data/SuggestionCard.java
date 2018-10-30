@@ -4,94 +4,95 @@ package org.gooru.navigatemap.infra.data;
  * @author ashish on 4/4/17.
  */
 public final class SuggestionCard {
-    private String id;
-    private String title;
-    private String format;
-    private String subformat;
-    private String thumbnail;
-    private String metadata;
-    private String taxonomy;
-    private String suggestedContentSubType;
-    private int resourceCount;
-    private int questionCount;
 
-    public String getId() {
-        return id;
-    }
+  private String id;
+  private String title;
+  private String format;
+  private String subformat;
+  private String thumbnail;
+  private String metadata;
+  private String taxonomy;
+  private String suggestedContentSubType;
+  private int resourceCount;
+  private int questionCount;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public String getTitle() {
-        return title;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+  public String getTitle() {
+    return title;
+  }
 
-    public String getFormat() {
-        return format;
-    }
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-    public void setFormat(String format) {
-        this.format = format;
-    }
+  public String getFormat() {
+    return format;
+  }
 
-    public String getSubformat() {
-        return subformat;
-    }
+  public void setFormat(String format) {
+    this.format = format;
+  }
 
-    public void setSubformat(String subformat) {
-        this.subformat = subformat;
-    }
+  public String getSubformat() {
+    return subformat;
+  }
 
-    public String getThumbnail() {
-        return thumbnail;
-    }
+  public void setSubformat(String subformat) {
+    this.subformat = subformat;
+  }
 
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
-    }
+  public String getThumbnail() {
+    return thumbnail;
+  }
 
-    public String getMetadata() {
-        return metadata;
-    }
+  public void setThumbnail(String thumbnail) {
+    this.thumbnail = thumbnail;
+  }
 
-    public void setMetadata(String metadata) {
-        this.metadata = metadata;
-    }
+  public String getMetadata() {
+    return metadata;
+  }
 
-    public String getTaxonomy() {
-        return taxonomy;
-    }
+  public void setMetadata(String metadata) {
+    this.metadata = metadata;
+  }
 
-    public void setTaxonomy(String taxonomy) {
-        this.taxonomy = taxonomy;
-    }
+  public String getTaxonomy() {
+    return taxonomy;
+  }
 
-    public int getResourceCount() {
-        return resourceCount;
-    }
+  public void setTaxonomy(String taxonomy) {
+    this.taxonomy = taxonomy;
+  }
 
-    public void setResourceCount(int resourceCount) {
-        this.resourceCount = resourceCount;
-    }
+  public int getResourceCount() {
+    return resourceCount;
+  }
 
-    public int getQuestionCount() {
-        return questionCount;
-    }
+  public void setResourceCount(int resourceCount) {
+    this.resourceCount = resourceCount;
+  }
 
-    public void setQuestionCount(int questionCount) {
-        this.questionCount = questionCount;
-    }
+  public int getQuestionCount() {
+    return questionCount;
+  }
 
-    public String getSuggestedContentSubType() {
-        return suggestedContentSubType;
-    }
+  public void setQuestionCount(int questionCount) {
+    this.questionCount = questionCount;
+  }
 
-    public void setSuggestedContentSubType(String suggestedContentSubType) {
-        this.suggestedContentSubType = suggestedContentSubType;
-    }
+  public String getSuggestedContentSubType() {
+    return suggestedContentSubType;
+  }
+
+  public void setSuggestedContentSubType(String suggestedContentSubType) {
+    this.suggestedContentSubType = suggestedContentSubType;
+  }
 }

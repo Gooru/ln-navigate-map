@@ -8,11 +8,11 @@ import io.vertx.core.json.JsonObject;
  */
 public final class AuthSessionResponseHolderBuilder {
 
-    public static AuthSessionResponseHolder build(Message<JsonObject> message) {
-        return new AuthSessionMessageBusJsonResponseHolder(message);
-    }
+  public static AuthSessionResponseHolder build(Message<JsonObject> message) {
+    return new AuthSessionMessageBusJsonResponseHolder(message);
+  }
 
-    private AuthSessionResponseHolderBuilder() {
-        throw new AssertionError();
-    }
+  private AuthSessionResponseHolderBuilder() {
+    throw new AssertionError();
+  }
 }
