@@ -8,6 +8,6 @@ import org.skife.jdbi.v2.sqlobject.SqlQuery;
  */
 public interface ClassDao {
 
-    @SqlQuery("select content_visibility from class where id = :classId::uuid and is_deleted = false")
-    String getClassVisibility(@Bind("classId") String classId);
+  @SqlQuery("select content_visibility from class where id = :classId::uuid and is_deleted = false")
+  String getClassVisibility(@Bind("classId") String classId);
 }

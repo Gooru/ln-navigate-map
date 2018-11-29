@@ -7,15 +7,15 @@ import java.util.List;
  */
 interface SuggestionTrackerModelsBuilder {
 
-    List<SuggestionTrackerModel> build();
+  List<SuggestionTrackerModel> build();
 
-    static SuggestionTrackerModelsBuilder buildForSystemSuggestion(PostProcessorNextCommand command) {
-        return new SuggestionsTrackerModelsBuilderForSystemSuggestions(command);
-    }
+  static SuggestionTrackerModelsBuilder buildForSystemSuggestion(PostProcessorNextCommand command) {
+    return new SuggestionsTrackerModelsBuilderForSystemSuggestions(command);
+  }
 
-    static SuggestionTrackerModelsBuilder buildForTeacherSuggestion(
-        PostProcessTeacherSuggestionAddHandler.TeacherSuggestionPayload command) {
-        return new SuggestionsTrackerModelsBuilderForTeacherSuggestion(command);
-    }
+  static SuggestionTrackerModelsBuilder buildForTeacherSuggestion(
+      PostProcessTeacherSuggestionAddHandler.TeacherSuggestionPayload command) {
+    return new SuggestionsTrackerModelsBuilderForTeacherSuggestion(command);
+  }
 
 }

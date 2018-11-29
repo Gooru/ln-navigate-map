@@ -7,74 +7,77 @@ import java.util.UUID;
  * @author ashish on 6/4/17.
  */
 public final class FinderContext {
-    private final State state;
-    private final RequestContext requestContext;
-    private final ContentAddress currentAddress;
-    private final String user;
-    private boolean statusDone;
-    private UUID currentItemId;
-    private CurrentItemType currentItemType;
-    private CurrentItemSubtype currentItemSubtype;
-    private String scoreRange;
 
-    public State getState() {
-        return state;
-    }
+  private final State state;
+  private final RequestContext requestContext;
+  private final ContentAddress currentAddress;
+  private final String user;
+  private boolean statusDone;
+  private UUID currentItemId;
+  private CurrentItemType currentItemType;
+  private CurrentItemSubtype currentItemSubtype;
+  private String scoreRange;
 
-    public RequestContext getRequestContext() {
-        return requestContext;
-    }
+  public State getState() {
+    return state;
+  }
 
-    public ContentAddress getCurrentAddress() {
-        return currentAddress;
-    }
+  public RequestContext getRequestContext() {
+    return requestContext;
+  }
 
-    public boolean isStatusDone() {
-        return statusDone;
-    }
+  public ContentAddress getCurrentAddress() {
+    return currentAddress;
+  }
 
-    public UUID getCurrentItemId() {
-        return currentItemId;
-    }
+  public boolean isStatusDone() {
+    return statusDone;
+  }
 
-    public CurrentItemType getCurrentItemType() {
-        return currentItemType;
-    }
+  public UUID getCurrentItemId() {
+    return currentItemId;
+  }
 
-    public CurrentItemSubtype getCurrentItemSubtype() {
-        return currentItemSubtype;
-    }
+  public CurrentItemType getCurrentItemType() {
+    return currentItemType;
+  }
 
-    public String getUserClass() {
-        return requestContext.getClassId() == null ? null : requestContext.getClassId().toString();
-    }
+  public CurrentItemSubtype getCurrentItemSubtype() {
+    return currentItemSubtype;
+  }
 
-    public void setCurrentItem(UUID itemId, CurrentItemType itemType, CurrentItemSubtype itemSubtype) {
-        Objects.requireNonNull(itemId);
-        Objects.requireNonNull(itemType);
+  public String getUserClass() {
+    return requestContext.getClassId() == null ? null : requestContext.getClassId().toString();
+  }
 
-        currentItemId = itemId;
-        currentItemType = itemType;
-        currentItemSubtype = itemSubtype;
-        statusDone = true;
-    }
+  public void setCurrentItem(UUID itemId, CurrentItemType itemType,
+      CurrentItemSubtype itemSubtype) {
+    Objects.requireNonNull(itemId);
+    Objects.requireNonNull(itemType);
 
-    public FinderContext(State state, RequestContext requestContext, ContentAddress currentAddress, String userId) {
-        this.state = state;
-        this.requestContext = requestContext;
-        this.currentAddress = currentAddress;
-        this.user = userId;
-    }
+    currentItemId = itemId;
+    currentItemType = itemType;
+    currentItemSubtype = itemSubtype;
+    statusDone = true;
+  }
 
-    public String getUser() {
-        return user;
-    }
+  public FinderContext(State state, RequestContext requestContext, ContentAddress currentAddress,
+      String userId) {
+    this.state = state;
+    this.requestContext = requestContext;
+    this.currentAddress = currentAddress;
+    this.user = userId;
+  }
 
-    public String getScoreRange() {
-        return scoreRange;
-    }
+  public String getUser() {
+    return user;
+  }
 
-    public void setScoreRange(String scoreRange) {
-        this.scoreRange = scoreRange;
-    }
+  public String getScoreRange() {
+    return scoreRange;
+  }
+
+  public void setScoreRange(String scoreRange) {
+    this.scoreRange = scoreRange;
+  }
 }

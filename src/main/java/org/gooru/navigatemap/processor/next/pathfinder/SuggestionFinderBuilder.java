@@ -7,11 +7,11 @@ import org.skife.jdbi.v2.DBI;
  */
 final class SuggestionFinderBuilder {
 
-    private SuggestionFinderBuilder() {
-        throw new AssertionError();
-    }
+  private SuggestionFinderBuilder() {
+    throw new AssertionError();
+  }
 
-    static SuggestionFinder buildSuggestionFinder(DBI dbi) {
-        return new SuggestionFinderImpl(dbi);
-    }
+  static SuggestionFinder buildSuggestionFinder(DBI dbi) {
+    return new SuggestionFinderImpl(dbi);
+  }
 }

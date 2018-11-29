@@ -9,31 +9,32 @@ import org.slf4j.LoggerFactory;
  */
 class AddSystemSuggestionService {
 
-    private final AddSystemSuggestionDao addSystemSuggestionDao;
-    private static final Logger LOGGER = LoggerFactory.getLogger(AddSystemSuggestionService.class);
-    private AddSystemSuggestionCommand command;
+  private final AddSystemSuggestionDao addSystemSuggestionDao;
+  private static final Logger LOGGER = LoggerFactory.getLogger(AddSystemSuggestionService.class);
+  private AddSystemSuggestionCommand command;
 
-    AddSystemSuggestionService(DBI dbi) {
+  AddSystemSuggestionService(DBI dbi) {
 
-        this.addSystemSuggestionDao = dbi.onDemand(AddSystemSuggestionDao.class);
+    this.addSystemSuggestionDao = dbi.onDemand(AddSystemSuggestionDao.class);
+  }
+
+  Long addSystemSuggestion(AddSystemSuggestionCommand command) {
+    this.command = command;
+    Long result;
+
+    new ContextInformationVerifier(command, addSystemSuggestionDao).validateContextInformation();
+
+    Long userHasSuggestionAsPath =
+        new UserAlreadyHasSuggestionVerifier(command, addSystemSuggestionDao)
+            .findUserPathForCurrentSuggestion();
+
+    if (userHasSuggestionAsPath == null) {
+      result = addSystemSuggestionDao.addSystemSuggestion(command.getBean());
+    } else {
+      LOGGER.info("User already has specified suggestion");
+      result = userHasSuggestionAsPath;
     }
-
-    Long addSystemSuggestion(AddSystemSuggestionCommand command) {
-        this.command = command;
-        Long result;
-
-        new ContextInformationVerifier(command, addSystemSuggestionDao).validateContextInformation();
-
-        Long userHasSuggestionAsPath =
-            new UserAlreadyHasSuggestionVerifier(command, addSystemSuggestionDao).findUserPathForCurrentSuggestion();
-
-        if (userHasSuggestionAsPath == null) {
-            result = addSystemSuggestionDao.addSystemSuggestion(command.getBean());
-        } else {
-            LOGGER.info("User already has specified suggestion");
-            result = userHasSuggestionAsPath;
-        }
-        return result;
-    }
+    return result;
+  }
 
 }

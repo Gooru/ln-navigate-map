@@ -7,148 +7,149 @@ import java.util.UUID;
  * @author ashish on 25/7/18.
  */
 public class SuggestionTrackerModel {
-    private Long id;
-    private UUID userId;
-    private UUID courseId;
-    private UUID unitId;
-    private UUID lessonId;
-    private UUID classId;
-    private UUID collectionId;
-    private UUID suggestedContentId;
-    private String suggestionOrigin;
-    private String suggestionOriginatorId;
-    private String suggestionCriteria;
-    private String suggestedContentType;
-    private String suggestedTo;
-    private boolean accepted;
-    private Date acceptedAt;
-    private String ctx;
 
-    public Long getId() {
-        return id;
-    }
+  private Long id;
+  private UUID userId;
+  private UUID courseId;
+  private UUID unitId;
+  private UUID lessonId;
+  private UUID classId;
+  private UUID collectionId;
+  private UUID suggestedContentId;
+  private String suggestionOrigin;
+  private String suggestionOriginatorId;
+  private String suggestionCriteria;
+  private String suggestedContentType;
+  private String suggestedTo;
+  private boolean accepted;
+  private Date acceptedAt;
+  private String ctx;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public UUID getUserId() {
-        return userId;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
+  public UUID getUserId() {
+    return userId;
+  }
 
-    public UUID getCourseId() {
-        return courseId;
-    }
+  public void setUserId(UUID userId) {
+    this.userId = userId;
+  }
 
-    public void setCourseId(UUID courseId) {
-        this.courseId = courseId;
-    }
+  public UUID getCourseId() {
+    return courseId;
+  }
 
-    public UUID getUnitId() {
-        return unitId;
-    }
+  public void setCourseId(UUID courseId) {
+    this.courseId = courseId;
+  }
 
-    public void setUnitId(UUID unitId) {
-        this.unitId = unitId;
-    }
+  public UUID getUnitId() {
+    return unitId;
+  }
 
-    public UUID getLessonId() {
-        return lessonId;
-    }
+  public void setUnitId(UUID unitId) {
+    this.unitId = unitId;
+  }
 
-    public void setLessonId(UUID lessonId) {
-        this.lessonId = lessonId;
-    }
+  public UUID getLessonId() {
+    return lessonId;
+  }
 
-    public UUID getClassId() {
-        return classId;
-    }
+  public void setLessonId(UUID lessonId) {
+    this.lessonId = lessonId;
+  }
 
-    public void setClassId(UUID classId) {
-        this.classId = classId;
-    }
+  public UUID getClassId() {
+    return classId;
+  }
 
-    public UUID getCollectionId() {
-        return collectionId;
-    }
+  public void setClassId(UUID classId) {
+    this.classId = classId;
+  }
 
-    public void setCollectionId(UUID collectionId) {
-        this.collectionId = collectionId;
-    }
+  public UUID getCollectionId() {
+    return collectionId;
+  }
 
-    public UUID getSuggestedContentId() {
-        return suggestedContentId;
-    }
+  public void setCollectionId(UUID collectionId) {
+    this.collectionId = collectionId;
+  }
 
-    public void setSuggestedContentId(UUID suggestedContentId) {
-        this.suggestedContentId = suggestedContentId;
-    }
+  public UUID getSuggestedContentId() {
+    return suggestedContentId;
+  }
 
-    public String getSuggestionOrigin() {
-        return suggestionOrigin;
-    }
+  public void setSuggestedContentId(UUID suggestedContentId) {
+    this.suggestedContentId = suggestedContentId;
+  }
 
-    public void setSuggestionOrigin(String suggestionOrigin) {
-        this.suggestionOrigin = suggestionOrigin;
-    }
+  public String getSuggestionOrigin() {
+    return suggestionOrigin;
+  }
 
-    public String getSuggestionOriginatorId() {
-        return suggestionOriginatorId;
-    }
+  public void setSuggestionOrigin(String suggestionOrigin) {
+    this.suggestionOrigin = suggestionOrigin;
+  }
 
-    public void setSuggestionOriginatorId(String suggestionOriginatorId) {
-        this.suggestionOriginatorId = suggestionOriginatorId;
-    }
+  public String getSuggestionOriginatorId() {
+    return suggestionOriginatorId;
+  }
 
-    public String getSuggestionCriteria() {
-        return suggestionCriteria;
-    }
+  public void setSuggestionOriginatorId(String suggestionOriginatorId) {
+    this.suggestionOriginatorId = suggestionOriginatorId;
+  }
 
-    public void setSuggestionCriteria(String suggestionCriteria) {
-        this.suggestionCriteria = suggestionCriteria;
-    }
+  public String getSuggestionCriteria() {
+    return suggestionCriteria;
+  }
 
-    public String getSuggestedContentType() {
-        return suggestedContentType;
-    }
+  public void setSuggestionCriteria(String suggestionCriteria) {
+    this.suggestionCriteria = suggestionCriteria;
+  }
 
-    public void setSuggestedContentType(String suggestedContentType) {
-        this.suggestedContentType = suggestedContentType;
-    }
+  public String getSuggestedContentType() {
+    return suggestedContentType;
+  }
 
-    public String getSuggestedTo() {
-        return suggestedTo;
-    }
+  public void setSuggestedContentType(String suggestedContentType) {
+    this.suggestedContentType = suggestedContentType;
+  }
 
-    public void setSuggestedTo(String suggestedTo) {
-        this.suggestedTo = suggestedTo;
-    }
+  public String getSuggestedTo() {
+    return suggestedTo;
+  }
 
-    public boolean isAccepted() {
-        return accepted;
-    }
+  public void setSuggestedTo(String suggestedTo) {
+    this.suggestedTo = suggestedTo;
+  }
 
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
-    }
+  public boolean isAccepted() {
+    return accepted;
+  }
 
-    public Date getAcceptedAt() {
-        return acceptedAt;
-    }
+  public void setAccepted(boolean accepted) {
+    this.accepted = accepted;
+  }
 
-    public void setAcceptedAt(Date acceptedAt) {
-        this.acceptedAt = acceptedAt;
-    }
+  public Date getAcceptedAt() {
+    return acceptedAt;
+  }
 
-    public String getCtx() {
-        return ctx;
-    }
+  public void setAcceptedAt(Date acceptedAt) {
+    this.acceptedAt = acceptedAt;
+  }
 
-    public void setCtx(String ctx) {
-        this.ctx = ctx;
-    }
+  public String getCtx() {
+    return ctx;
+  }
+
+  public void setCtx(String ctx) {
+    this.ctx = ctx;
+  }
 }

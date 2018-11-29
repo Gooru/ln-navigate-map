@@ -9,32 +9,32 @@ import java.util.List;
  */
 public class Initializers implements Iterable<Initializer> {
 
-    private final Iterator<Initializer> internalIterator;
+  private final Iterator<Initializer> internalIterator;
 
-    public Initializers() {
-        List<Initializer> initializers = new ArrayList<>();
-        initializers.add(DataSourceRegistry.getInstance());
-        initializers.add(UtilityManager.getInstance());
-        initializers.add(AppConfiguration.getInstance());
-        initializers.add(KafkaProducerRegistry.getInstance());
-        internalIterator = initializers.iterator();
-    }
+  public Initializers() {
+    List<Initializer> initializers = new ArrayList<>();
+    initializers.add(DataSourceRegistry.getInstance());
+    initializers.add(UtilityManager.getInstance());
+    initializers.add(AppConfiguration.getInstance());
+    initializers.add(KafkaProducerRegistry.getInstance());
+    internalIterator = initializers.iterator();
+  }
 
-    @Override
-    public Iterator<Initializer> iterator() {
-        return new Iterator<Initializer>() {
+  @Override
+  public Iterator<Initializer> iterator() {
+    return new Iterator<Initializer>() {
 
-            @Override
-            public boolean hasNext() {
-                return internalIterator.hasNext();
-            }
+      @Override
+      public boolean hasNext() {
+        return internalIterator.hasNext();
+      }
 
-            @Override
-            public Initializer next() {
-                return internalIterator.next();
-            }
+      @Override
+      public Initializer next() {
+        return internalIterator.next();
+      }
 
-        };
-    }
+    };
+  }
 
 }

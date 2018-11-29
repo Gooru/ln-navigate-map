@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-
 import org.gooru.navigatemap.infra.data.CollectionRQCount;
 import org.gooru.navigatemap.infra.data.SuggestionCard;
 import org.gooru.navigatemap.infra.utilities.CollectionUtils;
@@ -16,41 +15,42 @@ import org.skife.jdbi.v2.DBI;
  */
 class SuggestionCardServiceImpl implements SuggestionCardService {
 
-    private final DBI dbi;
+  private final DBI dbi;
 
-    SuggestionCardServiceImpl(DBI dbi) {
-        this.dbi = dbi;
+  SuggestionCardServiceImpl(DBI dbi) {
+    this.dbi = dbi;
+  }
+
+  @Override
+  public List<SuggestionCard> suggestionCardForCollections(List<String> collections) {
+    if (collections != null && !collections.isEmpty()) {
+      return createSuggestionsCardForCollections(collections);
     }
+    return Collections.emptyList();
+  }
 
-    @Override
-    public List<SuggestionCard> suggestionCardForCollections(List<String> collections) {
-        if (collections != null && !collections.isEmpty()) {
-            return createSuggestionsCardForCollections(collections);
+  private List<SuggestionCard> createSuggestionsCardForCollections(List<String> collections) {
+    SuggestionCardDao dao = dbi.onDemand(SuggestionCardDao.class);
+
+    final PGArray<UUID> collectionsPGArray = CollectionUtils.convertToSqlArrayOfUUID(collections);
+
+    List<SuggestionCard> suggestionCards =
+        dao.createSuggestionsCardForCollectionsWithoutRQCount(collectionsPGArray);
+
+    List<CollectionRQCount> countRQForCollection = dao
+        .fetchRQCountForCollections(collectionsPGArray);
+
+    for (SuggestionCard suggestionCardWithoutRQCount : suggestionCards) {
+      String collectionId = suggestionCardWithoutRQCount.getId();
+      for (CollectionRQCount collectionRQCount : countRQForCollection) {
+        if (Objects.equals(collectionId, collectionRQCount.getCollectionId())) {
+          suggestionCardWithoutRQCount.setQuestionCount(collectionRQCount.getQuestionCount());
+          suggestionCardWithoutRQCount.setResourceCount(collectionRQCount.getResourceCount());
+          break;
         }
-        return Collections.emptyList();
+      }
     }
 
-    private List<SuggestionCard> createSuggestionsCardForCollections(List<String> collections) {
-        SuggestionCardDao dao = dbi.onDemand(SuggestionCardDao.class);
-
-        final PGArray<UUID> collectionsPGArray = CollectionUtils.convertToSqlArrayOfUUID(collections);
-
-        List<SuggestionCard> suggestionCards =
-            dao.createSuggestionsCardForCollectionsWithoutRQCount(collectionsPGArray);
-
-        List<CollectionRQCount> countRQForCollection = dao.fetchRQCountForCollections(collectionsPGArray);
-
-        for (SuggestionCard suggestionCardWithoutRQCount : suggestionCards) {
-            String collectionId = suggestionCardWithoutRQCount.getId();
-            for (CollectionRQCount collectionRQCount : countRQForCollection) {
-                if (Objects.equals(collectionId, collectionRQCount.getCollectionId())) {
-                    suggestionCardWithoutRQCount.setQuestionCount(collectionRQCount.getQuestionCount());
-                    suggestionCardWithoutRQCount.setResourceCount(collectionRQCount.getResourceCount());
-                    break;
-                }
-            }
-        }
-
-        return suggestionCards;
-    }
+    return suggestionCards;
+  }
 }

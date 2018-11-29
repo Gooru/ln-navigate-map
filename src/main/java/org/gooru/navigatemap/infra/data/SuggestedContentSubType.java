@@ -7,33 +7,33 @@ import java.util.Map;
  * @author ashish on 17/11/17.
  */
 public enum SuggestedContentSubType {
-    SignatureAssessment("signature-assessment"),
-    SignatureCollection("signature-collection");
+  SignatureAssessment("signature-assessment"),
+  SignatureCollection("signature-collection");
 
-    private final String name;
+  private final String name;
 
-    SuggestedContentSubType(String name) {
-        this.name = name;
+  SuggestedContentSubType(String name) {
+    this.name = name;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  private static final Map<String, SuggestedContentSubType> LOOKUP = new HashMap<>(values().length);
+
+  static {
+    for (SuggestedContentSubType suggestedContentSubType : values()) {
+      LOOKUP.put(suggestedContentSubType.name, suggestedContentSubType);
     }
+  }
 
-    public String getName() {
-        return this.name;
+  public static SuggestedContentSubType builder(String type) {
+    SuggestedContentSubType result = LOOKUP.get(type);
+    if (result == null) {
+      throw new IllegalArgumentException("Invalid suggested content sub type: " + type);
     }
-
-    private static final Map<String, SuggestedContentSubType> LOOKUP = new HashMap<>(values().length);
-
-    static {
-        for (SuggestedContentSubType suggestedContentSubType : values()) {
-            LOOKUP.put(suggestedContentSubType.name, suggestedContentSubType);
-        }
-    }
-
-    public static SuggestedContentSubType builder(String type) {
-        SuggestedContentSubType result = LOOKUP.get(type);
-        if (result == null) {
-            throw new IllegalArgumentException("Invalid suggested content sub type: " + type);
-        }
-        return result;
-    }
+    return result;
+  }
 
 }

@@ -8,28 +8,29 @@ import java.util.UUID;
  */
 public final class ContextUtil {
 
-    private static final String ABSENT_PLACEHOLDER = "NONE";
-    /* Added new key named path_type in context object, hence bumping the version number */
-    private static final String VERSION_STR = "v3:";
+  private static final String ABSENT_PLACEHOLDER = "NONE";
+  /* Added new key named path_type in context object, hence bumping the version number */
+  private static final String VERSION_STR = "v3:";
 
-    private ContextUtil() {
-        throw new AssertionError();
-    }
+  private ContextUtil() {
+    throw new AssertionError();
+  }
 
-    public static String createUserContextKey(String userId, UUID courseId, UUID classId) {
-        return VERSION_STR + userId + ':' + courseId.toString() + ':' + Objects.toString(classId, ABSENT_PLACEHOLDER);
-    }
+  public static String createUserContextKey(String userId, UUID courseId, UUID classId) {
+    return VERSION_STR + userId + ':' + courseId.toString() + ':' + Objects
+        .toString(classId, ABSENT_PLACEHOLDER);
+  }
 
-    public static String createUserContextKey(String userId, String courseId, String classId) {
-        return VERSION_STR + userId + ':' + trimEmptyStringAsNull(courseId) + ':' + Objects
-            .toString(trimEmptyStringAsNull(classId), ABSENT_PLACEHOLDER);
-    }
+  public static String createUserContextKey(String userId, String courseId, String classId) {
+    return VERSION_STR + userId + ':' + trimEmptyStringAsNull(courseId) + ':' + Objects
+        .toString(trimEmptyStringAsNull(classId), ABSENT_PLACEHOLDER);
+  }
 
-    private static String trimEmptyStringAsNull(String input) {
-        if (input == null || input.isEmpty()) {
-            return null;
-        } else {
-            return input;
-        }
+  private static String trimEmptyStringAsNull(String input) {
+    if (input == null || input.isEmpty()) {
+      return null;
+    } else {
+      return input;
     }
+  }
 }
