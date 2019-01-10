@@ -114,6 +114,11 @@ class ContentNonSkippabilityVerifier implements ContentVerifier {
             return false;
           }
           break;
+        case CollectionExternal:
+          if (toBeSkippedItems.isCollectionExternalRescoped(contentAddress.getCurrentItem())) {
+            return false;
+          }
+          break;
         default:
           return true;
       }

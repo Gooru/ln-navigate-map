@@ -51,6 +51,7 @@
         "collection.fetch.uri": "http://nile-dev.gooru.org/api/nucleus/v2/collections/",
         "assessment.fetch.uri": "http://nile-dev.gooru.org/api/nucleus/v2/assessments/",
         "assessment-external.fetch.uri": "http://nile-dev.gooru.org/api/nucleus/v2/assessments-external/",
+        "collection-external.fetch.uri": "http://nile-dev.gooru.org/api/nucleus/v2/collections-external/",
         "resource.fetch.uri": "http://nile-dev.gooru.org/api/nucleus/v2/resources/",
         "http.timeout": 60000,
         "http.poolSize": 20

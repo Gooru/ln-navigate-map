@@ -74,7 +74,8 @@ final class ContentVisibilityVerifier implements ContentVerifier {
     if (address.getCurrentItemType() == CurrentItemType.Assessment
         || address.getCurrentItemType() == CurrentItemType.AssessmentExternal) {
       return getVisibilityForClassInContent(address) == VISIBLITY_STATE.ON;
-    } else if (address.getCurrentItemType() == CurrentItemType.Collection) {
+    } else if ((address.getCurrentItemType() == CurrentItemType.Collection) || (
+        address.getCurrentItemType() == CurrentItemType.CollectionExternal)) {
       return getVisibilityForClassInContent(address) != VISIBLITY_STATE.OFF;
     } else {
       LOGGER.warn("Invalid collection type for collection: '{}'", address.getCollection());
