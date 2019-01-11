@@ -1,6 +1,7 @@
 package org.gooru.navigatemap.infra.data;
 
 import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.gooru.navigatemap.app.constants.Constants;
 
@@ -36,8 +37,18 @@ public final class NavigateMessageContext {
     return request;
   }
 
-  public JsonObject getSession() {
-    return session;
+  /*
+   This is how the session will look like
+   {"standard_preference":{"K12.SC":"NGSS","K12.MA":"CCSS","K12.SS":"C3","K12.ELA":"CCSS","K12.CS":"CSTA"}, "language_preference" : [1, 2]}
+   Note that lang ids are Ints
+   */
+  public Integer getPrimaryLanguage() {
+    // NOTE: Only returns primary language, which is first item in JsonArray
+    JsonArray languageArray = session.getJsonArray("language_preference");
+    if (languageArray != null && !languageArray.isEmpty()) {
+      return languageArray.getInteger(0);
+    }
+    return null;
   }
 
   public boolean isUserAnonymous() {
