@@ -1,6 +1,7 @@
 package org.gooru.navigatemap.infra.data;
 
 import java.util.Objects;
+import org.gooru.navigatemap.infra.utilities.preferredlanguagefinder.PreferredLanguageFinder;
 import org.gooru.navigatemap.infra.utilities.suggestionsapplicability.SuggestionsApplicabilityVerifier;
 
 /**
@@ -17,6 +18,7 @@ public final class NavigateProcessorContext {
   private boolean nextAddressSet = false;
   private boolean currentAddressSet = false;
   private Boolean suggestionsFlagInitialized;
+  private Integer preferredLanguage;
 
   public NavigateProcessorContext(RequestContext requestContext,
       NavigateMessageContext navigateMessageContext) {
@@ -84,6 +86,14 @@ public final class NavigateProcessorContext {
 
   public SuggestionContext getCtxSuggestions() {
     return ctxSuggestions;
+  }
+
+  public Integer getPreferredLanguage() {
+    if (preferredLanguage == null) {
+      preferredLanguage = PreferredLanguageFinder.buildDefaultPreferredLanguageFinder(this)
+          .findPreferredLanguage();
+    }
+    return preferredLanguage;
   }
 
   public ContentAddress getNextContentAddress() {

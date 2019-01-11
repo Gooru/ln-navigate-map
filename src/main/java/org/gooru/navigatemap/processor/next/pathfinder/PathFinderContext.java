@@ -13,12 +13,16 @@ class PathFinderContext {
   private final UUID classId;
   private final String userId;
   private final Double score;
+  private final Integer preferredLanguage;
 
-  PathFinderContext(ContentAddress contentAddress, UUID classId, String userId, Double score) {
+  PathFinderContext(ContentAddress contentAddress, UUID classId, String userId, Double score,
+      Integer preferredLanguage) {
+
     this.contentAddress = contentAddress;
     this.classId = classId;
     this.userId = userId;
     this.score = score;
+    this.preferredLanguage = preferredLanguage;
   }
 
   ContentAddress getContentAddress() {
@@ -37,8 +41,13 @@ class PathFinderContext {
     return score;
   }
 
+  public Integer getPreferredLanguage() {
+    return preferredLanguage;
+  }
+
   static PathFinderContext buildContext(NavigateProcessorContext npc) {
     return new PathFinderContext(npc.getCurrentContentAddress(), npc.requestContext().getClassId(),
-        npc.navigateMessageContext().getUserId(), npc.requestContext().getScorePercent());
+        npc.navigateMessageContext().getUserId(), npc.requestContext().getScorePercent(),
+        npc.getPreferredLanguage());
   }
 }

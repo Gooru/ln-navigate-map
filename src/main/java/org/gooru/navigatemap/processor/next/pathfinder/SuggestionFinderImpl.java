@@ -33,14 +33,18 @@ public class SuggestionFinderImpl implements SuggestionFinder {
     }
 
     List<String> signatureCollectionsForCompetency =
-        getSuggestionFinderDao().findSignatureCollectionForSpecifiedCompetenciesAndScoreRange(
-            CollectionUtils.convertToSqlArrayOfString(competencies),
-            DbLookupUtility.getInstance().scoreRangeNameByScore(context.getScore()));
+        getSuggestionFinderDao()
+            .findSignatureCollectionForSpecifiedCompetenciesAndScoreRangeAndLanguage(
+                CollectionUtils.convertToSqlArrayOfString(competencies),
+                DbLookupUtility.getInstance().scoreRangeNameByScore(context.getScore()),
+                context.getPreferredLanguage());
 
     if (signatureCollectionsForCompetency == null || signatureCollectionsForCompetency.isEmpty()) {
       // No collections found, may be because of score range. Find again without score range
-      signatureCollectionsForCompetency = dao.findSignatureCollectionForSpecifiedCompetencies(
-          CollectionUtils.convertToSqlArrayOfString(competencies));
+      signatureCollectionsForCompetency = dao
+          .findSignatureCollectionForSpecifiedCompetenciesAndLanguage(
+              CollectionUtils.convertToSqlArrayOfString(competencies),
+              context.getPreferredLanguage());
     }
     if (signatureCollectionsForCompetency != null && !signatureCollectionsForCompetency.isEmpty()) {
       List<String> signatureItemsAlreadyAddedByUser =
@@ -63,8 +67,9 @@ public class SuggestionFinderImpl implements SuggestionFinder {
       return Collections.emptyList();
     }
     List<String> signatureAssessmentsForCompetencies = getSuggestionFinderDao()
-        .findSignatureAssessmentsForSpecifiedCompetencies(
-            CollectionUtils.convertToSqlArrayOfString(competencies));
+        .findSignatureAssessmentsForSpecifiedCompetenciesAndLanguage(
+            CollectionUtils.convertToSqlArrayOfString(competencies),
+            context.getPreferredLanguage());
 
     if (signatureAssessmentsForCompetencies != null && !signatureAssessmentsForCompetencies
         .isEmpty()) {

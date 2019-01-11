@@ -94,6 +94,14 @@ public final class RequestContext {
         (pathType == PathType.Route0 && needToStartLesson());
   }
 
+  public boolean isContextIL() {
+    return classId == null;
+  }
+
+  public boolean isContextInClass() {
+    return classId != null;
+  }
+
   public boolean needToStartCollection() {
     return (state == State.Start && currentItemId != null);
   }
