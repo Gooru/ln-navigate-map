@@ -50,7 +50,8 @@ class Route0PathFinderService implements PathFinder {
   private PathFinderContext createInitialContextToContinueOnMainPath() {
     ContentAddress contentAddress = new ContentAddress();
     contentAddress.setCourse(context.getContentAddress().getCourse());
-    return new PathFinderContext(contentAddress, context.getClassId(), context.getUserId(), null);
+    return new PathFinderContext(contentAddress, context.getClassId(), context.getUserId(), null,
+        context.getPreferredLanguage());
   }
 
   private void validateProvidedRoute0Context() {

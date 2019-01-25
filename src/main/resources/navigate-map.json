@@ -51,6 +51,7 @@
         "collection.fetch.uri": "http://nile-dev.gooru.org/api/nucleus/v2/collections/",
         "assessment.fetch.uri": "http://nile-dev.gooru.org/api/nucleus/v2/assessments/",
         "assessment-external.fetch.uri": "http://nile-dev.gooru.org/api/nucleus/v2/assessments-external/",
+        "collection-external.fetch.uri": "http://nile-dev.gooru.org/api/nucleus/v2/collections-external/",
         "resource.fetch.uri": "http://nile-dev.gooru.org/api/nucleus/v2/resources/",
         "http.timeout": 60000,
         "http.poolSize": 20
@@ -99,6 +100,7 @@
     "suggestions.limit": 1,
     "notification.topic.name": "org.gooru.notifications.writers.topic",
     "notification.teacher.suggestion.read.threshold": 5,
+    "language.primary.default": 1,
     "suggestions.applicable.course.version": "premium"
   },
   "vertxOptions": {

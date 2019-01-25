@@ -59,6 +59,8 @@ public class ContentServer {
         serveAssessment();
       } else if (npc.responseContext().getCurrentItemType() == CurrentItemType.AssessmentExternal) {
         serveAssessmentExternal();
+      } else if (npc.responseContext().getCurrentItemType() == CurrentItemType.CollectionExternal) {
+        serveCollectionExternal();
       } else {
         // TODO: What to do??
         LOGGER.warn("Invalid content to serve, not sure what to do");
@@ -77,6 +79,10 @@ public class ContentServer {
   }
 
   private void serveCollection() {
+    serveAssessmentCollection();
+  }
+
+  private void serveCollectionExternal() {
     serveAssessmentCollection();
   }
 

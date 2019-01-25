@@ -60,6 +60,10 @@ public final class AppConfiguration implements Initializer {
     return configuration.getValue(key);
   }
 
+  public Integer getDefaultPrimaryLanguageId() {
+    return configuration.getInteger("language.primary.default");
+  }
+
   public boolean suggestionsTurnedOn() {
     return configuration.getBoolean("suggestions.advise");
   }
