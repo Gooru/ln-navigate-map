@@ -120,7 +120,7 @@ class SuggestionsAwarePathFinderService implements PathFinder {
         // Do not forget to reset the flag
         if (routeContextData.isRepeatAssessmentPostSignatureCollectionOn()) {
           routeContextData.turnOffRepeatAssessmentPostSignatureCollection();
-          return loadNextItemFromMainpath();
+          return trySuggestingSignatureAssessment(competencies);
         }
         return trySuggestingSignatureCollection(competencies);
       }
