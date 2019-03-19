@@ -85,7 +85,10 @@ class SuggestionsAwarePathFinderService implements PathFinder {
     LOGGER.debug("On alternate path for system suggestion.");
     if (context.getContentAddress().getCurrentItemType() == CurrentItemType.Assessment) {
       LOGGER
-          .debug("On alternate path for system suggestion, no mastery update, will find next item");
+          .debug("On alternate path for system suggestion, will check for mastery update");
+      CompetencyMasteredHandler competencyMasteredHandler = new CompetencyMasteredHandler(dbi,
+          context);
+      competencyMasteredHandler.handleCompetencyMastered();
       return loadNextItemFromMainpath();
     } else {
       LOGGER.debug(
@@ -120,7 +123,7 @@ class SuggestionsAwarePathFinderService implements PathFinder {
         // Do not forget to reset the flag
         if (routeContextData.isRepeatAssessmentPostSignatureCollectionOn()) {
           routeContextData.turnOffRepeatAssessmentPostSignatureCollection();
-          return loadNextItemFromMainpath();
+          return trySuggestingSignatureAssessment(competencies);
         }
         return trySuggestingSignatureCollection(competencies);
       }

@@ -85,6 +85,9 @@ public interface ContentFinderDao {
       @Bind("unitId") String unit,
       @Bind("lessonId") String lesson, @Bind("collectionId") String collectionId);
 
+  @SqlQuery("select competency_gut_code from signature_items where item_id = :assessmentId and item_format = 'assessment'")
+  List<String> findCompetenciesForSignatureAssessment(@Bind("assessmentId") String assessmentId);
+
   @Mapper(SqlArrayMapper.class)
   @SqlQuery("select gut_codes from collection where id = :collectionId::uuid and is_deleted = false")
   List<List<String>> findCompetenciesForCollection(@Bind("collectionId") String collectionId);
