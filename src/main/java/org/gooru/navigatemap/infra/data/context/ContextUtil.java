@@ -9,8 +9,11 @@ import java.util.UUID;
 public final class ContextUtil {
 
   private static final String ABSENT_PLACEHOLDER = "NONE";
-  /* Added new key named path_type in context object, hence bumping the version number */
-  private static final String VERSION_STR = "v3:";
+  /*
+    v3: Added new key named path_type in context object, hence bumping the version number
+    v4: Milestone view support addition
+  */
+  private static final String VERSION_STR = "v4:";
 
   private ContextUtil() {
     throw new AssertionError();
