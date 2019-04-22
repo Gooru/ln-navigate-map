@@ -16,6 +16,7 @@ public final class ResponseContext {
   private UUID unitId;
   private UUID lessonId;
   private UUID collectionId;
+  private String milestoneId;
   private UUID currentItemId;
   private CurrentItemType currentItemType;
   private CurrentItemSubtype currentItemSubtype;
@@ -30,6 +31,7 @@ public final class ResponseContext {
     this.courseId = context.getCourseId();
     this.unitId = context.getUnitId();
     this.lessonId = context.getLessonId();
+    this.milestoneId = context.getMilestoneId();
     this.collectionId = context.getCollectionId();
     this.state = context.getState();
     this.pathId = context.getPathId();
@@ -48,6 +50,7 @@ public final class ResponseContext {
     context.put(ContextAttributes.COURSE_ID, courseId.toString());
     context.put(ContextAttributes.UNIT_ID, Objects.toString(unitId, null));
     context.put(ContextAttributes.LESSON_ID, Objects.toString(lessonId, null));
+    context.put(ContextAttributes.MILESTONE_ID, milestoneId);
     context.put(ContextAttributes.COLLECTION_ID, Objects.toString(collectionId, null));
     context.put(ContextAttributes.STATE, state.getName());
     context.put(ContextAttributes.PATH_ID, pathId);
