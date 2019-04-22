@@ -58,7 +58,7 @@ class TeacherSuggestionReadNotificationCoordinator implements NotificationCoordi
       model.setCurrentItemId(Objects.toString(command.getContext().getCurrentItemId(), null));
       model.setCurrentItemType(command.getContext().getCurrentItemType().getName());
       model.setAction(ACTION_COMPLETE);
-      model.setPathId(Long.valueOf(command.getContext().getPathId()));
+      model.setPathId(command.getContext().getPathId());
       model.setPathType(PathType.Teacher.getName());
       model.setNotificationType(NOTIFICATION_TEACHER_SUGGESTION);
       return model;

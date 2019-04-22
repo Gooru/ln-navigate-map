@@ -3,7 +3,6 @@ package org.gooru.navigatemap.processor.postprocessor;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.vertx.core.json.JsonObject;
-import java.util.Objects;
 import java.util.UUID;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
@@ -27,8 +26,7 @@ class PostProcessSystemSuggestionsAcceptHandler implements PostProcessorHandler 
 
   @Override
   public void handle(JsonObject requestData) {
-    LOGGER.info("Processing system suggestion accept handler for payload: '{}'",
-        Objects.toString(requestData));
+    LOGGER.info("Processing system suggestion accept handler for payload: '{}'", requestData);
     initialize(requestData);
     if (command.getClassId() == null) {
       handleForIL();

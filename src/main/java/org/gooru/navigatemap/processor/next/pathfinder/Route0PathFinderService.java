@@ -1,6 +1,5 @@
 package org.gooru.navigatemap.processor.next.pathfinder;
 
-import java.util.UUID;
 import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.infra.data.ContentAddress;

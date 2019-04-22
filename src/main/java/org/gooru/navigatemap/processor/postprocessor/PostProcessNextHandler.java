@@ -2,7 +2,6 @@ package org.gooru.navigatemap.processor.postprocessor;
 
 import io.vertx.core.json.JsonObject;
 import java.util.List;
-import java.util.Objects;
 import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
@@ -24,7 +23,7 @@ class PostProcessNextHandler implements PostProcessorHandler {
 
   @Override
   public void handle(JsonObject requestData) {
-    LOGGER.info("Handling the postprocessing for next output: '{}'", Objects.toString(requestData));
+    LOGGER.info("Handling the postprocessing for next output: '{}'", requestData);
     command = PostProcessorNextCommand.buildFromJson(requestData);
     // 1. if we are serving content on teacher path, then update serve count for that item
     handleTeacherPathItemServed();
