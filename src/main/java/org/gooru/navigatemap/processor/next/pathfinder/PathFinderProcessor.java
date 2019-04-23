@@ -5,6 +5,8 @@ import io.vertx.core.Vertx;
 import org.gooru.navigatemap.infra.data.ContentAddress;
 import org.gooru.navigatemap.infra.data.NavigateProcessorContext;
 import org.gooru.navigatemap.infra.data.State;
+import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
+import org.gooru.navigatemap.infra.utilities.milestoneapplicability.MilestoneApplicabilityVerifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +81,13 @@ public class PathFinderProcessor {
     return resultFuture;
   }
 
+  /*
+   * Suggestion orientation implies that course must be navigator course. However, in navigator
+   * courses' flow associated with class, there is a fork. This fork is based on whether
+   * milestone oriented view is being played or the play is done based on classic CUL view
+   */
   private void handleSuggestionsOrientedRoute() {
+    initializeMilestoneViewApplicability();
     if (npc.needToStartCourse()) {
       LOGGER.debug("Need to start course");
       PathFinderResult result =
@@ -122,6 +130,12 @@ public class PathFinderProcessor {
         serveTheContent(result.getContentAddress());
       }
     }
+  }
+
+  private void initializeMilestoneViewApplicability() {
+    boolean milestoneViewApplicable = MilestoneApplicabilityVerifier
+        .build(npc.requestContext(), DBICreator.getDbiForDefaultDS()).isMilestoneViewApplicable();
+    npc.setMilestoneViewApplicable(milestoneViewApplicable);
   }
 
   private void serveTheSuggestions(PathFinderResult result) {

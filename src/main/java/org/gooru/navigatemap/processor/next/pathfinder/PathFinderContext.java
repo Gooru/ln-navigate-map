@@ -14,15 +14,17 @@ class PathFinderContext {
   private final String userId;
   private final Double score;
   private final Integer preferredLanguage;
+  private final boolean milestoneViewApplicable;
 
   PathFinderContext(ContentAddress contentAddress, UUID classId, String userId, Double score,
-      Integer preferredLanguage) {
+      Integer preferredLanguage, boolean milestoneViewApplicable) {
 
     this.contentAddress = contentAddress;
     this.classId = classId;
     this.userId = userId;
     this.score = score;
     this.preferredLanguage = preferredLanguage;
+    this.milestoneViewApplicable = milestoneViewApplicable;
   }
 
   ContentAddress getContentAddress() {
@@ -45,9 +47,13 @@ class PathFinderContext {
     return preferredLanguage;
   }
 
+  public boolean isMilestoneViewApplicable() {
+    return milestoneViewApplicable;
+  }
+
   static PathFinderContext buildContext(NavigateProcessorContext npc) {
     return new PathFinderContext(npc.getCurrentContentAddress(), npc.requestContext().getClassId(),
         npc.navigateMessageContext().getUserId(), npc.requestContext().getScorePercent(),
-        npc.getPreferredLanguage());
+        npc.getPreferredLanguage(), npc.getMilestoneViewApplicable());
   }
 }

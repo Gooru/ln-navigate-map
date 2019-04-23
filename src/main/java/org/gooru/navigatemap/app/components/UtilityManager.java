@@ -27,7 +27,7 @@ public final class UtilityManager implements Initializer, Finalizer {
 
   @Override
   public void initializeComponent(Vertx vertx, JsonObject config) {
-    // TODO: Initialize tenant machinery when the dependency is included
+    // : Initialize tenant machinery when the dependency is included
     //        TenantInitializer.initialize(DataSourceRegistry.getInstance().getDefaultDataSource());
     DbLookupUtility.getInstance()
         .initialize(DataSourceRegistry.getInstance().getDefaultDataSource());
