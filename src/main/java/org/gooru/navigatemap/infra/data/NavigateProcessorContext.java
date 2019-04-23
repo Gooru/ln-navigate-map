@@ -20,6 +20,7 @@ public final class NavigateProcessorContext {
   private Boolean suggestionsFlagInitialized;
   private Integer preferredLanguage;
   private boolean milestoneViewApplicable = false;
+  private String fwCode;
 
   public NavigateProcessorContext(RequestContext requestContext,
       NavigateMessageContext navigateMessageContext) {
@@ -55,6 +56,14 @@ public final class NavigateProcessorContext {
 
   public void setMilestoneViewApplicable(boolean milestoneViewApplicable) {
     this.milestoneViewApplicable = milestoneViewApplicable;
+  }
+
+  public String getFwCode() {
+    return fwCode;
+  }
+
+  public void setFwCode(String fwCode) {
+    this.fwCode = fwCode;
   }
 
   public boolean onRoute0() {

@@ -5,6 +5,7 @@ import io.vertx.core.Vertx;
 import org.gooru.navigatemap.infra.data.ContentAddress;
 import org.gooru.navigatemap.infra.data.NavigateProcessorContext;
 import org.gooru.navigatemap.infra.data.State;
+import org.gooru.navigatemap.infra.utilities.fwfinder.FrameworkFinder;
 import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
 import org.gooru.navigatemap.infra.utilities.milestoneapplicability.MilestoneApplicabilityVerifier;
 import org.slf4j.Logger;
@@ -136,6 +137,20 @@ public class PathFinderProcessor {
     boolean milestoneViewApplicable = MilestoneApplicabilityVerifier
         .build(npc.requestContext(), DBICreator.getDbiForDefaultDS()).isMilestoneViewApplicable();
     npc.setMilestoneViewApplicable(milestoneViewApplicable);
+    if (milestoneViewApplicable) {
+      initializeFrameworkForMilestoneView();
+    }
+  }
+
+  private void initializeFrameworkForMilestoneView() {
+    String framework = FrameworkFinder.build(npc.requestContext(), DBICreator.getDbiForDefaultDS())
+        .findFramework();
+    // We are here because milestone view is enabled. Now if fw is null, we have an issue
+    if (framework == null && npc.requestContext().isContextInClass()) {
+      throw new IllegalStateException(
+          "Framework is not set for class: " + npc.requestContext().getClassId());
+    }
+    npc.setFwCode(framework);
   }
 
   private void serveTheSuggestions(PathFinderResult result) {

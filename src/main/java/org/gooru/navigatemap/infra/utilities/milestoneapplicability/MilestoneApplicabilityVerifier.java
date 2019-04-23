@@ -1,6 +1,5 @@
 package org.gooru.navigatemap.infra.utilities.milestoneapplicability;
 
-import org.gooru.navigatemap.infra.data.NavigateProcessorContext;
 import org.gooru.navigatemap.infra.data.RequestContext;
 import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
 import org.skife.jdbi.v2.DBI;
