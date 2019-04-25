@@ -81,12 +81,12 @@ class AlternatePathUnawareMilestoneViewContentFinder {
           .equalsIgnoreCase(address.getMilestoneId())
           && address.getCollection() != null) {
         contentAddresses =
-            getMilestoneDao().findNextCollectionsInCL(address.getCourse(), milestone, lesson,
-                address.getCollection());
+            getMilestoneDao().findNextCollectionsInCML(address.getCourse(), lesson,
+                address.getCollection(), milestone);
         result = nonSkippabilityVerifier.findFirstVerifiedContent(contentAddresses);
       } else {
         contentAddresses = getMilestoneDao()
-            .findCollectionsInCL(address.getCourse(), milestone, lesson);
+            .findCollectionsInCML(address.getCourse(), lesson, milestone);
         result = nonSkippabilityVerifier.findFirstVerifiedContent(contentAddresses);
       }
       if (result != null) {

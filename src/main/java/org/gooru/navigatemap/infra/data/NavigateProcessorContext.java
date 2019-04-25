@@ -131,6 +131,7 @@ public final class NavigateProcessorContext {
     nextContentAddress.setCurrentItem(address.getCurrentItem());
     nextContentAddress.setCurrentItemType(address.getCurrentItemType());
     nextContentAddress.setCurrentItemSubtype(address.getCurrentItemSubtype());
+    nextContentAddress.setMilestoneId(address.getMilestoneId());
     nextAddressSet = true;
   }
 
@@ -147,6 +148,7 @@ public final class NavigateProcessorContext {
       currentContentAddress.setCurrentItemSubtype(requestContext().getCurrentItemSubtype());
       currentContentAddress.setPathId(requestContext().getPathId());
       currentContentAddress.setPathType(requestContext().getPathType());
+      currentContentAddress.setMilestoneId(requestContext().getMilestoneId());
       currentAddressSet = true;
       return currentContentAddress;
     }

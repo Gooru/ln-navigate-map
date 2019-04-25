@@ -77,7 +77,7 @@ public final class ResponseContext {
             : UUID.fromString(contentAddress.getCurrentItem());
     this.currentItemType = contentAddress.getCurrentItemType();
     this.currentItemSubtype = contentAddress.getCurrentItemSubtype();
-
+    this.milestoneId = contentAddress.getMilestoneId();
     this.pathId = contentAddress.getPathId();
     this.pathType =
         contentAddress.getPathType() != null ? contentAddress.getPathType().getName() : null;
