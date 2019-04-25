@@ -14,6 +14,7 @@ class AlternatePathUnawareMilestoneViewContentFinder {
   private final ContentFinderCriteria criteria;
   private final PathFinderContext context;
   private ContentFinderDao finderDao;
+  private ContentFinderForMilestoneDao milestoneDao;
 
   AlternatePathUnawareMilestoneViewContentFinder(DBI dbi, ContentFinderCriteria criteria,
       PathFinderContext context) {
@@ -24,27 +25,30 @@ class AlternatePathUnawareMilestoneViewContentFinder {
 
 
   ContentAddress findNext(ContentAddress address) {
-    // TODO: Implement this
-    List<String> units;
-    if (address.getUnit() != null) {
-      units = getContentFinderDao().findNextUnitsInCourse(address.getCourse(), address.getUnit());
+    List<String> milestones;
+    if (address.getMilestoneId() != null) {
+      milestones = getMilestoneDao()
+          .findNextMilestonesInCourse(address.getCourse(), address.getMilestoneId(),
+              context.getFwCode());
     } else {
-      units = getContentFinderDao().findUnitsInCourse(address.getCourse());
+      milestones = getMilestoneDao()
+          .findMilestonesInCourse(address.getCourse(), context.getFwCode());
     }
 
-    return findNextValidContentInUnits(address, units);
+    return findNextValidContentInMilestones(address, milestones);
   }
 
-  private ContentAddress findNextValidContentInUnits(ContentAddress address, List<String> units) {
+  private ContentAddress findNextValidContentInMilestones(ContentAddress address,
+      List<String> milestones) {
     List<String> lessons;
-    for (String unit : units) {
-      if (unit.equalsIgnoreCase(address.getUnit())) {
-        lessons = getContentFinderDao()
-            .findNextLessonsInCU(address.getCourse(), unit, address.getLesson());
+    for (String milestone : milestones) {
+      if (milestone.equalsIgnoreCase(address.getMilestoneId())) {
+        lessons = getMilestoneDao()
+            .findNextLessonsInCM(address.getCourse(), milestone, address.getLesson());
       } else {
-        lessons = getContentFinderDao().findLessonsInCU(address.getCourse(), unit);
+        lessons = getMilestoneDao().findLessonsInCM(address.getCourse(), milestone);
       }
-      ContentAddress result = findNextValidContentInLessons(address, unit, lessons);
+      ContentAddress result = findNextValidContentInLessons(address, milestone, lessons);
       if (result != null) {
         return result;
       }
@@ -52,35 +56,37 @@ class AlternatePathUnawareMilestoneViewContentFinder {
     return null;
   }
 
-  private ContentAddress findNextValidContentInLessons(ContentAddress address, String unit,
+  private ContentAddress findNextValidContentInLessons(ContentAddress address, String milestone,
       List<String> lessons) {
     switch (criteria) {
       case CRITERIA_VISIBLE:
-        return findNextVisibleContentInLessons(address, unit, lessons);
+        return findNextVisibleContentInLessons(address, milestone, lessons);
       case CRITERIA_NONE:
-        return findNextContentInLessons(address, unit, lessons);
+        return findNextContentInLessons(address, milestone, lessons);
       case CRITERIA_NON_SKIPPABLE:
-        return findNextNonSkippableContentInLesson(address, unit, lessons);
+        return findNextNonSkippableContentInLesson(address, milestone, lessons);
       default:
         throw new IllegalStateException("Invalid criteria for finding content");
     }
   }
 
-  private ContentAddress findNextNonSkippableContentInLesson(ContentAddress address, String unit,
-      List<String> lessons) {
+  private ContentAddress findNextNonSkippableContentInLesson(ContentAddress address,
+      String milestone, List<String> lessons) {
     List<ContentAddress> contentAddresses;
     ContentAddress result;
     ContentVerifier nonSkippabilityVerifier = getNonSkippabilityVerifier();
 
     for (String lesson : lessons) {
-      if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())
+      if (lesson.equalsIgnoreCase(address.getLesson()) && milestone
+          .equalsIgnoreCase(address.getMilestoneId())
           && address.getCollection() != null) {
         contentAddresses =
-            finderDao.findNextCollectionsInCUL(address.getCourse(), unit, lesson,
+            getMilestoneDao().findNextCollectionsInCL(address.getCourse(), milestone, lesson,
                 address.getCollection());
         result = nonSkippabilityVerifier.findFirstVerifiedContent(contentAddresses);
       } else {
-        contentAddresses = finderDao.findCollectionsInCUL(address.getCourse(), unit, lesson);
+        contentAddresses = getMilestoneDao()
+            .findCollectionsInCL(address.getCourse(), milestone, lesson);
         result = nonSkippabilityVerifier.findFirstVerifiedContent(contentAddresses);
       }
       if (result != null) {
@@ -99,13 +105,14 @@ class AlternatePathUnawareMilestoneViewContentFinder {
       if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())
           && address.getCollection() != null) {
         contentAddresses =
-            finderDao.findNextCollectionsInCUL(address.getCourse(), unit, lesson,
+            getContentFinderDao().findNextCollectionsInCUL(address.getCourse(), unit, lesson,
                 address.getCollection());
         if (contentAddresses != null && !contentAddresses.isEmpty()) {
           result = contentAddresses.get(0);
         }
       } else {
-        contentAddresses = finderDao.findCollectionsInCUL(address.getCourse(), unit, lesson);
+        contentAddresses = getContentFinderDao()
+            .findCollectionsInCUL(address.getCourse(), unit, lesson);
         if (contentAddresses != null && !contentAddresses.isEmpty()) {
           result = contentAddresses.get(0);
         }
@@ -127,11 +134,12 @@ class AlternatePathUnawareMilestoneViewContentFinder {
       if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())
           && address.getCollection() != null) {
         contentAddresses =
-            finderDao.findNextCollectionsInCUL(address.getCourse(), unit, lesson,
+            getContentFinderDao().findNextCollectionsInCUL(address.getCourse(), unit, lesson,
                 address.getCollection());
         result = visibilityVerifier.findFirstVerifiedContent(contentAddresses);
       } else {
-        contentAddresses = finderDao.findCollectionsInCUL(address.getCourse(), unit, lesson);
+        contentAddresses = getContentFinderDao()
+            .findCollectionsInCUL(address.getCourse(), unit, lesson);
         result = visibilityVerifier.findFirstVerifiedContent(contentAddresses);
       }
       if (result != null) {
@@ -146,6 +154,13 @@ class AlternatePathUnawareMilestoneViewContentFinder {
       finderDao = dbi.onDemand(ContentFinderDao.class);
     }
     return finderDao;
+  }
+
+  private ContentFinderForMilestoneDao getMilestoneDao() {
+    if (milestoneDao == null) {
+      milestoneDao = dbi.onDemand(ContentFinderForMilestoneDao.class);
+    }
+    return milestoneDao;
   }
 
   protected ContentVerifier getVisibilityVerifier() {

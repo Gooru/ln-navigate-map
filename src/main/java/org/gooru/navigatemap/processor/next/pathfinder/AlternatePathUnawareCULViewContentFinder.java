@@ -75,11 +75,12 @@ class AlternatePathUnawareCULViewContentFinder {
       if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())
           && address.getCollection() != null) {
         contentAddresses =
-            finderDao.findNextCollectionsInCUL(address.getCourse(), unit, lesson,
+            getContentFinderDao().findNextCollectionsInCUL(address.getCourse(), unit, lesson,
                 address.getCollection());
         result = nonSkippabilityVerifier.findFirstVerifiedContent(contentAddresses);
       } else {
-        contentAddresses = finderDao.findCollectionsInCUL(address.getCourse(), unit, lesson);
+        contentAddresses = getContentFinderDao()
+            .findCollectionsInCUL(address.getCourse(), unit, lesson);
         result = nonSkippabilityVerifier.findFirstVerifiedContent(contentAddresses);
       }
       if (result != null) {
@@ -98,13 +99,14 @@ class AlternatePathUnawareCULViewContentFinder {
       if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())
           && address.getCollection() != null) {
         contentAddresses =
-            finderDao.findNextCollectionsInCUL(address.getCourse(), unit, lesson,
+            getContentFinderDao().findNextCollectionsInCUL(address.getCourse(), unit, lesson,
                 address.getCollection());
         if (contentAddresses != null && !contentAddresses.isEmpty()) {
           result = contentAddresses.get(0);
         }
       } else {
-        contentAddresses = finderDao.findCollectionsInCUL(address.getCourse(), unit, lesson);
+        contentAddresses = getContentFinderDao()
+            .findCollectionsInCUL(address.getCourse(), unit, lesson);
         if (contentAddresses != null && !contentAddresses.isEmpty()) {
           result = contentAddresses.get(0);
         }
@@ -126,11 +128,12 @@ class AlternatePathUnawareCULViewContentFinder {
       if (lesson.equalsIgnoreCase(address.getLesson()) && unit.equalsIgnoreCase(address.getUnit())
           && address.getCollection() != null) {
         contentAddresses =
-            finderDao.findNextCollectionsInCUL(address.getCourse(), unit, lesson,
+            getContentFinderDao().findNextCollectionsInCUL(address.getCourse(), unit, lesson,
                 address.getCollection());
         result = visibilityVerifier.findFirstVerifiedContent(contentAddresses);
       } else {
-        contentAddresses = finderDao.findCollectionsInCUL(address.getCourse(), unit, lesson);
+        contentAddresses = getContentFinderDao()
+            .findCollectionsInCUL(address.getCourse(), unit, lesson);
         result = visibilityVerifier.findFirstVerifiedContent(contentAddresses);
       }
       if (result != null) {
