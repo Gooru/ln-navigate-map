@@ -9,6 +9,7 @@ public final class ContentAddress {
   private String unit;
   private String lesson;
   private String collection;
+  private String milestoneId;
   private String visibility;
   private Long pathId;
   private PathType pathType;
@@ -24,6 +25,7 @@ public final class ContentAddress {
     this.unit = address.unit;
     this.lesson = address.lesson;
     this.collection = address.collection;
+    this.milestoneId = address.milestoneId;
     this.pathId = address.pathId;
     this.pathType = address.pathType;
     this.currentItem = address.currentItem;
@@ -70,6 +72,14 @@ public final class ContentAddress {
 
   public PathType getPathType() {
     return pathType;
+  }
+
+  public String getMilestoneId() {
+    return milestoneId;
+  }
+
+  public void setMilestoneId(String milestoneId) {
+    this.milestoneId = milestoneId;
   }
 
   public void setPathType(PathType pathType) {
@@ -122,6 +132,10 @@ public final class ContentAddress {
 
   public boolean isOnSystemPath() {
     return (pathId != null && pathId > 0 && pathType == PathType.System);
+  }
+
+  public boolean isMilestoneAware() {
+    return milestoneId != null;
   }
 
   public boolean isOnRoute0() {

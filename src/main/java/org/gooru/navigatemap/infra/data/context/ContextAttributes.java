@@ -10,6 +10,7 @@ public final class ContextAttributes {
   public static final String UNIT_ID = "unit_id";
   public static final String LESSON_ID = "lesson_id";
   public static final String COLLECTION_ID = "collection_id";
+  public static final String MILESTONE_ID = "milestone_id";
 
   public static final String CURRENT_ITEM_ID = "current_item_id";
   public static final String CURRENT_ITEM_TYPE = "current_item_type";

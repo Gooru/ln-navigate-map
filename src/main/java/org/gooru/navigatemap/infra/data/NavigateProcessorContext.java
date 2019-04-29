@@ -19,6 +19,8 @@ public final class NavigateProcessorContext {
   private boolean currentAddressSet = false;
   private Boolean suggestionsFlagInitialized;
   private Integer preferredLanguage;
+  private boolean milestoneViewApplicable = false;
+  private String fwCode;
 
   public NavigateProcessorContext(RequestContext requestContext,
       NavigateMessageContext navigateMessageContext) {
@@ -46,6 +48,22 @@ public final class NavigateProcessorContext {
     // supposed to send either "Continue" or "Start" state. While start would mean that user has provided start
     // point, Continue now would mean that Course needs to be started.
     return ctxIn.needToStartCourse();
+  }
+
+  public boolean getMilestoneViewApplicable() {
+    return milestoneViewApplicable;
+  }
+
+  public void setMilestoneViewApplicable(boolean milestoneViewApplicable) {
+    this.milestoneViewApplicable = milestoneViewApplicable;
+  }
+
+  public String getFwCode() {
+    return fwCode;
+  }
+
+  public void setFwCode(String fwCode) {
+    this.fwCode = fwCode;
   }
 
   public boolean onRoute0() {
@@ -113,6 +131,7 @@ public final class NavigateProcessorContext {
     nextContentAddress.setCurrentItem(address.getCurrentItem());
     nextContentAddress.setCurrentItemType(address.getCurrentItemType());
     nextContentAddress.setCurrentItemSubtype(address.getCurrentItemSubtype());
+    nextContentAddress.setMilestoneId(address.getMilestoneId());
     nextAddressSet = true;
   }
 
@@ -129,6 +148,7 @@ public final class NavigateProcessorContext {
       currentContentAddress.setCurrentItemSubtype(requestContext().getCurrentItemSubtype());
       currentContentAddress.setPathId(requestContext().getPathId());
       currentContentAddress.setPathType(requestContext().getPathType());
+      currentContentAddress.setMilestoneId(requestContext().getMilestoneId());
       currentAddressSet = true;
       return currentContentAddress;
     }

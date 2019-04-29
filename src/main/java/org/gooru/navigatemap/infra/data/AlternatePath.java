@@ -108,10 +108,8 @@ public final class AlternatePath {
 
   public boolean isSuggestionSignatureCollection() {
     if (suggestedContentSubtype != null) {
-      if (SuggestedContentSubType.builder(suggestedContentSubtype)
-          == SuggestedContentSubType.SignatureCollection) {
-        return true;
-      }
+      return SuggestedContentSubType.builder(suggestedContentSubtype)
+          == SuggestedContentSubType.SignatureCollection;
     }
     return false;
   }

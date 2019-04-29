@@ -17,6 +17,7 @@ public final class RequestContext {
   private UUID unitId;
   private UUID lessonId;
   private UUID collectionId;
+  private String milestoneId;
 
   private UUID currentItemId;
   private CurrentItemType currentItemType;
@@ -47,6 +48,10 @@ public final class RequestContext {
 
   public UUID getCollectionId() {
     return collectionId;
+  }
+
+  public String getMilestoneId() {
+    return milestoneId;
   }
 
   public State getState() {
@@ -174,6 +179,7 @@ public final class RequestContext {
       context.currentItemId = toUuid(input, ContextAttributes.CURRENT_ITEM_ID);
       context.pathId = input.getLong(ContextAttributes.PATH_ID);
       context.scorePercent = input.getDouble(ContextAttributes.SCORE_PERCENT);
+      context.milestoneId = input.getString(ContextAttributes.MILESTONE_ID);
       if (context.scorePercent == null) {
         context.scorePercent = 0D;
       }

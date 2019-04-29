@@ -30,7 +30,7 @@ public final class DataSourceRegistry implements Initializer, Finalizer {
   private volatile boolean initialized = false;
 
   private DataSourceRegistry() {
-    // TODO Auto-generated constructor stub
+    //  Auto-generated constructor stub
   }
 
   public static DataSourceRegistry getInstance() {

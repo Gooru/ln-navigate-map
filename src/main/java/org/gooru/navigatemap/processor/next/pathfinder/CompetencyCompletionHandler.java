@@ -51,6 +51,9 @@ class CompetencyCompletionHandler {
       }
       if (listOfListOfComps != null && !listOfListOfComps.isEmpty()) {
         competencies = listOfListOfComps.get(0);
+        if (competencies == null) {
+          competencies = Collections.emptyList();
+        }
       }
       areCompetenciesFetched = true;
     }

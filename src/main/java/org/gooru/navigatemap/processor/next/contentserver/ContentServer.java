@@ -62,7 +62,6 @@ public class ContentServer {
       } else if (npc.responseContext().getCurrentItemType() == CurrentItemType.CollectionExternal) {
         serveCollectionExternal();
       } else {
-        // TODO: What to do??
         LOGGER.warn("Invalid content to serve, not sure what to do");
         LOGGER.debug(npc.responseContext().toJson().toString());
         completionFuture.complete(new JsonObject());
