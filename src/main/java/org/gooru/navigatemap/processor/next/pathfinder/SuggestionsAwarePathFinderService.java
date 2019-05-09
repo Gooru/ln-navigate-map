@@ -164,6 +164,7 @@ class SuggestionsAwarePathFinderService implements PathFinder {
     ContentAddress teacherPathContentAddress =
         ContentFinderFactory.buildTeacherPathContentFinder(dbi).findContent(context);
     if (teacherPathContentAddress != null) {
+      teacherPathContentAddress.setMilestoneId(context.getContentAddress().getMilestoneId());
       return new PathFinderResult(teacherPathContentAddress);
     } else {
       return loadCurrentItemFromMainpath();
@@ -190,7 +191,8 @@ class SuggestionsAwarePathFinderService implements PathFinder {
               currentAlternatePath.getId());
     }
     if (nextAlternatePaths != null && !nextAlternatePaths.isEmpty()) {
-      return new PathFinderResult(nextAlternatePaths.get(0).toContentAddress());
+      return new PathFinderResult(
+          nextAlternatePaths.get(0).toContentAddress(context.getContentAddress().getMilestoneId()));
     }
     // if current alternate path is signature collection and we do not find next, and the repeat flag is set,
     // then instead of loading next item, we actually repeat
@@ -205,6 +207,7 @@ class SuggestionsAwarePathFinderService implements PathFinder {
     ContentAddress result = dbi.onDemand(ContentFinderDao.class)
         .findCULC(context.getContentAddress().getCourse(), context.getContentAddress().getUnit(),
             context.getContentAddress().getLesson(), context.getContentAddress().getCollection());
+    result.setMilestoneId(context.getContentAddress().getMilestoneId());
     return new PathFinderResult(result);
   }
 

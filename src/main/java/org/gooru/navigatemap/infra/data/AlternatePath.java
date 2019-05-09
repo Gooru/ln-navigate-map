@@ -159,11 +159,16 @@ public final class AlternatePath {
   }
 
   public ContentAddress toContentAddress() {
+    return toContentAddress(null);
+  }
+
+  public ContentAddress toContentAddress(String milestoneId) {
     ContentAddress result = new ContentAddress();
     result.setCourse(courseId.toString());
     result.setUnit(Objects.toString(unitId, null));
     result.setLesson(Objects.toString(lessonId, null));
     result.setCollection(Objects.toString(collectionId, null));
+    result.setMilestoneId(milestoneId);
     result.setPathId(id);
     result.setPathType(suggestionType != null ? PathType.builder(suggestionType) : null);
     result.setCurrentItem(Objects.toString(suggestedContentId, null));
