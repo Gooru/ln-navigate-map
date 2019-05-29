@@ -5,6 +5,7 @@ import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.json.JsonObject;
 import org.gooru.navigatemap.app.constants.HttpConstants;
+import org.gooru.navigatemap.infra.data.CurrentItemType;
 import org.gooru.navigatemap.infra.data.ResponseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,7 @@ public final class RemoteAssessmentCollectionFetcher {
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(RemoteAssessmentCollectionFetcher.class);
-  private static final String HEADER_AUTH_PREFIX = "Token ";
+  private static final String HEADER_AUTH_PREFIX = "Token " ;
 
   private final HttpClient client;
   private final Future<JsonObject> completionFuture;
@@ -31,12 +32,20 @@ public final class RemoteAssessmentCollectionFetcher {
   Future<JsonObject> fetch(ResponseContext context, String auth) {
     String uri = remoteUriLocator.getUriForItemType(context.getCurrentItemType());
     if (uri != null) {
-      uri += context.getCurrentItemId().toString();
+      uri += createDynamicUriFragment(context);
       fetchFromRemote(context, uri, auth);
     } else {
       LOGGER.warn("Unsupported CollectionType: '{}'", context.getCurrentItemType());
     }
     return completionFuture;
+  }
+
+  private String createDynamicUriFragment(ResponseContext context) {
+    if (context.getCurrentItemType() != CurrentItemType.OfflineActivity) {
+      return context.getCurrentItemId().toString();
+    } else {
+      return context.getCurrentItemId().toString() + "/summary" ;
+    }
   }
 
   private void fetchFromRemote(ResponseContext context, String uri, String auth) {

@@ -61,12 +61,18 @@ public class ContentServer {
         serveAssessmentExternal();
       } else if (npc.responseContext().getCurrentItemType() == CurrentItemType.CollectionExternal) {
         serveCollectionExternal();
+      } else if (npc.responseContext().getCurrentItemType() == CurrentItemType.OfflineActivity) {
+        serveOfflineActivity();
       } else {
         LOGGER.warn("Invalid content to serve, not sure what to do");
         LOGGER.debug(npc.responseContext().toJson().toString());
         completionFuture.complete(new JsonObject());
       }
     }
+  }
+
+  private void serveOfflineActivity() {
+    serveAssessmentCollection();
   }
 
   private void serveAssessment() {

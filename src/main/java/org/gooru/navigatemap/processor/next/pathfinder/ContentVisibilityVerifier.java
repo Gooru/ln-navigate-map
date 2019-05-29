@@ -72,7 +72,8 @@ final class ContentVisibilityVerifier implements ContentVerifier {
 
   private boolean verifyVisibilityWithClassVisibilityAsCollections(ContentAddress address) {
     if (address.getCurrentItemType() == CurrentItemType.Assessment
-        || address.getCurrentItemType() == CurrentItemType.AssessmentExternal) {
+        || address.getCurrentItemType() == CurrentItemType.AssessmentExternal
+        || address.getCurrentItemType() == CurrentItemType.OfflineActivity) {
       return getVisibilityForClassInContent(address) == VISIBLITY_STATE.ON;
     } else if ((address.getCurrentItemType() == CurrentItemType.Collection) || (
         address.getCurrentItemType() == CurrentItemType.CollectionExternal)) {

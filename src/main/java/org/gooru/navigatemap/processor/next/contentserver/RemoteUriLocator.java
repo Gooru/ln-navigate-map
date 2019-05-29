@@ -11,13 +11,16 @@ public class RemoteUriLocator {
   private final String collectionUri;
   private final String assessmentExternalUri;
   private final String collectionExternalUri;
+  private final String offlineActivityUri;
 
   public RemoteUriLocator(String assessmentUri, String collectionUri,
-      String assessmentExternalUri, String collectionExternalUri) {
+      String assessmentExternalUri, String collectionExternalUri,
+      String offlineActivityUri) {
     this.assessmentUri = assessmentUri;
     this.collectionUri = collectionUri;
     this.assessmentExternalUri = assessmentExternalUri;
     this.collectionExternalUri = collectionExternalUri;
+    this.offlineActivityUri = offlineActivityUri;
   }
 
   public String getUriForItemType(CurrentItemType itemType) {
@@ -29,6 +32,8 @@ public class RemoteUriLocator {
       return assessmentExternalUri;
     } else if (itemType == CurrentItemType.CollectionExternal) {
       return collectionExternalUri;
+    } else if (itemType == CurrentItemType.OfflineActivity) {
+      return offlineActivityUri;
     }
     return null;
   }

@@ -119,6 +119,10 @@ class ContentNonSkippabilityVerifier implements ContentVerifier {
             return false;
           }
           break;
+        case OfflineActivity:
+          if (toBeSkippedItems.isOfflineActivityRescoped(contentAddress.getCurrentItem())) {
+            return false;
+          }
         default:
           return true;
       }
