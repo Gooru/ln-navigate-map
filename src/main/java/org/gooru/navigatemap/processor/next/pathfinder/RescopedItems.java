@@ -13,6 +13,7 @@ public class RescopedItems {
   private List<String> collections;
   private List<String> assessmentsExternal;
   private List<String> collectionsExternal;
+  private List<String> offlineActivities;
 
   public List<String> getUnits() {
     return units;
@@ -88,4 +89,16 @@ public class RescopedItems {
         .contains(collectionId));
   }
 
+  public boolean isOfflineActivityRescoped(String collectionId) {
+    return (offlineActivities != null && !offlineActivities.isEmpty() && offlineActivities
+        .contains(collectionId));
+  }
+
+  public List<String> getOfflineActivities() {
+    return offlineActivities;
+  }
+
+  public void setOfflineActivities(List<String> offlineActivities) {
+    this.offlineActivities = offlineActivities;
+  }
 }

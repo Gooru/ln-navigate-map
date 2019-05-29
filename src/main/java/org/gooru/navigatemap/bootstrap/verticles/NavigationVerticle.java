@@ -69,8 +69,10 @@ public class NavigationVerticle extends AbstractVerticle {
     Objects.requireNonNull(assessmentExternalUri);
     String collectionExternalUri = config().getString("collection-external.fetch.uri");
     Objects.requireNonNull(collectionExternalUri);
+    String offlineActivityUri = config().getString("offline-activity.fetch.uri");
+    Objects.requireNonNull(offlineActivityUri);
     remoteUriLocator = new RemoteUriLocator(assessmentUri, collectionUri, assessmentExternalUri,
-        collectionExternalUri);
+        collectionExternalUri, offlineActivityUri);
 
     client = vertx.createHttpClient(
         new HttpClientOptions().setConnectTimeout(timeout).setMaxPoolSize(poolSize));

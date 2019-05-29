@@ -12,6 +12,7 @@ public enum SuggestedContentType {
   Lesson("lesson"),
   Collection("collection"),
   Assessment("assessment"),
+  OfflineActivity("offline-activity"),
   Resource("resource");
 
   private final String name;
