@@ -20,7 +20,8 @@ final class SuggestionTrackerTypes {
     Collection("collection"),
     Assessment("assessment"),
     Resource("resource"),
-    Question("question");
+    Question("question"),
+    OfflineActivity("offline-activity");
 
     private final String name;
 
