@@ -21,18 +21,18 @@ public class PostProcessVerticle extends AbstractVerticle {
   public void start(Future<Void> startFuture) {
     EventBus eb = vertx.eventBus();
 
-    eb.<JsonObject>localConsumer(Constants.EventBus.MBEP_POST_PROCESS, message -> {
-      process(message.headers().get(Constants.Message.MSG_OP), message.body());
-    }).completionHandler(result -> {
-      if (result.succeeded()) {
-        LOGGER.info("Post processor end point ready to listen");
-        startFuture.complete();
-      } else {
-        LOGGER.error("Error registering the Post processor handler. Halting the machinery");
-        startFuture.fail(result.cause());
-        Runtime.getRuntime().halt(1);
-      }
-    });
+    eb.<JsonObject>localConsumer(Constants.EventBus.MBEP_POST_PROCESS,
+        message -> process(message.headers().get(Constants.Message.MSG_OP), message.body()))
+        .completionHandler(result -> {
+          if (result.succeeded()) {
+            LOGGER.info("Post processor end point ready to listen");
+            startFuture.complete();
+          } else {
+            LOGGER.error("Error registering the Post processor handler. Halting the machinery");
+            startFuture.fail(result.cause());
+            Runtime.getRuntime().halt(1);
+          }
+        });
   }
 
   private void process(String op, JsonObject requestData) {

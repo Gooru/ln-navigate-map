@@ -28,7 +28,7 @@ public final class KafkaProducerRegistry implements Initializer, Finalizer {
   private boolean isKafkaEnabled;
 
   private KafkaProducerRegistry() {
-    // TODO Auto-generated constructor stub
+    // NOOP
   }
 
   public static KafkaProducerRegistry getInstance() {

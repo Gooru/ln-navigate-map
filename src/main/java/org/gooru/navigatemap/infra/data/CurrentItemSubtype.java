@@ -9,7 +9,21 @@ import java.util.Map;
 public enum CurrentItemSubtype {
 
   SignatureAssessment("signature-assessment"),
-  SignatureCollection("signature-collection");
+  SignatureCollection("signature-collection"),
+  OAProjectPoster("oa.project.poster"),
+  OAProjectPresentation("oa.project.presentation"),
+  OAProjectVideo("oa.project.video"),
+  OAProjectDiorama("oa.project.diorama"),
+  OAProjectBrochure("oa.project.brochure"),
+  OAProjectModel("oa.project.model"),
+  OASeminar("oa.seminar"),
+  OAShortAnswer("oa.short_answer"),
+  OAExtendedResponses("oa.extended_response"),
+  OAResearchPaper("oa.research_paper"),
+  OAPositionPaper("oa.position_paper"),
+  OALabReport("oa.lab_report"),
+  OAExplanationArgument("oa.explanation_argument"),
+  OADebate("oa.debate");
 
   private final String name;
   private static final Map<String, CurrentItemSubtype> LOOKUP = new HashMap<>(values().length);

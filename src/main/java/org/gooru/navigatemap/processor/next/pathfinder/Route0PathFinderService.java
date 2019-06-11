@@ -1,6 +1,5 @@
 package org.gooru.navigatemap.processor.next.pathfinder;
 
-import java.util.UUID;
 import org.gooru.navigatemap.app.constants.HttpConstants;
 import org.gooru.navigatemap.app.exceptions.HttpResponseWrapperException;
 import org.gooru.navigatemap.infra.data.ContentAddress;
@@ -51,7 +50,7 @@ class Route0PathFinderService implements PathFinder {
     ContentAddress contentAddress = new ContentAddress();
     contentAddress.setCourse(context.getContentAddress().getCourse());
     return new PathFinderContext(contentAddress, context.getClassId(), context.getUserId(), null,
-        context.getPreferredLanguage());
+        context.getPreferredLanguage(), context.isMilestoneViewApplicable(), context.getFwCode());
   }
 
   private void validateProvidedRoute0Context() {

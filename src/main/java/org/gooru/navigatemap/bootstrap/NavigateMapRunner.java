@@ -60,7 +60,7 @@ public class NavigateMapRunner {
   }
 
   private void setupForShutdown() {
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> finalizeApplication()));
+    Runtime.getRuntime().addShutdownHook(new Thread(this::finalizeApplication));
   }
 
   private void setupSystemProperties() {

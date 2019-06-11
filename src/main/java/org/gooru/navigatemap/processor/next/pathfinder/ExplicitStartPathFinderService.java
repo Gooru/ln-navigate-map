@@ -53,6 +53,9 @@ class ExplicitStartPathFinderService implements PathFinder {
       LOGGER.debug("User asking to start an item on main path.");
       result = fetchSpecifiedContentFromCoursePath();
     }
+    if (result != null) {
+      result.setMilestoneId(specifiedContentAddress.getMilestoneId());
+    }
     return new PathFinderResult(result);
   }
 

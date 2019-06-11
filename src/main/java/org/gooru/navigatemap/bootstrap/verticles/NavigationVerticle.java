@@ -69,7 +69,10 @@ public class NavigationVerticle extends AbstractVerticle {
     Objects.requireNonNull(assessmentExternalUri);
     String collectionExternalUri = config().getString("collection-external.fetch.uri");
     Objects.requireNonNull(collectionExternalUri);
-    remoteUriLocator = new RemoteUriLocator(assessmentUri, collectionUri, assessmentExternalUri, collectionExternalUri);
+    String offlineActivityUri = config().getString("offline-activity.fetch.uri");
+    Objects.requireNonNull(offlineActivityUri);
+    remoteUriLocator = new RemoteUriLocator(assessmentUri, collectionUri, assessmentExternalUri,
+        collectionExternalUri, offlineActivityUri);
 
     client = vertx.createHttpClient(
         new HttpClientOptions().setConnectTimeout(timeout).setMaxPoolSize(poolSize));
@@ -77,13 +80,11 @@ public class NavigationVerticle extends AbstractVerticle {
 
   private void processMessage(Message<JsonObject> message) {
     String op = message.headers().get(Constants.Message.MSG_OP);
-    switch (op) {
-      case Constants.Message.MSG_OP_NEXT:
-        processNextCommand(message);
-        break;
-      default:
-        LOGGER.warn("Invalid operation type");
-        ResponseUtil.processFailure(message);
+    if (Constants.Message.MSG_OP_NEXT.equals(op)) {
+      processNextCommand(message);
+    } else {
+      LOGGER.warn("Invalid operation type");
+      ResponseUtil.processFailure(message);
     }
   }
 

@@ -126,7 +126,7 @@ class AddTeacherSuggestionsCommand {
   }
 
   private static List<UUID> initializeUsers(JsonObject input) {
-    JsonArray userArray = null;
+    JsonArray userArray;
     try {
       userArray = input.getJsonArray(CommandAttributes.USER_ID);
     } catch (ClassCastException e) {

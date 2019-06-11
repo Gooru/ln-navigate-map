@@ -11,7 +11,8 @@ public enum CurrentItemType {
   Collection("collection"),
   Assessment("assessment"),
   AssessmentExternal("assessment-external"),
-  CollectionExternal("collection-external");
+  CollectionExternal("collection-external"),
+  OfflineActivity("offline-activity");
 
   private final String name;
 

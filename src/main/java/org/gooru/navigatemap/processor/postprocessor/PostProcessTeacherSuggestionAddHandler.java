@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.vertx.core.json.JsonObject;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
@@ -28,8 +27,7 @@ class PostProcessTeacherSuggestionAddHandler implements PostProcessorHandler {
 
   @Override
   public void handle(JsonObject requestData) {
-    LOGGER.info("Processing teacher suggestion accept handler for payload: '{}'",
-        Objects.toString(requestData));
+    LOGGER.info("Processing teacher suggestion accept handler for payload: '{}'", requestData);
     initialize(requestData);
     if (command.getUserIds() != null && !command.getUserIds().isEmpty()) {
       List<SuggestionTrackerModel> suggestionTrackerModels =
