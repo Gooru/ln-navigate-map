@@ -50,7 +50,6 @@ abstract class ContentFinderForMilestoneDao {
   @SqlQuery(
       "select course_id, unit_id, :milestoneId as milestone_id, lesson_id, id, format, subformat, null as path_id, null as path_type,  "
           + " class_visibility as visibility from collection c where course_id = :courseId::uuid and "
-          + " format != 'offline-activity'::content_container_type and "
           + " lesson_id = :lessonId::uuid and is_deleted = false and sequence_id > (select "
           + " sequence_id from collection where course_id = :courseId::uuid and "
           + " lesson_id = :lessonId::uuid and id = :collectionId::uuid) order by sequence_id asc")
@@ -64,7 +63,6 @@ abstract class ContentFinderForMilestoneDao {
   @SqlQuery(
       "select course_id, unit_id, :milestoneId as milestone_id,  lesson_id, id, format, subformat, null as path_id, null as path_type, "
           + " class_visibility as visibility from collection c where course_id = :courseId::uuid and  "
-          + " format != 'offline-activity'::content_container_type and "
           + " lesson_id = :lessonId::uuid and is_deleted = false order by sequence_id asc")
   @Mapper(ContentAddressWithMilestoneMapper.class)
   abstract List<ContentAddress> findCollectionsInCML(@Bind("courseId") String courseId,
