@@ -49,9 +49,8 @@ public interface ContentFinderDao {
 
   @SqlQuery(
       "select course_id, unit_id, lesson_id, id, format, subformat, null as path_id, null as path_type,  "
-          + "class_visibility as visibility from collection c where course_id = :courseId::uuid and "
-          + " format != 'offline-activity'::content_container_type and "
-          + " unit_id = :unitId::uuid and lesson_id = :lessonId::uuid and is_deleted = false and sequence_id > (select "
+          + "class_visibility as visibility from collection c where course_id = :courseId::uuid and unit_id = "
+          + " :unitId::uuid and  lesson_id = :lessonId::uuid and is_deleted = false and sequence_id > (select "
           + " sequence_id from collection where course_id = :courseId::uuid and unit_id = :unitId::uuid and  "
           + "lesson_id = :lessonId::uuid and id = :collectionId::uuid) order by sequence_id asc")
   @Mapper(ContentAddressMapper.class)
@@ -70,9 +69,8 @@ public interface ContentFinderDao {
 
   @SqlQuery(
       "select course_id, unit_id, lesson_id, id, format, subformat, null as path_id, null as path_type, "
-          + "class_visibility as visibility from collection c where course_id = :courseId::uuid and "
-          + " format != 'offline-activity'::content_container_type and "
-          + " unit_id = :unitId::uuid and lesson_id = :lessonId::uuid and is_deleted = false order by sequence_id asc "
+          + "class_visibility as visibility from collection c where course_id = :courseId::uuid and unit_id ="
+          + " :unitId::uuid and  lesson_id = :lessonId::uuid and is_deleted = false order by sequence_id asc "
           + "limit 1")
   @Mapper(ContentAddressMapper.class)
   List<ContentAddress> findFirstCollectionInLesson(@Bind("courseId") String courseId,
