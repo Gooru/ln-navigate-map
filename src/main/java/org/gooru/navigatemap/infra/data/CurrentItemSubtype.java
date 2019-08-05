@@ -23,7 +23,8 @@ public enum CurrentItemSubtype {
   OAPositionPaper("oa.position_paper"),
   OALabReport("oa.lab_report"),
   OAExplanationArgument("oa.explanation_argument"),
-  OADebate("oa.debate");
+  OADebate("oa.debate"),
+  OAOthers("oa.others");
 
   private final String name;
   private static final Map<String, CurrentItemSubtype> LOOKUP = new HashMap<>(values().length);
