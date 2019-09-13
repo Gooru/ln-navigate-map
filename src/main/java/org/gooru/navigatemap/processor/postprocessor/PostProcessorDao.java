@@ -20,10 +20,10 @@ interface PostProcessorDao {
   @SqlBatch(
       "insert into suggestions_tracker (user_id, course_id, unit_id, lesson_id, class_id, collection_id, "
           + "suggested_content_id, suggestion_origin, suggestion_originator_id, suggestion_criteria, "
-          + "suggested_content_type, suggested_to, accepted, accepted_at) values (:userId, :courseId, :unitId, "
+          + "suggested_content_type, suggested_to, accepted, accepted_at, path_id) values (:userId, :courseId, :unitId, "
           + ":lessonId, :classId, :collectionId, :suggestedContentId, :suggestionOrigin, "
           + ":suggestionOriginatorId, :suggestionCriteria, :suggestedContentType, :suggestedTo, :accepted, "
-          + ":acceptedAt)")
+          + ":acceptedAt, :pathId)")
   void insertAllSuggestions(@BindBean List<SuggestionTrackerModel> models);
 
   @Mapper(SuggestionTrackerModelMapper.class)
@@ -58,6 +58,6 @@ interface PostProcessorDao {
   SuggestionTrackerModel fetchSystemSuggestionForILAtCollection(
       @BindBean PostProcessSystemSuggestionsAcceptHandler.SystemSuggestionPayload bean);
 
-  @SqlUpdate("update suggestions_tracker set accepted = true, accepted_at = now() where id = :id")
-  void acceptSystemSuggestion(@Bind("id") Long id);
+  @SqlUpdate("update suggestions_tracker set accepted = true, path_id = :pathId, accepted_at = now() where id = :id")
+  void acceptSystemSuggestion(@Bind("id") Long id, @Bind("pathId") Long pathId);
 }

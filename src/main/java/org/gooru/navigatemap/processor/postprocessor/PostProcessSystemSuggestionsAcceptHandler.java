@@ -39,7 +39,7 @@ class PostProcessSystemSuggestionsAcceptHandler implements PostProcessorHandler 
   private void doAcceptanceIfNeeded() {
     if (suggestionTrackerModel != null) {
       if (!suggestionTrackerModel.isAccepted()) {
-        getPostProcessorDao().acceptSystemSuggestion(suggestionTrackerModel.getId());
+        getPostProcessorDao().acceptSystemSuggestion(suggestionTrackerModel.getId(), command.getPathId());
       } else {
         LOGGER.info("Suggestion is already accepted");
       }
@@ -98,6 +98,8 @@ class PostProcessSystemSuggestionsAcceptHandler implements PostProcessorHandler 
     private UUID collectionId;
     @JsonProperty("suggested_content_id")
     private UUID suggestedContentId;
+    @JsonProperty("path_id")
+    private Long pathId;
 
     public UUID getUserId() {
       return userId;
@@ -153,6 +155,14 @@ class PostProcessSystemSuggestionsAcceptHandler implements PostProcessorHandler 
 
     public void setSuggestedContentId(UUID suggestedContentId) {
       this.suggestedContentId = suggestedContentId;
+    }
+
+    public Long getPathId() {
+      return pathId;
+    }
+
+    public void setPathId(Long pathId) {
+      this.pathId = pathId;
     }
   }
 }
