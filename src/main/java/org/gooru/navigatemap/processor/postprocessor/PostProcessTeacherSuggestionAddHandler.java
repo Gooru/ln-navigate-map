@@ -1,14 +1,15 @@
 package org.gooru.navigatemap.processor.postprocessor;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.vertx.core.json.JsonObject;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.vertx.core.json.JsonObject;
 
 /**
  * @author ashish on 24/7/18.
@@ -16,8 +17,8 @@ import org.slf4j.LoggerFactory;
 class PostProcessTeacherSuggestionAddHandler implements PostProcessorHandler {
 
   private final DBI dbi;
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(PostProcessTeacherSuggestionAddHandler.class);
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(PostProcessTeacherSuggestionAddHandler.class);
   private TeacherSuggestionPayload command;
   private PostProcessorDao postProcessorDao;
 
@@ -85,6 +86,8 @@ class PostProcessTeacherSuggestionAddHandler implements PostProcessorHandler {
     private String suggestedContentType;
     @JsonProperty("user_id")
     private UUID teacherId;
+    @JsonProperty("user_path_map")
+    private Map<String, Integer> userPathMap;
 
     public List<UUID> getUserIds() {
       return Collections.unmodifiableList(userIds);
@@ -156,6 +159,14 @@ class PostProcessTeacherSuggestionAddHandler implements PostProcessorHandler {
 
     public void setTeacherId(UUID teacherId) {
       this.teacherId = teacherId;
+    }
+
+    public Map<String, Integer> getUserPathMap() {
+      return userPathMap;
+    }
+
+    public void setUserPathMap(Map<String, Integer> userPathMap) {
+      this.userPathMap = userPathMap;
     }
 
   }
