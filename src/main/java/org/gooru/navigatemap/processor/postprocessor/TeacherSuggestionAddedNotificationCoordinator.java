@@ -82,6 +82,7 @@ class TeacherSuggestionAddedNotificationCoordinator implements NotificationCoord
       model.setPathId(Long.valueOf(pathId));
       model.setPathType(PathType.Teacher.getName());
       model.setNotificationType(NOTIFICATION_TEACHER_SUGGESTION);
+      model.setContentSource(SuggestionArea.CourseMap.getName());
       return model;
     } else {
       LOGGER.warn("Path id not found for user: " + userId.toString());
