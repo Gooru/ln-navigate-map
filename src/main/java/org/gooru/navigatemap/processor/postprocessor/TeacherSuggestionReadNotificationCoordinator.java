@@ -1,6 +1,5 @@
 package org.gooru.navigatemap.processor.postprocessor;
 
-import io.vertx.core.json.JsonObject;
 import java.util.Objects;
 import org.apache.kafka.clients.producer.Producer;
 import org.gooru.navigatemap.app.components.AppConfiguration;
@@ -21,7 +20,6 @@ class TeacherSuggestionReadNotificationCoordinator implements NotificationCoordi
   private final PostProcessorNextCommand command;
   private static final Logger LOGGER = LoggerFactory
       .getLogger(TeacherSuggestionReadNotificationCoordinator.class);
-  private JsonObject userPathMap;
 
   TeacherSuggestionReadNotificationCoordinator(PostProcessorNextCommand command) {
     this.command = command;
@@ -61,6 +59,7 @@ class TeacherSuggestionReadNotificationCoordinator implements NotificationCoordi
       model.setPathId(command.getContext().getPathId());
       model.setPathType(PathType.Teacher.getName());
       model.setNotificationType(NOTIFICATION_TEACHER_SUGGESTION);
+      model.setContentSource(SuggestionArea.CourseMap.getName());
       return model;
     } else {
       LOGGER.warn("Not a teacher path for reset notification: " + command.getUserId().toString());
