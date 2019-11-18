@@ -37,6 +37,7 @@ public final class Constants {
     public static final String MSG_HTTP_BODY = "http.body";
     public static final String MSG_HTTP_HEADERS = "http.headers";
     public static final String MSG_USER_PATH_MAP = "user_path_map";
+    public static final String MSG_PATH_ID = "path_id";
 
     public static final String MSG_OP_NEXT = "navigate.next";
     public static final String MSG_OP_CONTEXT_GET = "context.get";

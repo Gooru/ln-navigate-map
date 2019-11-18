@@ -18,6 +18,7 @@ class NotificationsPayload {
   private Long pathId;
   private String notificationType;
   private String action;
+  private String contentSource;
 
   public String getUserId() {
     return userId;
@@ -113,5 +114,13 @@ class NotificationsPayload {
 
   public void setAction(String action) {
     this.action = action;
+  }
+
+  public String getContentSource() {
+    return contentSource;
+  }
+
+  public void setContentSource(String contentSource) {
+    this.contentSource = contentSource;
   }
 }

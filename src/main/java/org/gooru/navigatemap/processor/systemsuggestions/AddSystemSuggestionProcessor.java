@@ -37,8 +37,8 @@ public class AddSystemSuggestionProcessor implements AsyncMessageProcessor {
   public Future<MessageResponse> process() {
     try {
       this.eventBusMessage = EventBusMessage.eventBusMessageBuilder(message);
-      AddSystemSuggestionCommand command = AddSystemSuggestionCommand
-          .builder(eventBusMessage.getRequestBody());
+      AddSystemSuggestionCommand command =
+          AddSystemSuggestionCommand.builder(eventBusMessage.getRequestBody());
       addSystemSuggestion(command);
     } catch (Throwable throwable) {
       LOGGER.warn("Encountered exception", throwable);
@@ -58,11 +58,11 @@ public class AddSystemSuggestionProcessor implements AsyncMessageProcessor {
       }
     }, asyncResult -> {
       if (asyncResult.succeeded()) {
-        vertx.eventBus()
-            .send(Constants.EventBus.MBEP_POST_PROCESS, eventBusMessage.getRequestBody(),
-                DeliveryOptionsBuilder
-                    .createDeliveryOptionsWithMsgOp(
-                        Constants.Message.MSG_OP_POSTPROCESS_SYSTEM_SUGGESTION_ADD));
+        vertx.eventBus().send(Constants.EventBus.MBEP_POST_PROCESS,
+            eventBusMessage.getRequestBody().put(Constants.Message.MSG_PATH_ID,
+                ((Long) asyncResult.result())),
+            DeliveryOptionsBuilder.createDeliveryOptionsWithMsgOp(
+                Constants.Message.MSG_OP_POSTPROCESS_SYSTEM_SUGGESTION_ADD));
         result.complete(
             MessageResponseFactory.createCreatedResponse(asyncResult.result().toString()));
       } else {

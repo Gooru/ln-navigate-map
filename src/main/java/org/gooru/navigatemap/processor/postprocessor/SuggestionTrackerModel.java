@@ -24,6 +24,7 @@ public class SuggestionTrackerModel {
   private boolean accepted;
   private Date acceptedAt;
   private String ctx;
+  private Long pathId;
 
   public Long getId() {
     return id;
@@ -151,5 +152,13 @@ public class SuggestionTrackerModel {
 
   public void setCtx(String ctx) {
     this.ctx = ctx;
+  }
+
+  public Long getPathId() {
+    return pathId;
+  }
+
+  public void setPathId(Long pathId) {
+    this.pathId = pathId;
   }
 }
