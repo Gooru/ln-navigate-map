@@ -15,6 +15,8 @@ public final class NavigateMessageContext {
   private final String userId;
   private final JsonObject session;
   private final JsonObject request;
+  private final TenantContext tenantContext;
+
 
   public NavigateMessageContext(Message<JsonObject> message) {
     this.message = message;
@@ -23,6 +25,8 @@ public final class NavigateMessageContext {
     this.userId = messageBody.getString(Constants.Message.MSG_USER_ID);
     this.session = messageBody.getJsonObject(Constants.Message.MSG_KEY_SESSION).copy();
     this.request = messageBody.getJsonObject(Constants.Message.MSG_HTTP_BODY);
+    this.tenantContext = new TenantContext(messageBody.getJsonObject(Constants.Message.MSG_KEY_SESSION));
+
   }
 
   public String getSessionToken() {
@@ -35,6 +39,10 @@ public final class NavigateMessageContext {
 
   public JsonObject getRequest() {
     return request;
+  }
+  
+  public String tenant() {
+    return this.tenantContext.tenant();
   }
 
   /*
@@ -53,5 +61,35 @@ public final class NavigateMessageContext {
 
   public boolean isUserAnonymous() {
     return this.userId.equalsIgnoreCase(Constants.Message.MSG_USER_ANONYMOUS);
+  }
+  
+  private static class TenantContext {
+
+    private static final String TENANT = "tenant";
+    private static final String TENANT_ID = "tenant_id";
+    private static final String TENANT_ROOT = "tenant_root";
+
+    private final String tenantId;
+    private final String tenantRoot;
+
+    TenantContext(JsonObject session) {
+      JsonObject tenantJson = session.getJsonObject(TENANT);
+      if (tenantJson == null || tenantJson.isEmpty()) {
+        throw new IllegalStateException("Tenant Context invalid");
+      }
+      this.tenantId = tenantJson.getString(TENANT_ID);
+      if (tenantId == null || tenantId.isEmpty()) {
+        throw new IllegalStateException("Tenant Context with invalid tenant");
+      }
+      this.tenantRoot = tenantJson.getString(TENANT_ROOT);
+    }
+
+    public String tenant() {
+      return this.tenantId;
+    }
+
+    public String tenantRoot() {
+      return this.tenantRoot;
+    }
   }
 }

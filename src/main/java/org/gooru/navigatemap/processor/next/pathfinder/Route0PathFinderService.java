@@ -50,7 +50,7 @@ class Route0PathFinderService implements PathFinder {
     ContentAddress contentAddress = new ContentAddress();
     contentAddress.setCourse(context.getContentAddress().getCourse());
     return new PathFinderContext(contentAddress, context.getClassId(), context.getUserId(), null,
-        context.getPreferredLanguage(), context.isMilestoneViewApplicable(), context.getFwCode());
+        context.getPreferredLanguage(), context.isMilestoneViewApplicable(), context.getFwCode(),context.getTenantId());
   }
 
   private void validateProvidedRoute0Context() {
