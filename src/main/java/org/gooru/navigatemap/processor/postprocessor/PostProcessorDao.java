@@ -23,7 +23,7 @@ interface PostProcessorDao {
           + "suggested_content_type, suggested_to, accepted, accepted_at, path_id) values (:userId, :courseId, :unitId, "
           + ":lessonId, :classId, :collectionId, :suggestedContentId, :suggestionOrigin, "
           + ":suggestionOriginatorId, :suggestionCriteria, :suggestedContentType, :suggestedTo, :accepted, "
-          + ":acceptedAt, :pathId)")
+          + ":acceptedAt, :pathId) on conflict do nothing")
   void insertAllSuggestions(@BindBean List<SuggestionTrackerModel> models);
 
   @Mapper(SuggestionTrackerModelMapper.class)
