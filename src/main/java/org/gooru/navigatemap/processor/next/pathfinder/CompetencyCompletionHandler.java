@@ -3,10 +3,12 @@ package org.gooru.navigatemap.processor.next.pathfinder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.gooru.navigatemap.app.components.utilities.DbLookupUtility;
 import org.gooru.navigatemap.infra.data.CurrentItemType;
 import org.gooru.navigatemap.infra.utilities.CollectionUtils;
+import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
 import org.skife.jdbi.v2.DBI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ashish on 8/5/18.
@@ -19,12 +21,30 @@ class CompetencyCompletionHandler {
   private boolean areCompetenciesFetched;
 
   private static final int COMPETENCY_STATUS_COMPLETED = 4;
-  private static final int COMPETENCY_STATUS_MASTERED = 5;
+  private static final double DEFAULT_COMPLETION_SCORE = 80.00;
+  private static final Logger LOGGER = LoggerFactory.getLogger(CompetencyCompletionHandler.class);
+
 
   CompetencyCompletionHandler(DBI dbi, PathFinderContext context) {
     this.dbi = dbi;
     this.context = context;
     areCompetenciesFetched = false;
+  }
+  private TenantSettingService tenantSettingService = 
+      new TenantSettingService(DBICreator.getDbiForDefaultDS());
+  
+  private double getCompletionScoreThreshold() {
+    String tenantId = context.getTenantId();
+    if(tenantId != null && !tenantId.isEmpty()) {
+      double completionScore = tenantSettingService.fetchTenantCompletionScore(tenantId);
+      try  {
+        return completionScore;
+      } catch(Exception e) {
+        LOGGER.error("Invalid completion score for settings '{}'",completionScore);
+      } 
+    }
+    // returning default score incase of error or null
+    return DEFAULT_COMPLETION_SCORE;
   }
 
   void handleCompetencyCompletion() {
@@ -78,8 +98,7 @@ class CompetencyCompletionHandler {
   }
 
   boolean isCompetencyCompleted() {
-    return context.getScore() != null && context.getScore() >= DbLookupUtility.getInstance()
-        .thresholdForCompetencyCompletionBasedOnAssessment();
+    return context.getScore() != null && context.getScore() >= getCompletionScoreThreshold();
   }
 
 }
