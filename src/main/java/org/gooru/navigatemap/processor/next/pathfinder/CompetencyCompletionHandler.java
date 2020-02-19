@@ -3,9 +3,9 @@ package org.gooru.navigatemap.processor.next.pathfinder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.gooru.navigatemap.app.components.utilities.DbLookupUtility;
 import org.gooru.navigatemap.infra.data.CurrentItemType;
 import org.gooru.navigatemap.infra.utilities.CollectionUtils;
+import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,14 +30,15 @@ class CompetencyCompletionHandler {
     this.context = context;
     areCompetenciesFetched = false;
   }
+  private TenantSettingService tenantSettingService = 
+      new TenantSettingService(DBICreator.getDbiForDefaultDS());
   
   private double getCompletionScoreThreshold() {
     String tenantId = context.getTenantId();
     if(tenantId != null && !tenantId.isEmpty()) {
-      TenantSettingDao tenantSettingDao = dbi.onDemand(TenantSettingDao.class);
-      String completionScore = tenantSettingDao.fetchTenantCompletionScore(tenantId);
+      double completionScore = tenantSettingService.fetchTenantCompletionScore(tenantId);
       try  {
-        return Double.parseDouble(completionScore);
+        return completionScore;
       } catch(Exception e) {
         LOGGER.error("Invalid completion score for settings '{}'",completionScore);
       } 
