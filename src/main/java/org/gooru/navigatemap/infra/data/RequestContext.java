@@ -210,4 +210,13 @@ public final class RequestContext {
     }
     return UUID.fromString(value);
   }
+
+  @Override
+  public String toString() {
+    return "RequestContext [classId=" + classId + ", collectionId=" + collectionId + ", courseId=" + courseId
+        + ", currentItemId=" + currentItemId + ", currentItemSubtype=" + currentItemSubtype + ", currentItemType="
+        + currentItemType + ", lessonId=" + lessonId + ", milestoneId=" + milestoneId + ", pathId=" + pathId
+        + ", pathType=" + pathType + ", routeContextData=" + routeContextData + ", scorePercent=" + scorePercent
+        + ", state=" + state + ", unitId=" + unitId + "]";
+  }
 }
