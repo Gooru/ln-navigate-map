@@ -38,23 +38,7 @@ class PostProcessNextHandler implements PostProcessorHandler {
     if (command.getSuggestions() != null && !command.getSuggestions().isEmpty()) {
       List<SuggestionTrackerModel> suggestionTrackerModels =
           SuggestionTrackerModelsBuilder.buildForSystemSuggestion(command).build();
-      List<SuggestionTrackerModel> suggestionTrackerModelsToPersist = new ArrayList<>();
-      suggestionTrackerModels.forEach(suggestionTrackerModel -> {
-        Long id = null;
-        if (suggestionTrackerModel.getClassId() == null) {
-          id = fetchExistingSuggestionTrackedForIL(suggestionTrackerModel);
-        } else {
-          id = FetchExistingSuggestionTrackedInClass(suggestionTrackerModel);
-        }
-        if (id == null) {
-          suggestionTrackerModelsToPersist.add(suggestionTrackerModel);
-        } else {
-          getPostProcessorDao().updateExistingSuggestionWithCurrentDateTime(id);
-        }
-      });
-      if (!suggestionTrackerModelsToPersist.isEmpty()) {
-        getPostProcessorDao().insertAllSuggestions(suggestionTrackerModelsToPersist);
-      }
+      trackAllSuggestions(suggestionTrackerModels);
     }
   }
 
@@ -82,24 +66,55 @@ class PostProcessNextHandler implements PostProcessorHandler {
     return postProcessorDao;
   }
 
-  private Long FetchExistingSuggestionTrackedInClass(
-      SuggestionTrackerModel suggestionTrackerModel) {
-    if (suggestionTrackerModel.getCollectionId() == null) {
-      return getPostProcessorDao()
-          .fetchExistingSuggestionTrackedInClassAtLesson(suggestionTrackerModel);
-    } else {
-      return getPostProcessorDao()
-          .fetchExistingSuggestionTrackedInClassAtCollection(suggestionTrackerModel);
+  private void trackAllSuggestions(List<SuggestionTrackerModel> suggestionTrackerModels) {
+    List<SuggestionTrackerModel> suggestionsInClassAtCollection = new ArrayList<>();
+    List<SuggestionTrackerModel> suggestionsInClassAtLesson = new ArrayList<>();
+    List<SuggestionTrackerModel> suggestionsForILAtCollection = new ArrayList<>();
+    List<SuggestionTrackerModel> suggestionsForILAtLesson = new ArrayList<>();
+    segregateSuggestionsPerContext(suggestionTrackerModels, suggestionsInClassAtCollection,
+        suggestionsInClassAtLesson, suggestionsForILAtCollection, suggestionsForILAtLesson);
+    persistSegregatedSuggestions(suggestionsInClassAtCollection, suggestionsInClassAtLesson,
+        suggestionsForILAtCollection, suggestionsForILAtLesson);
+  }
+
+  private void segregateSuggestionsPerContext(List<SuggestionTrackerModel> suggestionTrackerModels,
+      List<SuggestionTrackerModel> suggestionsInClassAtCollection,
+      List<SuggestionTrackerModel> suggestionsInClassAtLesson,
+      List<SuggestionTrackerModel> suggestionsForILAtCollection,
+      List<SuggestionTrackerModel> suggestionsForILAtLesson) {
+    suggestionTrackerModels.forEach(suggestionTrackerModel -> {
+      if (suggestionTrackerModel.getClassId() == null) {
+        if (suggestionTrackerModel.getCollectionId() == null) {
+          suggestionsForILAtLesson.add(suggestionTrackerModel);
+        } else {
+          suggestionsForILAtCollection.add(suggestionTrackerModel);
+        }
+      } else {
+        if (suggestionTrackerModel.getCollectionId() == null) {
+          suggestionsInClassAtLesson.add(suggestionTrackerModel);
+        } else {
+          suggestionsInClassAtCollection.add(suggestionTrackerModel);
+        }
+      }
+    });
+  }
+
+  private void persistSegregatedSuggestions(List<SuggestionTrackerModel> suggestionsInClassAtCollection,
+      List<SuggestionTrackerModel> suggestionsInClassAtLesson,
+      List<SuggestionTrackerModel> suggestionsForILAtCollection,
+      List<SuggestionTrackerModel> suggestionsForILAtLesson) {
+    if (!suggestionsForILAtLesson.isEmpty()) {
+      getPostProcessorDao().insertSuggestionsForILAtLesson(suggestionsForILAtLesson);
+    }
+    if (!suggestionsForILAtCollection.isEmpty()) {
+      getPostProcessorDao().insertSuggestionsForILAtCollection(suggestionsForILAtCollection);
+    }
+    if (!suggestionsInClassAtLesson.isEmpty()) {
+      getPostProcessorDao().insertSuggestionsInClassAtLesson(suggestionsInClassAtLesson);
+    }
+    if (!suggestionsInClassAtCollection.isEmpty()) {
+      getPostProcessorDao().insertSuggestionsInClassAtCollection(suggestionsInClassAtCollection);
     }
   }
 
-  private Long fetchExistingSuggestionTrackedForIL(SuggestionTrackerModel suggestionTrackerModel) {
-    if (suggestionTrackerModel.getCollectionId() == null) {
-      return getPostProcessorDao()
-          .fetchExistingSuggestionTrackedForILAtLesson(suggestionTrackerModel);
-    } else {
-      return getPostProcessorDao()
-          .fetchExistingSuggestionTrackedForILAtCollection(suggestionTrackerModel);
-    }
-  }
 }

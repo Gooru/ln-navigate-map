@@ -57,27 +57,41 @@ interface PostProcessorDao {
   @SqlUpdate("update suggestions_tracker set accepted = true, path_id = :pathId, accepted_at = now() where id = :id")
   void acceptSystemSuggestion(@Bind("id") Long id, @Bind("pathId") Long pathId);
 
-  @SqlQuery("select id from suggestions_tracker where user_id = :userId and course_id = :courseId and unit_id = "
-      + ":unitId and lesson_id = :lessonId and collection_id is null and class_id = :classId and "
-      + "suggested_content_id = :suggestedContentId")
-  Long fetchExistingSuggestionTrackedInClassAtLesson(@BindBean SuggestionTrackerModel bean);
+  @SqlBatch("insert into suggestions_tracker (user_id, course_id, unit_id, lesson_id, class_id, collection_id, "
+      + "suggested_content_id, suggestion_origin, suggestion_originator_id, suggestion_criteria, "
+      + "suggested_content_type, suggested_to, accepted, accepted_at, path_id) values (:userId, :courseId, :unitId, "
+      + ":lessonId, :classId, :collectionId, :suggestedContentId, :suggestionOrigin, "
+      + ":suggestionOriginatorId, :suggestionCriteria, :suggestedContentType, :suggestedTo, :accepted, "
+      + ":acceptedAt, :pathId) on conflict (user_id, class_id, course_id, unit_id, lesson_id, suggested_content_id) "
+      + "WHERE class_id IS NOT NULL AND collection_id IS NULL do update set updated_at = now() ")
+  void insertSuggestionsInClassAtLesson(@BindBean List<SuggestionTrackerModel> models);
 
-  @SqlQuery("select id from suggestions_tracker where user_id = :userId and course_id = :courseId and unit_id = "
-      + ":unitId and lesson_id = :lessonId and collection_id is null and class_id is null and "
-      + "suggested_content_id = :suggestedContentId")
-  Long fetchExistingSuggestionTrackedForILAtLesson(@BindBean SuggestionTrackerModel bean);
+  @SqlBatch("insert into suggestions_tracker (user_id, course_id, unit_id, lesson_id, class_id, collection_id, "
+      + "suggested_content_id, suggestion_origin, suggestion_originator_id, suggestion_criteria, "
+      + "suggested_content_type, suggested_to, accepted, accepted_at, path_id) values (:userId, :courseId, :unitId, "
+      + ":lessonId, :classId, :collectionId, :suggestedContentId, :suggestionOrigin, "
+      + ":suggestionOriginatorId, :suggestionCriteria, :suggestedContentType, :suggestedTo, :accepted, "
+      + ":acceptedAt, :pathId) on conflict (user_id, course_id, unit_id, lesson_id, suggested_content_id) "
+      + "WHERE class_id IS NULL AND collection_id IS NULL do update set updated_at = now() ")
+  void insertSuggestionsForILAtLesson(@BindBean List<SuggestionTrackerModel> models);
 
-  @SqlQuery("select id from suggestions_tracker where user_id = :userId and course_id = :courseId and unit_id = "
-      + ":unitId and lesson_id = :lessonId and collection_id = :collectionId and class_id = :classId and "
-      + "suggested_content_id = :suggestedContentId")
-  Long fetchExistingSuggestionTrackedInClassAtCollection(@BindBean SuggestionTrackerModel bean);
+  @SqlBatch("insert into suggestions_tracker (user_id, course_id, unit_id, lesson_id, class_id, collection_id, "
+      + "suggested_content_id, suggestion_origin, suggestion_originator_id, suggestion_criteria, "
+      + "suggested_content_type, suggested_to, accepted, accepted_at, path_id) values (:userId, :courseId, :unitId, "
+      + ":lessonId, :classId, :collectionId, :suggestedContentId, :suggestionOrigin, "
+      + ":suggestionOriginatorId, :suggestionCriteria, :suggestedContentType, :suggestedTo, :accepted, "
+      + ":acceptedAt, :pathId) on conflict (user_id, class_id, course_id, unit_id, lesson_id, collection_id, suggested_content_id) "
+      + "WHERE class_id IS NOT NULL AND collection_id IS NOT NULL do update set updated_at = now() ")
+  void insertSuggestionsInClassAtCollection(@BindBean List<SuggestionTrackerModel> models);
 
-  @SqlQuery("select id from suggestions_tracker where user_id = :userId and course_id = :courseId and unit_id = "
-      + ":unitId and lesson_id = :lessonId and collection_id = :collectionId and class_id is null and "
-      + "suggested_content_id = :suggestedContentId")
-  Long fetchExistingSuggestionTrackedForILAtCollection(@BindBean SuggestionTrackerModel bean);
-  
-  @SqlUpdate("update suggestions_tracker set updated_at = now() where id = :id")
-  void updateExistingSuggestionWithCurrentDateTime(@Bind("id") Long id);
+  @SqlBatch("insert into suggestions_tracker (user_id, course_id, unit_id, lesson_id, class_id, collection_id, "
+      + "suggested_content_id, suggestion_origin, suggestion_originator_id, suggestion_criteria, "
+      + "suggested_content_type, suggested_to, accepted, accepted_at, path_id) values (:userId, :courseId, :unitId, "
+      + ":lessonId, :classId, :collectionId, :suggestedContentId, :suggestionOrigin, "
+      + ":suggestionOriginatorId, :suggestionCriteria, :suggestedContentType, :suggestedTo, :accepted, "
+      + ":acceptedAt, :pathId) on conflict (user_id, course_id, unit_id, lesson_id, collection_id, suggested_content_id) "
+      + "WHERE class_id IS NULL AND collection_id IS NOT NULL do update set updated_at = now() ")
+  void insertSuggestionsForILAtCollection(@BindBean List<SuggestionTrackerModel> models);
+
 
 }
