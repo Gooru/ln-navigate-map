@@ -1,11 +1,12 @@
 package org.gooru.navigatemap.processor.postprocessor;
 
-import io.vertx.core.json.JsonObject;
+import java.util.ArrayList;
 import java.util.List;
 import org.gooru.navigatemap.app.components.AppConfiguration;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import io.vertx.core.json.JsonObject;
 
 /**
  * @author ashish on 24/7/18.
@@ -37,7 +38,23 @@ class PostProcessNextHandler implements PostProcessorHandler {
     if (command.getSuggestions() != null && !command.getSuggestions().isEmpty()) {
       List<SuggestionTrackerModel> suggestionTrackerModels =
           SuggestionTrackerModelsBuilder.buildForSystemSuggestion(command).build();
-      getPostProcessorDao().insertAllSuggestions(suggestionTrackerModels);
+      List<SuggestionTrackerModel> suggestionTrackerModelsToPersist = new ArrayList<>();
+      suggestionTrackerModels.forEach(suggestionTrackerModel -> {
+        Long id = null;
+        if (suggestionTrackerModel.getClassId() == null) {
+          id = fetchExistingSuggestionTrackedForIL(suggestionTrackerModel);
+        } else {
+          id = FetchExistingSuggestionTrackedInClass(suggestionTrackerModel);
+        }
+        if (id == null) {
+          suggestionTrackerModelsToPersist.add(suggestionTrackerModel);
+        } else {
+          getPostProcessorDao().updateExistingSuggestionWithCurrentDateTime(id);
+        }
+      });
+      if (!suggestionTrackerModelsToPersist.isEmpty()) {
+        getPostProcessorDao().insertAllSuggestions(suggestionTrackerModelsToPersist);
+      }
     }
   }
 
@@ -49,8 +66,8 @@ class PostProcessNextHandler implements PostProcessorHandler {
 
   private void handleTeacherPathItemServed() {
     if (command.getContext().onTeacherPath()) {
-      long currentCount = getPostProcessorDao()
-          .updatePathServeCount(command.getContext().getPathId());
+      long currentCount =
+          getPostProcessorDao().updatePathServeCount(command.getContext().getPathId());
       if (currentCount <= AppConfiguration.getInstance()
           .getNotificationTeacherSuggestionReadThreshold()) {
         NotificationCoordinator.buildForTeacherSuggestionRead(command).coordinateNotification();
@@ -65,4 +82,24 @@ class PostProcessNextHandler implements PostProcessorHandler {
     return postProcessorDao;
   }
 
+  private Long FetchExistingSuggestionTrackedInClass(
+      SuggestionTrackerModel suggestionTrackerModel) {
+    if (suggestionTrackerModel.getCollectionId() == null) {
+      return getPostProcessorDao()
+          .fetchExistingSuggestionTrackedInClassAtLesson(suggestionTrackerModel);
+    } else {
+      return getPostProcessorDao()
+          .fetchExistingSuggestionTrackedInClassAtCollection(suggestionTrackerModel);
+    }
+  }
+
+  private Long fetchExistingSuggestionTrackedForIL(SuggestionTrackerModel suggestionTrackerModel) {
+    if (suggestionTrackerModel.getCollectionId() == null) {
+      return getPostProcessorDao()
+          .fetchExistingSuggestionTrackedForILAtLesson(suggestionTrackerModel);
+    } else {
+      return getPostProcessorDao()
+          .fetchExistingSuggestionTrackedForILAtCollection(suggestionTrackerModel);
+    }
+  }
 }
