@@ -3,6 +3,7 @@ package org.gooru.navigatemap.app.components;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import org.gooru.navigatemap.app.components.utilities.DbLookupUtility;
+import org.gooru.navigatemap.app.components.utilities.TenantSettingLookupUtility;
 
 /**
  * @author ashish on 24/2/17. This is a manager class to initialize the utilities, Utilities
@@ -31,5 +32,7 @@ public final class UtilityManager implements Initializer, Finalizer {
     //        TenantInitializer.initialize(DataSourceRegistry.getInstance().getDefaultDataSource());
     DbLookupUtility.getInstance()
         .initialize(DataSourceRegistry.getInstance().getDefaultDataSource());
+    TenantSettingLookupUtility.getInstance()
+    .initialize(DataSourceRegistry.getInstance().getDefaultDataSource());
   }
 }

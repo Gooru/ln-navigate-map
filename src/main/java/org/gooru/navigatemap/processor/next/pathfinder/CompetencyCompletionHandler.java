@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import org.gooru.navigatemap.infra.data.CurrentItemType;
 import org.gooru.navigatemap.infra.utilities.CollectionUtils;
-import org.gooru.navigatemap.infra.utilities.jdbi.DBICreator;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,16 +30,16 @@ class CompetencyCompletionHandler {
     areCompetenciesFetched = false;
   }
   private TenantSettingService tenantSettingService = 
-      new TenantSettingService(DBICreator.getDbiForDefaultDS());
+      new TenantSettingService();
   
   private double getCompletionScoreThreshold() {
     String tenantId = context.getTenantId();
     if(tenantId != null && !tenantId.isEmpty()) {
-      double completionScore = tenantSettingService.fetchTenantCompletionScore(tenantId);
       try  {
+        Double completionScore = tenantSettingService.fetchTenantCompletionScore(tenantId);
         return completionScore;
       } catch(Exception e) {
-        LOGGER.error("Invalid completion score for settings '{}'",completionScore);
+        LOGGER.error("Invalid completion score for tenant settings '{}'",tenantId);
       } 
     }
     // returning default score incase of error or null
