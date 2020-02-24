@@ -48,6 +48,8 @@ public final class TenantSettingLookupUtility {
     if (tenantCompletionList != null) {
       tenantCompletionScoreMap = new HashMap<>();
       for (Map<String, Object> tenantMap : tenantCompletionList) {
+        LOGGER.debug("Tenant Id : '{}' Completion score : '{}'", tenantMap.get(ID),
+            tenantMap.get(VALUE));
         if (tenantMap.get(ID) != null) {
           String tenantId = tenantMap.get(ID).toString();
           if (tenantMap.get(VALUE) != null) {
@@ -55,8 +57,7 @@ public final class TenantSettingLookupUtility {
               tenantCompletionScoreMap.put(tenantId,
                   Double.valueOf(tenantMap.get(VALUE).toString()));
             } catch (NumberFormatException e) {
-              LOGGER.warn("Invalid completion score for the tenant '{}'",
-                  tenantId);
+              LOGGER.warn("Invalid completion score for the tenant '{}'", tenantId);
               tenantCompletionScoreMap.put(tenantId, DEFAULT_COMPLETION_SCORE);
             }
           } else {
@@ -65,9 +66,6 @@ public final class TenantSettingLookupUtility {
 
         }
       }
-      LOGGER.debug("Competency completion score based on tenant initialized with: {}",
-          tenantCompletionScoreMap);
-
     }
   }
   
