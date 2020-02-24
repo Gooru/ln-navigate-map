@@ -15,7 +15,7 @@ class CompetencyCompletionHandler {
 
   private final PathFinderContext context;
   private final DBI dbi;
-  private List<String> competencies;
+  private List<String> competencies = Collections.emptyList();
   private boolean areCompetenciesFetched;
 
   private static final int COMPETENCY_STATUS_COMPLETED = 4;
@@ -51,9 +51,9 @@ class CompetencyCompletionHandler {
       }
       if (listOfListOfComps != null && !listOfListOfComps.isEmpty()) {
         competencies = listOfListOfComps.get(0);
-        if (competencies == null) {
-          competencies = Collections.emptyList();
-        }
+      }
+      if (competencies == null) {
+        competencies = Collections.emptyList();
       }
       areCompetenciesFetched = true;
     }

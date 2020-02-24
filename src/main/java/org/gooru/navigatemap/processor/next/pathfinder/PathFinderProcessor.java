@@ -57,7 +57,8 @@ public class PathFinderProcessor {
         Future<NavigateProcessorContext> resultFuture = doPathMapping();
         resultFuture.setHandler(result -> pathMapperFuture.complete(result.result()));
       } catch (Throwable throwable) {
-        LOGGER.warn("Error while mapping path", throwable);
+        LOGGER.warn("Error for Context: {}", npc.requestContext().toString());
+        LOGGER.warn("Error while mapping path.", throwable);
         future.fail(throwable);
       }
     }, pathMapResult -> future.complete(pathMapResult.result()));
