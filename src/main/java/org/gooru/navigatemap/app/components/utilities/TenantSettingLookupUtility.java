@@ -85,13 +85,13 @@ public final class TenantSettingLookupUtility {
 
     private static final String DEFAULT_LOOKUP_QUERY = "SELECT id,value FROM tenant_setting where key = :key";    
     private static final String KEY = "key";
-    private static final String COMPETENCY_COMPLETION_THRESHOLD_FOR_ASSESSMENT =
-        "comp_completion_threshold_for_assessment";
+    private static final String COMPETENCY_COMPLETION_THRESHOLD =
+        "comp_completion_threshold";
 
 
     static List<Map<String,Object>> getThresholdForCompetencyCompletionBasedOnAssessment(Handle handle) {
       return handle.createQuery(DEFAULT_LOOKUP_QUERY)
-          .bind(KEY, COMPETENCY_COMPLETION_THRESHOLD_FOR_ASSESSMENT).list();
+          .bind(KEY, COMPETENCY_COMPLETION_THRESHOLD).list();
     }
   }
 
